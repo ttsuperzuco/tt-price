@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TaiwanTomato料金表</title>
+<style>
+  *{
+    box-sizing:border-box;
+  }
+
+  :root{
+    --page-bg:#2b8b9f;
+    --page-bg-dark:#23798b;
+    --button-top:#f4ffff;
+    --button-bottom:#d7f4f5;
+    --button-border:#8fcbd1;
+    --button-text:#163c59;
+    --title-main:#d6f5ff;
+    --title-shadow:#16516f;
+    --box-bg:#ffffff;
+    --link:#007acc;
+    --back-top:#ffb347;
+    --back-bottom:#ff9800;
+    --back-border:#d87400;
+    --back-hover-top:#ffc166;
+    --back-hover-bottom:#ff8c00;
+    --back-text:#ffffff;
+  }
+
+  body{
+    font-family:sans-serif;
+    background:linear-gradient(to bottom, var(--page-bg), var(--page-bg-dark));
+    text-align:center;
+    padding:12px;
+    margin:0;
+    min-height:100vh;
+  }
+
+  h2{
+    color:var(--title-main);
+    margin:6px auto 18px;
+    font-size:clamp(30px, 8vw, 54px);
+    line-height:1.15;
+    max-width:1100px;
+    font-weight:900;
+    letter-spacing:-1px;
+    text-shadow:
+      2px 2px 0 var(--title-shadow),
+      -2px 2px 0 var(--title-shadow),
+      2px -2px 0 var(--title-shadow),
+      -2px -2px 0 var(--title-shadow),
+      0 3px 6px rgba(0,0,0,0.22);
+  }
+
+  #topActions{
+    width:100%;
+    max-width:1100px;
+    margin:8px auto 12px;
+  }
+
+  #bottomActions{
+    display:none;
+    width:100%;
+    max-width:1100px;
+    margin:22px auto 28px;
+  }
+
+  #backBtn,
+  #bottomBackBtn{
+    display:none;
+    width:100%;
+    min-height:104px;
+    font-size:clamp(34px, 7.4vw, 50px);
+    padding:26px 22px;
+    border-radius:18px;
+    border:3px solid var(--back-border);
+    margin:12px 0 18px;
+    color:var(--back-text);
+    background:linear-gradient(to bottom, var(--back-top), var(--back-bottom));
+    text-shadow:
+      1px 1px 0 rgba(120,70,0,0.55),
+      0 3px 6px rgba(0,0,0,0.22);
+    box-shadow:
+      0 5px 0 rgba(130,75,0,0.55),
+      0 8px 14px rgba(0,0,0,0.28);
+  }
+
+  #backBtn:hover,
+  #bottomBackBtn:hover{
+    background:linear-gradient(to bottom, var(--back-hover-top), var(--back-hover-bottom));
+    transform:translateY(-1px);
+  }
+
+  #backBtn:active,
+  #bottomBackBtn:active{
+    transform:translateY(2px);
+    box-shadow:
+      0 2px 0 rgba(130,75,0,0.55),
+      0 4px 9px rgba(0,0,0,0.24);
+  }
+
+  #buttons{
+    width:100%;
+    max-width:1100px;
+    margin:0 auto;
+  }
+
+  button{
+    display:block;
+    width:100%;
+    min-height:88px;
+    margin:10px 0;
+    padding:22px 16px;
+    line-height:1.22;
+    border-radius:14px;
+    border:2px solid var(--button-border);
+    cursor:pointer;
+    color:var(--button-text);
+    font-weight:900;
+    background:linear-gradient(to bottom, var(--button-top), var(--button-bottom));
+    box-shadow:
+      0 4px 0 rgba(10,70,86,0.28),
+      0 7px 12px rgba(0,0,0,0.25);
+    transition:0.15s;
+    text-align:center;
+    white-space:normal;
+    word-break:keep-all;
+    overflow-wrap:break-word;
+  }
+
+  .buttonTitle{
+    display:block;
+    font-size:clamp(32px, 8vw, 52px);
+    line-height:1.18;
+    font-weight:900;
+  }
+
+  .buttonSub{
+    display:block;
+    margin-top:8px;
+    font-size:clamp(18px, 4.4vw, 30px);
+    line-height:1.35;
+    font-weight:700;
+    opacity:0.92;
+  }
+
+  button.hasSub{
+    padding-top:20px;
+    padding-bottom:20px;
+  }
+
+  button.hasSub .buttonTitle{
+    font-size:clamp(30px, 7.2vw, 48px);
+  }
+
+  button:hover{
+    background:linear-gradient(to bottom,#ffffff,#c8eef0);
+    transform:translateY(-1px);
+  }
+
+  button:active{
+    transform:translateY(2px);
+    box-shadow:
+      0 2px 0 rgba(10,70,86,0.28),
+      0 3px 8px rgba(0,0,0,0.22);
+  }
+
+  #boxWrap{
+    display:none;
+    margin:20px auto 0;
+    width:100%;
+    max-width:1100px;
+  }
+
+  #box{
+    padding:30px;
+    min-height:260px;
+    background:var(--box-bg);
+    border-radius:14px;
+    white-space:pre-wrap;
+    text-align:left;
+    line-height:1.75;
+    font-size:clamp(30px, 6.5vw, 46px);
+    font-weight:500;
+    pointer-events:auto;
+    box-shadow:
+      0 4px 0 rgba(10,70,86,0.18),
+      0 7px 14px rgba(0,0,0,0.18);
+  }
+
+  #box a{
+    color:var(--link);
+    text-decoration:underline;
+    cursor:pointer;
+    pointer-events:auto;
+    word-break:break-all;
+    font-size:inherit;
+  }
+
+  #loading{
+    color:#fff;
+    font-size:22px;
+    font-weight:700;
+    opacity:0.9;
+    padding:40px 12px;
+  }
+
+  @media (max-width: 480px){
+    body{
+      padding:8px;
+    }
+
+    h2{
+      font-size:34px;
+      margin:2px auto 12px;
+      line-height:1.1;
+    }
+
+    #topActions{
+      margin:6px auto 8px;
+    }
+
+    button{
+      min-height:70px;
+      padding:18px 12px;
+      margin:8px 0;
+      border-radius:10px;
+    }
+
+    .buttonTitle{
+      font-size:30px;
+    }
+
+    .buttonSub{
+      font-size:20px;
+      line-height:1.35;
+      margin-top:6px;
+    }
+
+    button.hasSub .buttonTitle{
+      font-size:29px;
+    }
+
+    #backBtn,
+    #bottomBackBtn{
+      min-height:86px;
+      font-size:31px;
+      padding:20px 14px;
+      border-radius:14px;
+      margin:10px 0 16px;
+      border-width:3px;
+    }
+
+    #box{
+      padding:22px;
+      font-size:30px;
+      line-height:1.7;
+      border-radius:12px;
+    }
+  }
+</style>
+</head>
+<body>
+
+<h2 id="title">よみこみ中…</h2>
+
+<div id="loading">よみこみ中…</div>
+
+<div id="topActions">
+  <button id="backBtn">← 前へ戻る（返回上一頁）</button>
+</div>
+
+<div id="buttons"></div>
+
+<div id="boxWrap">
+  <div id="box"></div>
+</div>
+
+<div id="bottomActions">
+  <button id="bottomBackBtn">← 前へ戻る（返回上一頁）</button>
+</div>
+
+<script>
+// Googleの本体(script.google.com/.../exec)には画面を直接開かせない。
+// <script src>でデータだけをJSONP取得する（サブリソース扱いのため、
+// Google側の「未確認アプリです」という警告画面が出ない）。
+var EXEC = "https://script.google.com/macros/s/AKfycbz6BLbUnhOywMkM81omaj5O5JQ7srn0Rejbb_25u4sS6vLuZSG5MoNU4Ay-LMBWshND/exec";
+
+var titleEl = document.getElementById('title');
+var loadingEl = document.getElementById('loading');
+var buttons = document.getElementById('buttons');
+var backBtn = document.getElementById('backBtn');
+var bottomActions = document.getElementById('bottomActions');
+var bottomBackBtn = document.getElementById('bottomBackBtn');
+var boxWrap = document.getElementById('boxWrap');
+var box = document.getElementById('box');
+
+var ROWS = [];
+var curPath = [];
+
+function escapeHtml(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
+}
+
+function parseButtonLabel(label){
+  var raw = String(label || '').trim();
+
+  if (raw.indexOf('||') >= 0) {
+    var parts = raw.split('||');
+    return {
+      title: String(parts[0] || '').trim(),
+      sub: parts.slice(1).join('||').trim()
+    };
+  }
+
+  var lines = raw.split(/\r?\n/).map(function(v){ return String(v || '').trim(); }).filter(function(v){ return v !== ''; });
+
+  if (lines.length >= 2) {
+    return {
+      title: lines[0],
+      sub: lines.slice(1).join(' ')
+    };
+  }
+
+  return {
+    title: raw,
+    sub: ''
+  };
+}
+
+function setButtonContent(button, label){
+  var parsed = parseButtonLabel(label);
+
+  button.innerHTML = '';
+
+  var titleSpan = document.createElement('span');
+  titleSpan.className = 'buttonTitle';
+  titleSpan.textContent = parsed.title || String(label || '');
+
+  button.appendChild(titleSpan);
+
+  if (parsed.sub) {
+    button.classList.add('hasSub');
+
+    var subSpan = document.createElement('span');
+    subSpan.className = 'buttonSub';
+    subSpan.textContent = parsed.sub;
+
+    button.appendChild(subSpan);
+  } else {
+    button.classList.remove('hasSub');
+  }
+}
+
+function getPreviousNonEmptyLine(lines, currentIndex){
+  for (var i = currentIndex - 1; i >= 0; i--){
+    var v = String(lines[i] || '').trim();
+    if (v !== '') return v;
+  }
+  return '';
+}
+
+function linkifyLine(originalLine, urlLabel){
+  var line = String(originalLine || '');
+  var urlRegex = /(https?:\/\/[^\s<]+)/g;
+
+  var html = '';
+  var lastIndex = 0;
+  var match;
+
+  while ((match = urlRegex.exec(line)) !== null) {
+    var url = match[0];
+
+    html += escapeHtml(line.slice(lastIndex, match.index));
+
+    var safeUrl = escapeHtml(url);
+    var safeLabel = escapeHtml(urlLabel || '');
+
+    html += '<a href="' + safeUrl + '" target="_blank" rel="noopener noreferrer">' + safeUrl + '</a>';
+
+    lastIndex = match.index + url.length;
+  }
+
+  html += escapeHtml(line.slice(lastIndex));
+
+  return html;
+}
+
+function linkify(text){
+  var lines = String(text == null ? '' : text).split(/\r?\n/);
+
+  return lines.map(function(line, idx){
+    var urlLabel = getPreviousNonEmptyLine(lines, idx);
+    return linkifyLine(line, urlLabel);
+  }).join("<br>");
+}
+
+function setBox(text){
+  box.innerHTML = linkify(text || "");
+}
+
+function showBox(){
+  boxWrap.style.display = 'block';
+}
+
+function hideBox(){
+  boxWrap.style.display = 'none';
+  box.innerHTML = '';
+}
+
+function hideBottomBack(){
+  bottomActions.style.display = 'none';
+  bottomBackBtn.style.display = 'none';
+}
+
+function showBottomBack(){
+  bottomActions.style.display = 'block';
+  bottomBackBtn.style.display = 'block';
+}
+
+function startsWithPath(rowPath, prefix){
+  if (prefix.length > rowPath.length) return false;
+
+  for (var i = 0; i < prefix.length; i++){
+    if (rowPath[i] !== prefix[i]) return false;
+  }
+
+  return true;
+}
+
+function candidates(){
+  return ROWS.filter(function(r){ return startsWithPath(r.path, curPath); });
+}
+
+function nextOptions(){
+  var cand = candidates();
+  var depth = curPath.length;
+  var seen = {};
+  var out = [];
+
+  for (var i = 0; i < cand.length; i++){
+    var r = cand[i];
+    if (r.path.length > depth){
+      var v = r.path[depth];
+
+      if (v && !seen[v]) {
+        seen[v] = true;
+        out.push(v);
+      }
+    }
+  }
+
+  return out;
+}
+
+function leafRow(){
+  for (var i = 0; i < ROWS.length; i++){
+    var r = ROWS[i];
+    if (r.path.length !== curPath.length) continue;
+    if (startsWithPath(r.path, curPath)) return r;
+  }
+
+  return null;
+}
+
+function render(){
+  buttons.innerHTML = '';
+
+  var isTop = curPath.length === 0;
+
+  backBtn.style.display = isTop ? 'none' : 'block';
+
+  if (isTop) {
+    hideBottomBack();
+  } else {
+    showBottomBack();
+  }
+
+  var leaf = leafRow();
+
+  if (leaf){
+    showBox();
+    setBox(leaf.body);
+    return;
+  }
+
+  hideBox();
+
+  var opts = nextOptions();
+
+  if (opts.length === 0){
+    showBox();
+    setBox("表示できる内容がありません。しばらくしてからもう一度お試しください。");
+    return;
+  }
+
+  for (var i = 0; i < opts.length; i++){
+    (function(val){
+      var b = document.createElement('button');
+
+      setButtonContent(b, val);
+
+      b.onclick = function(){
+        curPath.push(val);
+        render();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      };
+
+      buttons.appendChild(b);
+    })(opts[i]);
+  }
+}
+
+function goBack(){
+  if (curPath.length > 0) curPath.pop();
+
+  render();
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+backBtn.onclick = goBack;
+bottomBackBtn.onclick = goBack;
+
+window.__ttPriceData = function(payload){
+  loadingEl.style.display = 'none';
+
+  var data = payload || {};
+  ROWS = data.rows || [];
+  titleEl.textContent = data.appName || 'TaiwanTomato料金表';
+
+  if (ROWS.length === 0) {
+    showBox();
+    setBox("表示できる内容がありません。しばらくしてからもう一度お試しください。");
+    return;
+  }
+
+  render();
+};
+
+(function(){
+  var s = document.createElement('script');
+  s.src = EXEC + '?action=data&callback=__ttPriceData&cb=' + Date.now();
+  s.onerror = function(){
+    loadingEl.textContent = '読み込みに失敗しました。時間をおいて開き直してください。';
+  };
+  document.head.appendChild(s);
+})();
+</script>
+
+</body>
+</html>
