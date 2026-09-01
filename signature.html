@@ -873,7 +873,10 @@ var PAYLINK = {
      ★中身は1文字も変えずにそのまま貼ること。 */
   jkopay:"http://www.jkos.com/index.html?j=S%2339adaea5-337b-11ed-bdc1-f8f21e0d1b98%3AP%23"
 };
-var BANK = { bank:"", branch:"", number:"", holder:"" };
+/* ★お振込み先（2026-09-02 まるちゃんから）。台湾の振込は「銀行の番号＋口座番号」だけで足りるので、
+   日本のような支店名は入れない。名義（口座の持ち主の名前）は分かり次第 holder に入れる＝
+   空のままなら、その行は画面に出ない。 */
+var BANK = { bank:"中國信託銀行", code:"822", number:"347540289303", holder:"" };
 
 var PAYWAYS = [
   { key:"linepay", name:"LINE Pay" },
@@ -1583,9 +1586,9 @@ function choosePay(key){
 
   if (key === 'bank'){
     h += '<div class="bankbox">' + (BANK.bank
-        ? ('<div>' + BANK.bank + '　' + BANK.branch + '</div>'
+        ? ('<div>' + BANK.bank + (BANK.code ? '（銀行代號 ' + BANK.code + '）' : '') + '</div>'
          + '<div>口座番号　' + BANK.number + '</div>'
-         + '<div>お名前　' + BANK.holder + '</div>')
+         + (BANK.holder ? '<div>お名前　' + BANK.holder + '</div>' : ''))
         : '<div class="todoline">お振込み先のご案内をここに入れます</div>') + '</div>';
     h += '<div class="paysteps">'
        + '① 上の口座へ <b>' + num + '</b> をお振込みください<br>'
