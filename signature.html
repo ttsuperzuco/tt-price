@@ -707,7 +707,11 @@ body.dark .buy .s{letter-spacing:.02em;font-size:11.5px;opacity:.7}
 body.dark .buy.line.start{
   background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
   border:1px solid rgba(255,246,228,.5);
-  color:#0f333d;font-weight:700;font-size:15.5px;letter-spacing:.2em;
+  color:#0f333d;font-weight:700;letter-spacing:.12em;
+  /* 画面の幅に合わせて文字の大きさが変わる＝せまいスマホでも1行に収まる
+     （途中で折り返して「購入す／る」と切れるのを防ぐ） */
+  font-size:clamp(13px, 3.9vw, 16px);
+  word-break:keep-all;overflow-wrap:normal;
   border-radius:2px;padding:21px 18px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
 }
