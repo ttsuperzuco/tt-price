@@ -702,6 +702,20 @@ body.dark .buy.net{
   box-shadow:none;border-radius:2px;font-weight:500;letter-spacing:.16em;font-size:15px;
 }
 body.dark .buy .s{letter-spacing:.02em;font-size:11.5px;opacity:.7}
+/* ★「◯◯を購入する」＝この画面で一番押してほしい所。他のボタンは細い線のままにして、
+   ここだけ金の面で塗る＝押せると一目で分かる。角は立てたまま・文字を広げて高級感は保つ。 */
+body.dark .buy.line.start{
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);
+  color:#0f333d;font-weight:700;font-size:15.5px;letter-spacing:.2em;
+  border-radius:2px;padding:21px 18px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
+}
+body.dark .buy.line.start:active{
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
+  transform:translateY(1px);
+}
 body.dark .pays .ttl{color:#c9ab73}
 body.dark .pays .pay{
   background:none;border:1px solid rgba(201,171,115,.4);border-radius:2px;
@@ -983,7 +997,7 @@ var DATA = {
         nm:"ホホバエッセンス No.31", nm_zh:"荷荷芭精華 No.31",
         sub:"50ml",
         one:"TaiwanTomato のオリジナル。ホホバの美容エッセンス。",
-        now:1090, was:1500,
+        now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
         lb_now:"当店LINE会員価格", lb_was:"通常価格",
         tags:[],
         body:"米国アリゾナ産100%ピュアゴールデンホホバ\nUSDA（米国農務省）オーガニック認証" }
@@ -1537,7 +1551,7 @@ function openItem(cat, id){
   /* 商品を開き直すたびに、画面1（商品の説明）に戻す */
   curItem = it;
   document.getElementById('buyStart').innerHTML =
-    it.nm + ' を購入する<span class="s">お受け取り方法をお選びいただけます</span>';
+    it.nm + ' を購入する';
   setStep(0);
 
   /* ★蝦皮の商品ページは、まるちゃんに教わってから入れます */
