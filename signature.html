@@ -865,10 +865,13 @@ var QR = { linepay:"", jkopay:"" };
    ★中身は1文字も変えずにそのまま貼ること。空にすると、その方法はQRの絵だけになる。 */
 var PAYLINK = {
   linepay:"https://qrcodepay.line.me/qr/payment/pi59Sao8KC9RcjomD8KnWcm5qtU%252F93vBeU9cHiojh813%252B7QGuWB6AGmM1NSOLqFB",
-  /* 街口はQRの中身が TWQRP:// で始まる形（台湾共通のQRの決まり）。
-     まるちゃんが読み取った文字は記号が %3a などに置き換わった書き方だったので、
-     押せるように元の文字へ戻してある（＋はお店の名前の区切りなのでそのまま残す）。 */
-  jkopay:"TWQRP://TAIWAN+TOMATO/158/01/V1?D3=Acab/DIGBjZF&D10=901&D11=00,396396C0E03367025600000001;01,396396C0E03367025600000001"
+  /* ★街口は「収款コードが2つある」のが肝（2026-09-02）。
+     ・共通のQR（中身が TWQRP:// で始まる物）＝カメラで読み取る専用。押しても何も起きない（実機で確認済み）
+     ・街口だけのQR（中身が http://www.jkos.com/index.html?j=S%23…%3AP%23）＝ふつうの住所なので押せる ←こちら
+     押すと街口の受け渡しページへ回され、そこから街口のアプリが開く作り
+     （お店の番号を取り出して「お客様が金額を入れて払う」画面を出す）。LINE Payと同じ形。
+     ★中身は1文字も変えずにそのまま貼ること。 */
+  jkopay:"http://www.jkos.com/index.html?j=S%2339adaea5-337b-11ed-bdc1-f8f21e0d1b98%3AP%23"
 };
 var BANK = { bank:"", branch:"", number:"", holder:"" };
 
