@@ -45,6 +45,15 @@ body{
 }
 .serif{font-family:"Hiragino Mincho ProN","Noto Serif JP","Yu Mincho",serif}
 
+/* ★大きさを合わせ終えるまで、字は場所を取ったまま隠しておく。
+   （合わせる前に見せると、大きい字が一瞬出てから縮む動きがお客様に見える） */
+body:not(.ready) .cap,
+body:not(.ready) .intro .ln,
+body:not(.ready) .title,
+body:not(.ready) .gcard .in,
+body:not(.ready) .buy .t,
+body:not(.ready) .buy .s{visibility:hidden}
+
 /* 最初の画面は、写真とボタンまでがスマホの1画面にきっちり収まるようにする */
 .wrap{
   max-width:760px;margin:0 auto;padding:0 18px;
@@ -1262,6 +1271,23 @@ function fitAll(){ fitCaps(); fitIntro(); fitCards(); fitTitle(); fitBuys(); ali
 
 applyHero();
 fitAll();
+
+/* ★字は「大きさを合わせ終えてから」出す（2026-09-02 まるちゃん指摘）。
+   合わせる前に見せると、大きい字が一瞬出てからスッと縮む動きがお客様に見えてしまう。
+   字の形が届くまでは幅が変わるので、届いてから1回合わせて、それから出す。
+   （場所は取ったまま隠すので、隠れている間もちゃんと測れる） */
+function showText(){
+  if (document.body.classList.contains('ready')) return;
+  fitAll();
+  document.body.classList.add('ready');
+}
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(function(){ showText(); });
+  setTimeout(showText, 1800);   /* 字の形が届かない時の保険 */
+} else {
+  setTimeout(showText, 300);
+}
+
 window.addEventListener('resize', function(){ applyHero(); fitAll(); });
 window.addEventListener('orientationchange', fitAll);
 window.addEventListener('load', fitAll);
