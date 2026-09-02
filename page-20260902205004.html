@@ -4,9 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -865,13 +871,43 @@ body.dark .qsum .qv{
 }
 body.dark #stepQty .buy{padding:26px 18px}
 body.dark #stepQty .buy .t{font-size:21px;letter-spacing:.14em}
+
+/* ── お支払い方法の3つ＝金色の大きな縦長ボタン（2026-09-02 まるちゃん） ── */
+body.dark .pays .row{
+  display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px;
+}
 body.dark .pays .pay{
-  background:none;border:1px solid rgba(201,171,115,.4);border-radius:2px;
-  color:#cfc0a4;font-weight:500;letter-spacing:.1em;
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);border-radius:2px;
+  color:#0f333d;font-weight:700;font-size:20px;letter-spacing:.14em;
+  padding:26px 18px;width:100%;cursor:pointer;font-family:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
 }
+body.dark .pays .pay:active,
 body.dark .pays .pay.on{
-  background:rgba(201,171,115,.16);border-color:#c9ab73;color:#f3e7cf;
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
 }
+
+/* ── ご注文内容のご確認（2026-09-02 まるちゃん） ───────────── */
+body.dark .orderbox{
+  border:1px solid rgba(201,171,115,.35);border-radius:2px;
+  padding:18px 16px;margin:4px 0 0;color:#e6dccd;
+}
+body.dark .orderbox .row2{
+  display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:15px;
+}
+body.dark .orderbox .row2+.row2{border-top:1px solid rgba(201,171,115,.18)}
+body.dark .orderbox .k{color:#c9ab73;white-space:nowrap;letter-spacing:.06em}
+body.dark .orderbox .v{text-align:right;min-width:0}
+body.dark .orderbox .row2.sum .v{
+  font-family:"EB Garamond",serif;font-size:26px;color:#f0e6d6;line-height:1.1;
+}
+body.dark #stepConfirm .paysteps{margin-top:18px;text-align:left}
+body.dark #stepConfirm .buy{padding:26px 18px}
+body.dark #stepConfirm .buy .t{font-size:21px;letter-spacing:.14em}
+/* お支払い方法の3つの見た目は、上の「金色の大きな縦長ボタン」の所に書いてある
+   （2026-09-02 まるちゃん。ここに細い線の古い書き方があると、そちらが勝ってしまうので消した） */
 body.dark .payamt{color:#e8d3a6}
 body.dark .paysteps{color:#c8bdae}
 body.dark .paysteps b{color:#e8d3a6}
@@ -886,19 +922,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1031,7 +1054,14 @@ html,body{background:#000}
     <div class="pays" id="payPane" style="display:none">
       <div class="ttl">お支払い方法をお選びください</div>
       <div class="row" id="payRow"></div>
-      <div id="payBody"></div>
+    </div>
+
+    <!-- ═ 画面5＝ご注文内容の確認（2026-09-02 まるちゃん） ═ -->
+    <div id="stepConfirm" style="display:none">
+      <div class="stepttl">ご注文内容のご確認</div>
+      <div class="orderbox" id="orderBox"></div>
+      <div class="paysteps" id="confirmNote"></div>
+      <div class="buys" id="confirmBtn"></div>
     </div>
   </div>
 </div>
@@ -1934,52 +1964,45 @@ function orderLink(payName, payKey){
   return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
 }
 
+/* お支払い方法を押したら、ご注文内容のご確認の画面へ進む（2026-09-02 まるちゃん） */
+var curPay = null;
 function choosePay(key){
   var btns = document.querySelectorAll('#payRow .pay');
   for (var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-pay')===key);
+  curPay = key;
+  setStep(4);
+}
 
+/* ご注文内容のご確認の中身を組み立てる */
+function drawConfirm(){
+  var key = curPay;
   var way = PAYWAYS.filter(function(p){ return p.key===key; })[0];
   if (!way || !curItem) return;
-  var num   = curItem.now!=null ? (curItem.now * qty).toLocaleString('ja-JP') : '金額';
-  var h = '<div class="paybox">';
+  var amt = curItem.now!=null ? yen(curItem.now * qty) : 'お値段は追ってご案内します';
 
-  /* ★2026-09-02 まるちゃん決定＝注文とお支払いを1回でまとめる。
-     押すとご自身のLINEが開き、注文の文の中にお支払いのご案内も入っている。
-     送ったあと、その文のリンクをそのまま押して払えるので、この画面に戻る必要がない。 */
-  if (key === 'bank'){
-    h += '<div class="paysteps">'
-       + '① 下の「注文して支払う」を押してください<br>'
-       + '② ご自身のLINEが開くので、そのまま送ってください<br>'
-       + '③ 送った文にあるお振込み先へ <b>' + num + '</b> をお振込みください</div>';
-    if (!BANK.bank){
-      h += '<div class="bankbox"><div class="todoline">お振込み先のご案内をここに入れます</div></div>';
-    }
-  } else {
-    h += '<div class="paysteps">'
-       + '① 下の「注文して支払う」を押してください<br>'
-       + '② ご自身のLINEが開くので、そのまま送ってください<br>'
-       + '③ 送った文のリンクを押し、金額に <b>' + num + '</b> と入れてお支払いください</div>';
-    if (!PAYLINK[key]){
-      var src = QR[key] || '';
-      h += (src.indexOf('data:') === 0)
-         ? '<img class="payqr" src="' + src + '" alt="">'
-         : '<div class="qrtodo">' + way.name + 'のQRコードを<br>ここに入れます</div>';
-    }
-  }
+  document.getElementById('orderBox').innerHTML =
+      '<div class="row2"><span class="k">商品</span><span class="v">' + curItem.nm + '</span></div>'
+    + '<div class="row2"><span class="k">本数</span><span class="v">' + qty + '本</span></div>'
+    + '<div class="row2"><span class="k">お支払い</span><span class="v">' + way.name + '</span></div>'
+    + '<div class="row2"><span class="k">受け取り</span><span class="v">お店で受け取り</span></div>'
+    + '<div class="row2 sum"><span class="k">お支払い金額</span><span class="v">' + amt + '</span></div>';
+
+  document.getElementById('confirmNote').innerHTML =
+      '下の「この内容で注文する」を押すと、<b>当店のLINE</b>が開きます。<br>'
+    + 'ご注文の文が入っていますので、<b>そのまま送信ボタンを押してください</b>。<br>'
+    + '送っていただくと、お支払いのご案内が届きます。';
 
   var href = orderLink(way.name, key);
-  h += href
+  document.getElementById('confirmBtn').innerHTML = href
      ? '<a class="buy line order" href="' + href + '" target="_blank" rel="noopener"'
        + ' onclick="this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 押した瞬間の日時を入れ直す */
-       + '<span class="t">注文して支払う</span>'
-       + '<span class="s">ご自身のLINEが開きます。そのまま送るだけです</span></a>'
+       + '<span class="t">この内容で注文する</span></a>'
      : '<a class="buy line order" href="#" onclick="return false">'
-       + '<span class="t">注文して支払う</span>'
+       + '<span class="t">この内容で注文する</span>'
        + '<span class="s">お店のLINEの宛先を入れると押せるようになります</span></a>';
-  h += '</div>';
-  document.getElementById('payBody').innerHTML = h;
   fitBuys();
 }
+
 
 /* ───── 画面1（商品）→ 画面2（受け取り方）→ 画面3（お支払い）と進む ─────
    押すたびに画面がまるごと入れ替わる。「← 前に戻る」で1つずつ戻れる。 */
@@ -1995,10 +2018,8 @@ function drawQty(){
   var t = document.getElementById('qTotal');
   if (t && curItem) t.textContent =
     curItem.now!=null ? yen(curItem.now * qty) : 'お値段は追ってご案内します';
-  /* 上の見出しの金額も、選んだ本数の合計にそろえる */
-  var sp = document.getElementById('stepPrice');
-  if (sp && curItem) sp.textContent =
-    curItem.now!=null ? yen(curItem.now * qty) : 'お値段は追ってご案内します';
+  /* ★上の見出しの金額は「1本のお値段」で固定（本数で変えない・2026-09-02 まるちゃん）。
+     合計は下の「お支払い金額」だけに出す。 */
 }
 
 function setStep(n){
@@ -2009,9 +2030,13 @@ function setStep(n){
   document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
   document.getElementById('stepQty').style.display  = (n===2) ? 'block' : 'none';
   document.getElementById('payPane').style.display  = (n===3) ? 'block' : 'none';
+  document.getElementById('stepConfirm').style.display = (n===4) ? 'block' : 'none';
 
   if (n>0 && curItem){
     document.getElementById('stepName').textContent  = curItem.nm;
+    /* 上の見出しは「1本のお値段」（本数で変わらない） */
+    document.getElementById('stepPrice').textContent =
+      curItem.now!=null ? yen(curItem.now) : 'お値段は追ってご案内します';
     drawQty();
     /* 左の小さな写真（商品の写真と同じ1枚） */
     var sp = document.getElementById('stepPic');
@@ -2027,8 +2052,8 @@ function setStep(n){
     for (var i=0;i<btns.length;i++){
       btns[i].onclick = (function(k){ return function(){ choosePay(k); }; })(btns[i].getAttribute('data-pay'));
     }
-    document.getElementById('payBody').innerHTML = '';
   }
+  if (n===4) drawConfirm();   /* ご注文内容のご確認 */
   fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
   fitItem();   /* 商品の画面は、写真の高さを残りの場所に合わせる */
   window.scrollTo({top:0, behavior:'smooth'});
