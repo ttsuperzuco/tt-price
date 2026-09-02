@@ -886,6 +886,52 @@ body.dark .pays .pay.on{
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
 }
 
+/* ── カートの印（右上）と、カートの中身の画面（2026-09-02 まるちゃん） ── */
+.cartbtn{
+  position:fixed;top:14px;right:14px;z-index:60;
+  width:52px;height:52px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);color:#0f333d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 20px rgba(0,0,0,.35);
+}
+.cartbtn:active{background:linear-gradient(180deg,#cdad74,#a5814a)}
+/* カートの印が出ている間は、「前へ戻る」を少し短くして重ならないようにする */
+body.cartshow .back{margin-right:62px}
+.cartbtn .cnt{
+  position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;
+  background:#123f4b;color:#f0e6d6;border:1px solid rgba(232,211,166,.75);
+  font-family:"EB Garamond",serif;font-size:13px;line-height:20px;text-align:center;padding:0 5px;
+}
+body.dark .cartlist{margin:2px 0 0}
+body.dark .cartrow{
+  display:flex;align-items:center;gap:12px;padding:16px 2px;
+  border-bottom:1px solid rgba(201,171,115,.22);
+}
+body.dark .cartrow .nm{
+  flex:1;min-width:0;color:#f5efe5;
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;font-size:15px;line-height:1.5;
+}
+body.dark .cartrow .pr{
+  color:#e8d3a6;font-family:"EB Garamond",serif;font-size:18px;white-space:nowrap;
+}
+body.dark .cartrow .qb{
+  display:flex;align-items:center;gap:8px;
+}
+body.dark .cartrow .qb button{
+  width:38px;height:38px;border-radius:2px;cursor:pointer;font-family:inherit;
+  background:none;border:1px solid rgba(201,171,115,.55);color:#e8d3a6;font-size:18px;line-height:1;
+}
+body.dark .cartrow .qb .n{
+  min-width:34px;text-align:center;color:#f5efe5;
+  font-family:"EB Garamond",serif;font-size:22px;
+}
+body.dark .cartempty{
+  text-align:center;color:#c8bdae;padding:26px 0;font-size:15px;
+}
+body.dark #viewCart .buy{padding:24px 18px}
+body.dark #viewCart .buy .t{font-size:19px;letter-spacing:.12em}
+
 /* ── ご注文内容のご確認（2026-09-02 まるちゃん） ───────────── */
 body.dark .orderbox{
   border:1px solid rgba(201,171,115,.35);border-radius:2px;
@@ -936,6 +982,18 @@ html,body{background:#000}
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
   <button class="back" id="backTop">← 前へ戻る</button>
+
+  <!-- カートの印（中身がある時だけ右上に出る・押すと中身を見られる） -->
+  <button class="cartbtn" id="cartBtn" type="button" style="display:none" aria-label="カートを見る">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="M2 3h3l2.6 11.2a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H6"
+            fill="none" stroke="currentColor" stroke-width="1.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+    </svg>
+    <span class="cnt" id="cartCnt">0</span>
+  </button>
 
   <!-- ══ ホーム ══ -->
   <div id="viewHome">
@@ -997,6 +1055,17 @@ html,body{background:#000}
     </div>
     </div>
 
+  </div>
+
+  <!-- ══ カートの中身（2026-09-02 まるちゃん） ══ -->
+  <div id="viewCart" style="display:none">
+    <div class="sechead"><h2>カートの中身</h2></div>
+    <div class="cartlist" id="cartList"></div>
+    <div class="qsum" id="cartSum" style="display:none">
+      <div class="ql">お支払い金額</div>
+      <div class="qv" id="cartTotal"></div>
+    </div>
+    <div class="buys" id="cartBtns"></div>
   </div>
 
   <!-- ══ 一覧 ══ -->
@@ -1807,17 +1876,22 @@ startShow(true);
 var vHome = document.getElementById('viewHome');
 var vList = document.getElementById('viewList');
 var vItem = document.getElementById('viewItem');
+var vCart = document.getElementById('viewCart');
 var back  = document.getElementById('backTop');
 var curCat = null;
+var curView = 'home';
 
 function show(which){
   vHome.style.display = which==='home' ? 'flex':'none';   /* flexで縦に伸ばす（blockだと下に空白が残る） */
   vList.style.display = which==='list' ? 'block':'none';
   /* 詳しい画面は flex＝「購入する」までが1画面に収まるよう、写真が余った高さを吸い上げる */
   vItem.style.display = which==='item' ? 'flex':'none';
+  vCart.style.display = which==='cart' ? 'block':'none';
   back.classList.toggle('show', which!=='home');
   /* 一覧と詳しい画面は、上の映像の続きに見えるよう暗い世界にする */
   document.body.classList.toggle('dark', which!=='home');
+  curView = which;
+  drawCartBtn();
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
@@ -1922,6 +1996,7 @@ function openItem(cat, id){
   /* 商品を開き直すたびに、画面1（商品の説明）に戻す。
      本数は、すでにカートに入っている商品ならその本数、初めてなら1本 */
   curItem = it;
+  curCat  = cat;   /* 「買い物を続ける」で、この並びの一覧へ戻れるように覚えておく */
   var ci = cartFind(it.id);
   qty = (ci >= 0) ? cart[ci].qty : 1;
   document.getElementById('buyStart').innerHTML =
@@ -2052,6 +2127,77 @@ function cartTotal(){
 function cartPieces(){
   var n = 0; cart.forEach(function(l){ n += l.qty; }); return n;
 }
+/* 商品の番号から、その商品と並び（オリジナル／セレクト）を探す */
+function findItem(id){
+  var hit = null;
+  ['original','select'].forEach(function(cat){
+    (DATA[cat] && DATA[cat].items || []).forEach(function(it){
+      if (it.id === id) hit = { cat:cat, it:it };
+    });
+  });
+  return hit;
+}
+/* 右上のカートの印を出し入れする */
+function drawCartBtn(){
+  var b = document.getElementById('cartBtn');
+  if (!b) return;
+  var n = cartPieces();
+  document.getElementById('cartCnt').textContent = n;
+  var onHome = !document.body.classList.contains('dark');
+  var showIt = (n > 0 && !onHome);
+  b.style.display = showIt ? 'flex' : 'none';
+  document.body.classList.toggle('cartshow', showIt);
+}
+/* カートの中身の画面を組み立てる */
+function drawCart(){
+  var box = document.getElementById('cartList');
+  if (!cart.length){
+    box.innerHTML = '<div class="cartempty">カートは空です</div>';
+    document.getElementById('cartSum').style.display = 'none';
+    document.getElementById('cartBtns').innerHTML =
+      '<button class="buy line" type="button" onclick="openList(curCat||\'original\')">'
+      + '<span class="t">買い物を続ける</span></button>';
+    fitBuys();
+    return;
+  }
+  var h = '';
+  cart.forEach(function(l, i){
+    h += '<div class="cartrow">'
+       +   '<div class="nm">' + l.nm + '</div>'
+       +   '<div class="qb">'
+       +     '<button type="button" onclick="cartStep(' + i + ',-1)">−</button>'
+       +     '<span class="n">' + l.qty + '</span>'
+       +     '<button type="button" onclick="cartStep(' + i + ',1)">＋</button>'
+       +   '</div>'
+       +   '<div class="pr">' + (l.price!=null ? yen(l.price * l.qty) : '') + '</div>'
+       + '</div>';
+  });
+  box.innerHTML = h;
+  document.getElementById('cartSum').style.display = '';
+  document.getElementById('cartTotal').textContent =
+    cartTotal()!=null ? yen(cartTotal()) : 'お値段は追ってご案内します';
+  document.getElementById('cartBtns').innerHTML =
+      '<button class="buy line" type="button" onclick="openList(curCat||\'original\')">'
+    + '<span class="t">買い物を続ける</span></button>'
+    + '<button class="buy line" type="button" onclick="cartToPay()">'
+    + '<span class="t">お支払いへ進む</span></button>';
+  fitBuys();
+}
+/* カートの中で本数を増やす・減らす（0本になったら消す） */
+function cartStep(i, d){
+  if (!cart[i]) return;
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  drawCart(); drawCartBtn();
+}
+/* カートからお支払いへ */
+function cartToPay(){
+  if (!cart.length) return;
+  var f = findItem(cart[0].id);
+  if (f){ curItem = f.it; curCat = f.cat; qty = cart[0].qty; }
+  show('item');
+  setStep(3);
+}
 
 /* 本数の表示と、合計金額を書き直す */
 function drawQty(){
@@ -2110,9 +2256,11 @@ function setStep(n){
 document.getElementById('buyStart').onclick = function(){ setStep(1); };
 document.getElementById('buyShop').onclick  = function(){ setStep(2); };   /* お店で受け取る → 本数 */
 /* カートに入れて、商品の一覧へ戻る（買い物を続ける） */
-document.getElementById('qKeep').onclick    = function(){ cartPut(); openList(curCat); };
+document.getElementById('qKeep').onclick    = function(){ cartPut(); drawCartBtn(); openList(curCat); };
 /* カートに入れて、お支払いへ進む */
-document.getElementById('qNext').onclick    = function(){ cartPut(); setStep(3); };
+document.getElementById('qNext').onclick    = function(){ cartPut(); drawCartBtn(); setStep(3); };
+/* 右上のカートの印を押したら、中身の画面へ */
+document.getElementById('cartBtn').onclick  = function(){ drawCart(); show('cart'); };
 document.getElementById('qMinus').onclick   = function(){ if (qty > 1)  { qty--; drawQty(); } };
 document.getElementById('qPlus').onclick    = function(){ if (qty < 20) { qty++; drawQty(); } };
 
@@ -2121,6 +2269,8 @@ document.querySelectorAll('[data-go]').forEach(function(el){
 });
 
 back.onclick = function(){
+  /* カートの中身からは、元の一覧へ戻る */
+  if (vCart.style.display !== 'none'){ openList(curCat || 'original'); return; }
   /* お支払い→受け取り方→商品→一覧→ホーム、と1つずつ戻る */
   if (vItem.style.display !== 'none'){
     if (payStep > 0) { setStep(payStep - 1); }
