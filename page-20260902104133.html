@@ -1391,7 +1391,7 @@ function fitItem(){
   var wide    = hero.getBoundingClientRect().width;
   var natural = wide * 5 / 4;                      /* 写真の元の形（縦4:5）の高さ */
   var h = Math.min(natural, r);
-  if (h < 110) h = 110;                            /* これ以下には小さくしない */
+  if (h < 96) h = 96;                              /* これ以下には小さくしない */
   hero.style.height = Math.floor(h) + 'px';
 }
 
