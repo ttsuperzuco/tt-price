@@ -743,6 +743,12 @@ body.dark #stepItem .dname{margin-top:16px}
 body.dark #stepItem .dprice{margin-top:14px}
 body.dark #stepItem .dbody{padding-top:14px;margin-top:16px}
 body.dark #stepItem .buys{margin-top:14px;margin-bottom:0}
+/* 画面の縦が短い機種では、文字まわりの間をさらに詰める（fitItem が付け外しする） */
+body.dark #stepItem.tight .dname{margin-top:10px;font-size:clamp(18px,4.6vw,22px)}
+body.dark #stepItem.tight .dsub{margin-top:5px}
+body.dark #stepItem.tight .dprice{margin-top:9px}
+body.dark #stepItem.tight .dbody{padding-top:11px;margin-top:11px;font-size:13px;line-height:1.7}
+body.dark #stepItem.tight .buys{margin-top:11px}
 body.dark .dname{
   font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
   font-weight:400;letter-spacing:.1em;color:#f5efe5;text-align:center;margin-top:24px;
@@ -1373,13 +1379,19 @@ function fitItem(){
   if (!pane || !hero) return;
   if (pane.offsetParent === null) return;          /* 出ていない時は何もしない */
   hero.style.height = '';
-  var paneTop = pane.getBoundingClientRect().top + (window.scrollY || 0);
-  var others  = pane.getBoundingClientRect().height - hero.getBoundingClientRect().height;
-  var room    = window.innerHeight - paneTop - others - 16;   /* 下の余白ぶん */
+  pane.classList.remove('tight');
+  function room(){
+    var paneTop = pane.getBoundingClientRect().top + (window.scrollY || 0);
+    var others  = pane.getBoundingClientRect().height - hero.getBoundingClientRect().height;
+    return window.innerHeight - paneTop - others - 16;   /* 下の余白ぶん */
+  }
+  var r = room();
+  /* 場所が足りない画面では、文字まわりの間をさらに詰めてから写真の高さを決める */
+  if (r < 175){ pane.classList.add('tight'); r = room(); }
   var wide    = hero.getBoundingClientRect().width;
   var natural = wide * 5 / 4;                      /* 写真の元の形（縦4:5）の高さ */
-  var h = Math.min(natural, room);
-  if (h < 130) h = 130;                            /* これ以下には小さくしない */
+  var h = Math.min(natural, r);
+  if (h < 110) h = 110;                            /* これ以下には小さくしない */
   hero.style.height = Math.floor(h) + 'px';
 }
 
