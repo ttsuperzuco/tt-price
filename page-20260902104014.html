@@ -1383,7 +1383,7 @@ function fitItem(){
   function room(){
     var paneTop = pane.getBoundingClientRect().top + (window.scrollY || 0);
     var others  = pane.getBoundingClientRect().height - hero.getBoundingClientRect().height;
-    return window.innerHeight - paneTop - others - 16;   /* 下の余白ぶん */
+    return window.innerHeight - paneTop - others - 22;   /* 下の余白ぶん（少し多めに残す） */
   }
   var r = room();
   /* 場所が足りない画面では、文字まわりの間をさらに詰めてから写真の高さを決める */
