@@ -623,6 +623,9 @@ body.dark .sechead h2::after{
 body.dark .items{
   display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px;
 }
+/* 商品が1つだけの時は、まん中に少し大きめで1枚 */
+body.dark .items.one{grid-template-columns:1fr;justify-items:center}
+body.dark .items.one .item{width:66%;min-width:200px}
 body.dark .item{
   display:flex;flex-direction:column;background:none;border:none;box-shadow:none;padding:0;
   text-align:center;
@@ -1574,6 +1577,9 @@ function openList(cat){
 
   var box = document.getElementById('items');
   box.innerHTML = '';
+  /* 商品が1つだけの時は、半分の場所に1枚だけ置くと右がぽっかり空くので、
+     まん中に少し大きめで置く（2026-09-02） */
+  box.className = 'items' + (d.items.length === 1 ? ' one' : '');
   d.items.forEach(function(it){
     var b = document.createElement('button');
     b.className = 'item';
