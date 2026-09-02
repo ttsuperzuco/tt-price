@@ -726,6 +726,23 @@ body.dark .dhero{
   max-width:66.7%;aspect-ratio:4/5;border-radius:2px;background:#151210;
   color:#6d6255;box-shadow:none;
 }
+/* ★「◯◯を購入する」までが1画面に収まるようにする（2026-09-02 まるちゃん）。
+   写真の枠が余った高さを吸い上げ、画面が短い時は枠が縮む。
+   写真そのものは切り取らず、枠の中にきちんと収める（背景と同じ暗い色なので継ぎ目は見えない）。 */
+#viewItem{flex:1 1 auto;min-height:0;flex-direction:column;padding-bottom:14px}
+body.dark #stepItem{
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+}
+body.dark #stepItem .dhero{
+  flex:1 1 auto;min-height:90px;aspect-ratio:auto;
+  width:66.7%;max-width:66.7%;margin:10px auto 0;padding:0;
+}
+body.dark #stepItem .dhero img{object-fit:contain}
+/* 文字まわりの間を少し詰めて、ボタンまで入りやすくする */
+body.dark #stepItem .dname{margin-top:16px}
+body.dark #stepItem .dprice{margin-top:14px}
+body.dark #stepItem .dbody{padding-top:14px;margin-top:16px}
+body.dark #stepItem .buys{margin-top:14px;margin-bottom:0}
 body.dark .dname{
   font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
   font-weight:400;letter-spacing:.1em;color:#f5efe5;text-align:center;margin-top:24px;
@@ -1601,7 +1618,8 @@ var curCat = null;
 function show(which){
   vHome.style.display = which==='home' ? 'flex':'none';   /* flexで縦に伸ばす（blockだと下に空白が残る） */
   vList.style.display = which==='list' ? 'block':'none';
-  vItem.style.display = which==='item' ? 'block':'none';
+  /* 詳しい画面は flex＝「購入する」までが1画面に収まるよう、写真が余った高さを吸い上げる */
+  vItem.style.display = which==='item' ? 'flex':'none';
   back.classList.toggle('show', which!=='home');
   /* 一覧と詳しい画面は、上の映像の続きに見えるよう暗い世界にする */
   document.body.classList.toggle('dark', which!=='home');
