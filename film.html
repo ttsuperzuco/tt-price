@@ -24,25 +24,19 @@
       max-width:96vw;box-shadow:0 24px 70px rgba(0,0,0,.75);
     }
   }
-  /* 画面いっぱいにするボタン（ひかえめ・動かない） */
-  .full{
-    position:fixed;right:14px;bottom:14px;z-index:5;
-    font-family:"Hiragino Sans","Noto Sans JP",sans-serif;font-size:12px;letter-spacing:.14em;
-    color:#e8d3a6;background:rgba(0,0,0,.42);border:1px solid rgba(201,171,115,.55);
-    border-radius:2px;padding:9px 14px;cursor:pointer;
-  }
-  .full:active{background:rgba(201,171,115,.18)}
+  /* ★画面には文字を一切出さない（2026-09-02 まるちゃん）。
+     パソコンだけ、映像の左右の黒い所を押すと画面いっぱいになる（もう一度押すと戻る）。 */
+  @media (min-width:780px){ .stage{cursor:pointer} }
 </style>
 </head>
 <body>
 <div class="stage" id="stage">
   <div class="phone" id="phone"><iframe id="fr" title="T&amp;T SIGNATURE" allow="autoplay"></iframe></div>
 </div>
-<button class="full" id="full" type="button">画面いっぱい</button>
 <script>
 /* ★中身は毎回いちばん新しい番号のものを読む（スマホに古い画面が残らない） */
 (function(){
-  var here = '20260902130828', done = false;
+  var here = '20260902133131', done = false;
   function go(v){ if (done) return; done = true; document.getElementById('fr').src = 'film-' + v + '.html'; }
   try{
     fetch('filmver.txt?t=' + Date.now(), {cache:'no-store'})
@@ -52,18 +46,18 @@
   }catch(e){ go(here); }
   setTimeout(function(){ go(here); }, 4000);
 
-  /* 画面いっぱい（もう一度押すと戻る） */
-  var st = document.getElementById('stage'), btn = document.getElementById('full');
+  /* 画面いっぱい＝パソコンで、映像の左右の黒い所を押した時だけ（文字は出さない）。
+     映像そのものを押しても何も起きない（見ている最中に切り替わらないように）。 */
+  var st = document.getElementById('stage');
   function isFull(){ return document.fullscreenElement || document.webkitFullscreenElement; }
-  btn.onclick = function(){
+  st.addEventListener('click', function(e){
+    if (e.target !== st) return;                       /* 黒い所を押した時だけ */
+    if (!window.matchMedia('(min-width:780px)').matches) return;   /* スマホでは何もしない */
     try{
       if (isFull()){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
       else { (st.requestFullscreen || st.webkitRequestFullscreen).call(st); }
-    }catch(e){}
-  };
-  function label(){ btn.textContent = isFull() ? 'もとに戻す' : '画面いっぱい'; }
-  document.addEventListener('fullscreenchange', label);
-  document.addEventListener('webkitfullscreenchange', label);
+    }catch(e2){}
+  });
 })();
 </script>
 </body>
