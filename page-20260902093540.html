@@ -1180,6 +1180,22 @@ function fitCaps(){
       }
     });
   });
+
+  /* ★写真4枚（クジラ〜サボテン）の日本語は、全部同じ大きさにそろえる
+     （行の長さで大きさが変わると読みにくい＝2026-09-02 まるちゃん）。
+     いちばん詰まった1枚に合わせる。そうしないと、どれかが画面からはみ出す。
+     ふつうは「そして、３０年にもわたり…」の1枚が一番長いので、その大きさになる。 */
+  var jas = [];
+  for (var i = 0; i < 4 && i < slides.length; i++){
+    var one = slides[i] && slides[i].querySelector('.ja');
+    if (one) jas.push(one);
+  }
+  if (jas.length > 1){
+    var small = Math.min.apply(null, jas.map(function(e){
+      return parseFloat(getComputedStyle(e).fontSize);
+    }));
+    if (small > 0) jas.forEach(function(e){ setFontPx(e, small); });
+  }
 }
 
 /* 冒頭の白い画面の言葉も、はみ出しそうなら同じように詰める */
@@ -1191,6 +1207,17 @@ function fitIntro(){
   var room = (box.clientWidth - 44) * 0.96;
   if (room <= 0) return;
   intro.querySelectorAll('.ln').forEach(function(el){ shrinkToFit(el, room); });
+
+  /* ★はじめの3行（お手持ちの…／最大限に引き出し／あなたのお肌を…）は同じ大きさにそろえる
+     （2026-09-02 まるちゃん）。いちばん詰まった行に合わせる。 */
+  var three = ['.l1', '.l2', '.l2b'].map(function(s){ return intro.querySelector(s); })
+                                    .filter(function(e){ return !!e; });
+  if (three.length > 1){
+    var small = Math.min.apply(null, three.map(function(e){
+      return parseFloat(getComputedStyle(e).fontSize);
+    }));
+    if (small > 0) three.forEach(function(e){ setFontPx(e, small); });
+  }
 }
 
 /* 2つの大きなボタンの文字も、はみ出しそうなら詰めて必ず収める */
