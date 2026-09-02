@@ -617,10 +617,11 @@ body.dark .sechead h2::after{
 }
 
 /* 商品：写真を大きく、文字は下に静かに */
-/* ★一覧は「1行に3枚」の小さな写真で並べる（まるちゃん指示・2026-08-31）
+/* ★一覧は「1行に2枚」＝画面を半分ずつ使う（まるちゃん指示・2026-09-02。
+   2026-08-31の「1行に3枚」は小さすぎたので取り消し）
    写真の下は 商品名・量・金額だけ。その下に「詳細を見る」。写真を押しても詳しい画面へ飛ぶ */
 body.dark .items{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:22px 10px;
+  display:grid;grid-template-columns:repeat(2,1fr);gap:26px 14px;
 }
 body.dark .item{
   display:flex;flex-direction:column;background:none;border:none;box-shadow:none;padding:0;
@@ -634,11 +635,11 @@ body.dark .thumb{
 body.dark .itxt{flex:1;display:flex;flex-direction:column;padding:9px 1px 0}
 body.dark .itxt .nm{
   font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
-  font-size:12.5px;font-weight:400;letter-spacing:.03em;color:#f5efe5;line-height:1.5;
+  font-size:15px;font-weight:400;letter-spacing:.03em;color:#f5efe5;line-height:1.55;
 }
 body.dark .itxt .sub{
   font-family:"EB Garamond",serif;font-style:italic;
-  color:#c9ab73;font-size:10.5px;letter-spacing:.04em;margin-top:2px;
+  color:#c9ab73;font-size:12.5px;letter-spacing:.04em;margin-top:3px;
 }
 /* 「詳細を見る」は一番下にそろえる（名前の長さがちがっても高さが合う） */
 body.dark .detail{margin-top:auto}
@@ -646,15 +647,23 @@ body.dark .detail{margin-top:auto}
 body.dark .price{justify-content:center;margin-top:6px;margin-bottom:9px;gap:5px}
 body.dark .price .now{
   font-family:"EB Garamond",serif;font-weight:500;color:#f0e6d6;
-  font-size:15px;letter-spacing:.03em;
+  font-size:18px;letter-spacing:.03em;
 }
-body.dark .price .was{color:#7d7263;font-size:10.5px}
+body.dark .price .was{color:#7d7263;font-size:12px}
 
-/* 一覧の「詳細を見る」（写真と同じく、押すと詳しい画面へ飛ぶ） */
+/* 一覧の「詳細を見る」（写真と同じく、押すと詳しい画面へ飛ぶ）
+   ★押すボタンなので、購入ボタンと同じ金の面にそろえる（2026-09-02 まるちゃん） */
 .detail{
-  margin-top:9px;border:1px solid rgba(201,171,115,.5);border-radius:2px;
-  padding:6px 3px;font-size:10.5px;letter-spacing:.12em;font-weight:500;
-  color:#e8d3a6;text-align:center;white-space:nowrap;
+  margin-top:10px;border:1px solid rgba(255,246,228,.5);border-radius:2px;
+  padding:12px 6px;font-size:12.5px;letter-spacing:.14em;font-weight:700;
+  text-align:center;white-space:nowrap;
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  color:#0f333d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 20px rgba(0,0,0,.25);
+}
+.item:active .detail{
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 3px 10px rgba(0,0,0,.3);
 }
 body.dark .tagrow{justify-content:center;margin-top:12px}
 body.dark .tag{
