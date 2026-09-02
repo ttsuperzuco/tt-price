@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>画面のしらべ</title>
+<style>
+  html,body{margin:0;padding:0;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+  body{font-family:sans-serif;background:#123f4b;color:#fff;padding:12px}
+  h1{font-size:16px;margin:0 0 10px}
+  table{border-collapse:collapse;width:100%;font-size:14px}
+  td{border-bottom:1px solid rgba(255,255,255,.25);padding:6px 4px;vertical-align:top}
+  td:first-child{color:#cdad74;white-space:nowrap;padding-right:10px}
+  .big{font-size:16px}
+  .ruler{margin:14px 0 4px;height:14px;background:repeating-linear-gradient(
+      to right,#cdad74 0 1px,transparent 1px 50px)}
+  .note{font-size:12px;opacity:.8;margin-top:2px}
+  #ua{word-break:break-all;font-size:11px}
+</style>
+</head>
+<body>
+<h1>この画面をそのまま写真に撮って送ってください</h1>
+<div class="ruler"></div>
+<div class="note">↑ この線は 50 ごとに区切ってあります（画面の端まで届いているか見ます）</div>
+<table id="t"></table>
+<div class="big" id="probe" style="position:absolute;left:-9999px">あ</div>
+<script>
+var probe = document.getElementById('probe');
+var real  = parseFloat(getComputedStyle(probe).fontSize);
+var rows = [
+  ['画面の横はば',  innerWidth + '  （外わく ' + (window.outerWidth||'-') + '）'],
+  ['ページの横はば', document.documentElement.scrollWidth + ' / からだ ' + document.body.scrollWidth],
+  ['画面の高さ',     innerHeight],
+  ['こまかさ',       (window.devicePixelRatio||1)],
+  ['16 と書いた字が実際は', real + '  ' + (Math.abs(real-16)>0.6 ? '★ここがずれています（文字が大きくされている）' : '（ふつう）')],
+  ['見え方の倍率',   (visualViewport ? Math.round(visualViewport.scale*100)/100 : '-')],
+  ['見え方のはば',   (visualViewport ? Math.round(visualViewport.width) : '-')],
+  ['ブラウザ',       navigator.userAgent]
+];
+document.getElementById('t').innerHTML = rows.map(function(r){
+  return '<tr><td>' + r[0] + '</td><td' + (r[0]==='ブラウザ'?' id="ua"':'') + '>' + r[1] + '</td></tr>';
+}).join('');
+</script>
+</body>
+</html>
