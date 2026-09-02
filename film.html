@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/film.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+  /* スマホ＝画面いっぱい */
+  .phone{position:relative;width:100%;height:100%;background:#000;overflow:hidden}
+  .phone iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  /* パソコン＝スマホと同じ縦横の形（411:705）で、画面の高さいっぱいに大きく */
+  @media (min-width:780px){
+    .phone{
+      height:100%;width:auto;aspect-ratio:411 / 705;
+      max-width:96vw;box-shadow:0 24px 70px rgba(0,0,0,.75);
+    }
+  }
+  /* 画面いっぱいにするボタン（ひかえめ・動かない） */
+  .full{
+    position:fixed;right:14px;bottom:14px;z-index:5;
+    font-family:"Hiragino Sans","Noto Sans JP",sans-serif;font-size:12px;letter-spacing:.14em;
+    color:#e8d3a6;background:rgba(0,0,0,.42);border:1px solid rgba(201,171,115,.55);
+    border-radius:2px;padding:9px 14px;cursor:pointer;
+  }
+  .full:active{background:rgba(201,171,115,.18)}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="phone" id="phone"><iframe id="fr" title="T&amp;T SIGNATURE" allow="autoplay"></iframe></div>
+</div>
+<button class="full" id="full" type="button">画面いっぱい</button>
+<script>
+/* ★中身は毎回いちばん新しい番号のものを読む（スマホに古い画面が残らない） */
+(function(){
+  var here = '20260902130828', done = false;
+  function go(v){ if (done) return; done = true; document.getElementById('fr').src = 'film-' + v + '.html'; }
+  try{
+    fetch('filmver.txt?t=' + Date.now(), {cache:'no-store'})
+      .then(function(r){ return r.text(); })
+      .then(function(t){ go(((t||'').trim()) || here); })
+      .catch(function(){ go(here); });
+  }catch(e){ go(here); }
+  setTimeout(function(){ go(here); }, 4000);
+
+  /* 画面いっぱい（もう一度押すと戻る） */
+  var st = document.getElementById('stage'), btn = document.getElementById('full');
+  function isFull(){ return document.fullscreenElement || document.webkitFullscreenElement; }
+  btn.onclick = function(){
+    try{
+      if (isFull()){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+      else { (st.requestFullscreen || st.webkitRequestFullscreen).call(st); }
+    }catch(e){}
+  };
+  function label(){ btn.textContent = isFull() ? 'もとに戻す' : '画面いっぱい'; }
+  document.addEventListener('fullscreenchange', label);
+  document.addEventListener('webkitfullscreenchange', label);
+})();
+</script>
+</body>
+</html>
