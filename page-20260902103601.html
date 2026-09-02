@@ -734,7 +734,7 @@ body.dark #stepItem{
   flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
 }
 body.dark #stepItem .dhero{
-  flex:1 1 auto;min-height:90px;aspect-ratio:auto;
+  flex:0 0 auto;aspect-ratio:auto;   /* 高さは fitItem が測って決める */
   width:66.7%;max-width:66.7%;margin:10px auto 0;padding:0;
 }
 body.dark #stepItem .dhero img{object-fit:contain}
@@ -1365,7 +1365,25 @@ function fitBuys(){
   });
 }
 
-function fitAll(){ fitCaps(); fitIntro(); fitCards(); fitTitle(); fitBuys(); alignTextTop(); }
+/* ★商品の詳しい画面は「◯◯を購入する」までが1画面に収まるようにする（2026-09-02 まるちゃん）。
+   写真の高さを、残りの場所に合わせて決める＝測って決めるので機種や文字の大きさを問わない。 */
+function fitItem(){
+  var pane = document.getElementById('stepItem');
+  var hero = document.getElementById('dhero');
+  if (!pane || !hero) return;
+  if (pane.offsetParent === null) return;          /* 出ていない時は何もしない */
+  hero.style.height = '';
+  var paneTop = pane.getBoundingClientRect().top + (window.scrollY || 0);
+  var others  = pane.getBoundingClientRect().height - hero.getBoundingClientRect().height;
+  var room    = window.innerHeight - paneTop - others - 16;   /* 下の余白ぶん */
+  var wide    = hero.getBoundingClientRect().width;
+  var natural = wide * 5 / 4;                      /* 写真の元の形（縦4:5）の高さ */
+  var h = Math.min(natural, room);
+  if (h < 130) h = 130;                            /* これ以下には小さくしない */
+  hero.style.height = Math.floor(h) + 'px';
+}
+
+function fitAll(){ fitCaps(); fitIntro(); fitCards(); fitTitle(); fitBuys(); fitItem(); alignTextTop(); }
 
 applyHero();
 fitAll();
@@ -1734,6 +1752,9 @@ function openItem(cat, id){
   document.getElementById('buyNet').href  = '#';
 
   show('item');
+  fitItem();
+  /* 写真が読み込まれてから大きさが決まることがあるので、少し置いてもう一度合わせる */
+  [80, 300, 900].forEach(function(ms){ setTimeout(fitItem, ms); });
 }
 
 /* ───── お店で受け取る（お支払い方法を選ぶ） ───────────────────── */
@@ -1851,6 +1872,7 @@ function setStep(n){
     document.getElementById('payBody').innerHTML = '';
   }
   fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
+  fitItem();   /* 商品の画面は、写真の高さを残りの場所に合わせる */
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
