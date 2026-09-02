@@ -693,18 +693,10 @@ body.dark .note{
   background:none;border:1px solid rgba(201,171,115,.3);border-radius:2px;
   color:#bda98a;
 }
-body.dark .buy.line{
-  background:none;border:1px solid rgba(201,171,115,.55);color:#efe2c9;
-  box-shadow:none;border-radius:2px;font-weight:500;letter-spacing:.16em;font-size:15px;
-}
-body.dark .buy.net{
-  background:none;border:1px solid rgba(255,255,255,.22);color:#cfc5b6;
-  box-shadow:none;border-radius:2px;font-weight:500;letter-spacing:.16em;font-size:15px;
-}
-body.dark .buy .s{letter-spacing:.02em;font-size:11.5px;opacity:.7}
-/* ★「◯◯を購入する」＝この画面で一番押してほしい所。他のボタンは細い線のままにして、
-   ここだけ金の面で塗る＝押せると一目で分かる。角は立てたまま・文字を広げて高級感は保つ。 */
-body.dark .buy.line.start{
+/* ★押して先へ進むボタンは全部「金の面」でそろえる（2026-09-02 まるちゃん）。
+   細い線だけだと押せると分からないため。角は立てたまま・文字を広げて高級感は保つ。
+   ※「前へ戻る」と「お支払い方法の3つ（選ぶだけ）」は、押すボタンと見分けが付くよう細い線のまま。 */
+body.dark .buy{
   background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
   border:1px solid rgba(255,246,228,.5);
   color:#0f333d;font-weight:700;letter-spacing:.12em;
@@ -715,10 +707,15 @@ body.dark .buy.line.start{
   border-radius:2px;padding:21px 18px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
 }
-body.dark .buy.line.start:active{
+body.dark .buy:active{
   background:linear-gradient(180deg,#cdad74,#a5814a);
   box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
   transform:translateY(1px);
+}
+/* 小さい添え書きは、金の面の上なので濃い色にする */
+body.dark .buy .s{
+  color:#26454e;opacity:.92;font-weight:600;
+  letter-spacing:.02em;font-size:11.5px;margin-top:5px;
 }
 body.dark .pays .ttl{color:#c9ab73}
 body.dark .pays .pay{
