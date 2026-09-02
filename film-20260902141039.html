@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -842,6 +843,15 @@ body.dark .todoline{color:#a2947f}
 /* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
 .homelower{display:none !important}
 #viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <button class="back" id="backTop">← 前へ戻る（返回上一頁）</button>
@@ -1194,7 +1204,11 @@ function paint(el, img){
 }
 
 function applyHero(){
-  var wide = window.matchMedia('(min-width:780px)').matches;
+  /* ★「映像だけ」の版は、画面が広くても必ず正方形（スマホ用）の写真を使う。
+     大きな四角で見せるための版なので、横長の写真に切り替わってはいけない（2026-09-02 まるちゃん）。 */
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false
+           : window.matchMedia('(min-width:780px)').matches;
   HEROS.forEach(function(h, i){
     if (h.seq) {
       var ls = slides[i].querySelectorAll('.layer');
