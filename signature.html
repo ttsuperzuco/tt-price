@@ -500,7 +500,10 @@ body{
   box-shadow:0 4px 0 rgba(150,120,70,.22),0 10px 20px rgba(0,0,0,.08);
 }
 .buy:active{transform:translateY(2px)}
-.buy .s{display:block;font-size:12.5px;font-weight:600;opacity:.85;margin-top:4px}
+/* ★ボタンの字は「絶対に折り返さない」。入らない時は fitBuys が字を詰めて必ず収める
+   （帯の字幕・2つの大きなボタンと同じやり方。機種による字の太さの違いで欠けるのを防ぐ） */
+.buy .t{display:block;white-space:nowrap}
+.buy .s{display:block;white-space:nowrap;font-size:12.5px;font-weight:600;opacity:.85;margin-top:4px}
 
 /* ── お店で受け取る時のお支払い（LINE Pay／街口支付／銀行振込を選ぶ） ───── */
 .pays{margin:18px 0 0;text-align:center}
@@ -699,11 +702,7 @@ body.dark .note{
 body.dark .buy{
   background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
   border:1px solid rgba(255,246,228,.5);
-  color:#0f333d;font-weight:700;letter-spacing:.12em;
-  /* 画面の幅に合わせて文字の大きさが変わる＝せまいスマホでも1行に収まる
-     （途中で折り返して「購入す／る」と切れるのを防ぐ） */
-  font-size:clamp(13px, 3.9vw, 16px);
-  word-break:keep-all;overflow-wrap:normal;
+  color:#0f333d;font-weight:700;letter-spacing:.12em;font-size:16px;
   border-radius:2px;padding:21px 18px;
   box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
 }
@@ -840,8 +839,8 @@ body.dark .todoline{color:#a2947f}
     <div id="stepWay" style="display:none">
       <div class="stepttl">お受け取り方法をお選びください</div>
       <div class="buys">
-        <button class="buy line" id="buyShop" type="button">お店で受け取る<span class="s">お支払いはこの画面で・商品はお店でお渡し</span></button>
-        <a class="buy net" id="buyNet" href="#">蝦皮で購入<span class="s">蝦皮（Shopee）の商品ページへ</span></a>
+        <button class="buy line" id="buyShop" type="button"><span class="t">お店で受け取る</span><span class="s">お支払いはこの画面で・商品はお店でお渡し</span></button>
+        <a class="buy net" id="buyNet" href="#"><span class="t">蝦皮で購入</span><span class="s">蝦皮（Shopee）の商品ページへ</span></a>
       </div>
     </div>
 
@@ -1111,7 +1110,7 @@ function fitCaps(){
     if (!cap || !box) return;
     /* 入る幅は帯そのものから計算する（文字の入れ物の幅を当てにしない）。
        9%の余裕を持たせて、機種による字の太さの違いでもはみ出さないようにする。 */
-    var room = Math.min(cap.clientWidth - 20, 760) * 0.95;
+    var room = Math.min(cap.clientWidth - 20, 760) * 0.93;
     if (!(room > 0)) return;
     ['.ja', '.en'].forEach(function(sel){
       var el = s.querySelector(sel);
@@ -1155,7 +1154,7 @@ function fitCards(){
   document.querySelectorAll('.gcard').forEach(function(g){
     var box = g.querySelector('.in');
     if (!box) return;
-    var room = (box.clientWidth - 24) * 0.98;   /* 左右の余白ぶん＋少しの余裕 */
+    var room = (box.clientWidth - 24) * 0.95;   /* 左右の余白ぶん＋機種差の余裕 */
     if (room <= 0) return;
     ['.jp', '.en', '.ds'].forEach(function(sel){
       var el = g.querySelector(sel);
@@ -1216,19 +1215,40 @@ function alignTextTop(){
 /* 映画の題名の2行を、それぞれ必ず1行に収める（はみ出しそうなら少しだけ小さくする） */
 function fitTitle(){
   if (!titleEl) return;
-  var room = titleEl.clientWidth - 4;
+  /* ★ここは1行がとても長いので、余裕を一番きつくしていた（1.5%）のが原因で
+     実機（字が少し太い）だと端が欠けた。他と同じ「9%の余裕」にそろえる。 */
+  var room = (titleEl.clientWidth - 16) * 0.95;
   if (room <= 0) return;
   ['.ten', '.tja'].forEach(function(sel){
     var el = titleEl.querySelector(sel);
     if (!el) return;
     el.style.fontSize = '';
     var base = parseFloat(getComputedStyle(el).fontSize);
-    var w = Math.max(el.scrollWidth, el.offsetWidth);
-    if (w > room) el.style.fontSize = Math.floor(base * (room / w) * 0.985 * 100) / 100 + 'px';
+    var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
+    if (w > room) el.style.fontSize = Math.floor(base * (room / w) * 0.97 * 100) / 100 + 'px';
   });
 }
 
-function fitAll(){ fitCaps(); fitIntro(); fitCards(); fitTitle(); alignTextTop(); }
+/* 押すボタンの字も、はみ出しそうなら詰めて必ず1行に収める
+   （帯の字幕・入口の2枚と同じやり方。スマホの字は機種で太さが違うので、ここでも余裕を持たせる） */
+function fitBuys(){
+  document.querySelectorAll('.buy').forEach(function(b){
+    var room = (b.clientWidth - 36) * 0.93;   /* 左右の余白ぶん＋機種差の余裕 */
+    if (!(room > 0)) return;                  /* 隠れている時は測れないので何もしない */
+    ['.t', '.s'].forEach(function(sel){
+      var el = b.querySelector(sel);
+      if (!el) return;
+      el.style.fontSize = '';
+      var base = parseFloat(getComputedStyle(el).fontSize);
+      var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
+      if (w > room) {
+        el.style.fontSize = Math.floor(base * (room / w) * 0.98 * 100) / 100 + 'px';
+      }
+    });
+  });
+}
+
+function fitAll(){ fitCaps(); fitIntro(); fitCards(); fitTitle(); fitBuys(); alignTextTop(); }
 
 applyHero();
 fitAll();
@@ -1552,7 +1572,7 @@ function openItem(cat, id){
   /* 商品を開き直すたびに、画面1（商品の説明）に戻す */
   curItem = it;
   document.getElementById('buyStart').innerHTML =
-    it.nm + ' を購入する';
+    '<span class="t">' + it.nm + ' を購入する</span>';
   setStep(0);
 
   /* ★蝦皮の商品ページは、まるちゃんに教わってから入れます */
@@ -1618,7 +1638,8 @@ function choosePay(key){
          + '② 金額に <b>' + num + '</b> と入れてお支払いください<br>'
          + '③ 最後に「ご注文をお送りする」を押してください</div>';
       h += '<a class="buy line paygo" href="' + link + '" target="_blank" rel="noopener">'
-         + way.name + 'でお支払い<span class="s">押すと ' + way.name + ' がひらきます</span></a>';
+         + '<span class="t">' + way.name + 'でお支払い</span>'
+         + '<span class="s">押すと ' + way.name + ' がひらきます</span></a>';
       if (src.indexOf('data:') === 0){
         h += '<div class="qrside"><img class="payqr" src="' + src + '" alt="">'
            + '<div class="qrnote">パソコンでご覧の方は、こちらをスマホで読み取ってください</div></div>';
@@ -1638,10 +1659,14 @@ function choosePay(key){
   h += href
      ? '<a class="buy line order" href="' + href + '" target="_blank" rel="noopener"'
        + ' onclick="this.href=orderLink(\'' + way.name + '\')">'   /* 押した瞬間の日時を入れ直す */
-       + 'ご注文をお送りする<span class="s">ご自身のLINEが開きます。そのまま送るだけです</span></a>'
-     : '<a class="buy line order" href="#" onclick="return false">ご注文をお送りする<span class="s">お店のLINEの宛先を入れると押せるようになります</span></a>';
+       + '<span class="t">ご注文をお送りする</span>'
+       + '<span class="s">ご自身のLINEが開きます。そのまま送るだけです</span></a>'
+     : '<a class="buy line order" href="#" onclick="return false">'
+       + '<span class="t">ご注文をお送りする</span>'
+       + '<span class="s">お店のLINEの宛先を入れると押せるようになります</span></a>';
   h += '</div>';
   document.getElementById('payBody').innerHTML = h;
+  fitBuys();
 }
 
 /* ───── 画面1（商品）→ 画面2（受け取り方）→ 画面3（お支払い）と進む ─────
@@ -1670,6 +1695,7 @@ function setStep(n){
     }
     document.getElementById('payBody').innerHTML = '';
   }
+  fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
