@@ -1197,7 +1197,11 @@ function paint(el, img){
 }
 
 function applyHero(){
-  var wide = window.matchMedia('(min-width:780px)').matches;
+  /* ★「映像だけ」の版は、画面が広くても必ず正方形（スマホ用）の写真を使う。
+     大きな四角で見せるための版なので、横長の写真に切り替わってはいけない（2026-09-02 まるちゃん）。 */
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false
+           : window.matchMedia('(min-width:780px)').matches;
   HEROS.forEach(function(h, i){
     if (h.seq) {
       var ls = slides[i].querySelectorAll('.layer');
