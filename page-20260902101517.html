@@ -626,6 +626,53 @@ body.dark .items{
 /* 商品が1つだけの時は、まん中に少し大きめで1枚 */
 body.dark .items.one{grid-template-columns:1fr;justify-items:center}
 body.dark .items.one .item{width:66%;min-width:200px}
+
+/* ★まだ発売前の商品の「COMING SOON」の面（2026-09-02 まるちゃん）。
+   写真が無くても間が持つよう、深い夜色に金の細枠と、うっすら斜めの光を流す。 */
+body.dark .item.soon{cursor:default}
+.thumb.comingsoon{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:9px;overflow:hidden;
+  background:
+    radial-gradient(120% 90% at 50% 12%, rgba(201,171,115,.20) 0%, rgba(201,171,115,0) 62%),
+    linear-gradient(160deg,#123a45 0%,#0d2c36 55%,#09222a 100%);
+  border:1px solid rgba(201,171,115,.32);
+}
+/* 内側にもう一本の細い枠＝額装したような佇まい */
+.thumb.comingsoon .frame{
+  position:absolute;inset:9px;border:1px solid rgba(201,171,115,.28);pointer-events:none;
+}
+.thumb.comingsoon .cs{
+  position:relative;z-index:2;
+  font-family:"Cormorant Garamond","EB Garamond",serif;
+  font-size:clamp(15px,4.6vw,22px);font-weight:300;line-height:1.25;
+  letter-spacing:.36em;text-indent:.36em;color:#e8d3a6;text-align:center;
+}
+.thumb.comingsoon .csjp{
+  position:relative;z-index:2;
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-size:clamp(9px,2.5vw,11.5px);letter-spacing:.3em;text-indent:.3em;
+  color:rgba(232,211,166,.62);
+}
+/* 「近日登場」の上に細い金の線を一本 */
+.thumb.comingsoon .csjp::before{
+  content:"";display:block;width:34px;height:1px;margin:0 auto 8px;
+  background:rgba(201,171,115,.5);
+}
+/* ゆっくり流れる淡い光（高級感を出すための、ごく控えめな動き） */
+.thumb.comingsoon::after{
+  content:"";position:absolute;top:-60%;bottom:-60%;width:38%;left:-45%;
+  background:linear-gradient(100deg,rgba(255,255,255,0) 0%,rgba(255,244,224,.11) 50%,rgba(255,255,255,0) 100%);
+  transform:rotate(12deg);animation:csSheen 6.5s ease-in-out infinite;
+}
+@keyframes csSheen{
+  0%,62%{left:-45%}
+  92%,100%{left:112%}
+}
+@media (prefers-reduced-motion:reduce){ .thumb.comingsoon::after{animation:none} }
+/* 名前も少し落ち着いた色にして、売っている商品と見分けがつくように */
+body.dark .item.soon .itxt .nm{color:#e6ddd0}
+body.dark .item.soon .itxt .sub{color:rgba(201,171,115,.85)}
 body.dark .item{
   display:flex;flex-direction:column;background:none;border:none;box-shadow:none;padding:0;
   text-align:center;
@@ -1022,7 +1069,14 @@ var DATA = {
         now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
         lb_now:"当店LINE会員価格", lb_was:"通常価格",
         tags:[],
-        body:"米国アリゾナ産100%ピュアゴールデンホホバ\nUSDA（米国農務省）オーガニック認証" }
+        body:"米国アリゾナ産100%ピュアゴールデンホホバ\nUSDA（米国農務省）オーガニック認証" },
+      /* ★まだ発売前の商品（2026-09-02 まるちゃん）。写真のかわりに「COMING SOON」の面を出し、
+         値段も「詳細を見る」も出さない。押しても何も起きない（詳しい画面はまだ無いので）。
+         写真が用意できたら soon を消して、ふつうの商品と同じように書けばよい。 */
+      { id:"gumi_tea", soon:true,
+        nm:"グミ茶", nm_zh:"【中文名 未定】",
+        sub:"近日登場",
+        one:"", now:null, was:null, tags:[], body:"" }
     ],
     sets:[]
   }
@@ -1581,6 +1635,23 @@ function openList(cat){
      まん中に少し大きめで置く（2026-09-02） */
   box.className = 'items' + (d.items.length === 1 ? ' one' : '');
   d.items.forEach(function(it){
+    /* ★まだ発売前の商品＝写真のかわりに「COMING SOON」の面。押せないようにする */
+    if (it.soon){
+      var s = document.createElement('div');
+      s.className = 'item soon';
+      s.innerHTML =
+        '<div class="thumb comingsoon">'+
+          '<span class="frame"></span>'+
+          '<span class="cs">COMING<br>SOON</span>'+
+          '<span class="csjp">近日登場</span>'+
+        '</div>'+
+        '<div class="itxt">'+
+          '<div class="nm">'+it.nm+'</div>'+
+          (it.sub?'<div class="sub">'+it.sub+'</div>':'')+
+        '</div>';
+      box.appendChild(s);
+      return;
+    }
     var b = document.createElement('button');
     b.className = 'item';
     /* 一覧に出すのは「写真・商品名・量・金額」だけ。その下に「詳細を見る」
