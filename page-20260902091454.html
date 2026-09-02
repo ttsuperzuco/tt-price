@@ -1103,6 +1103,45 @@ function applyHero(){
 }
 /* かたまりが画面からはみ出しそうな時だけ、字をほんの少し小さくして必ず収める
    （切れ目を守ったまま、その画面で出せる一番大きい字にする） */
+/* ★★スマホの「文字を大きくする」設定への対応（2026-09-02・これが字が欠けた真の原因）★★
+   まるちゃんの端末（横411）は、こちらが 16px と書いても実際には 20.8px で描かれる＝1.3倍。
+   前の作りは「今の大きさ×(入る幅÷実際の幅)」をそのまま書いていたので、書いた値がまた1.3倍され、
+   詰めたつもりが逆に大きくなっていた（何度やり直しても直らない）。
+   → 倍率を先に測り、書く時は倍率で割る。さらに実際に測り直して、収まるまでくり返す。 */
+var _boost = null, _boostFor = -1;
+function fontBoost(){
+  if (_boost !== null && _boostFor === window.innerWidth) return _boost;
+  var k = 1;
+  try{
+    var p = document.createElement('span');
+    p.style.cssText = 'position:absolute;left:-9999px;top:0;font-size:16px;line-height:1;white-space:nowrap';
+    p.textContent = 'あいうえお';
+    document.body.appendChild(p);
+    var got = parseFloat(getComputedStyle(p).fontSize);
+    p.parentNode.removeChild(p);
+    if (got > 0) k = got / 16;
+  }catch(e){}
+  if (!(k > 0.5 && k < 4)) k = 1;
+  _boost = k; _boostFor = window.innerWidth;
+  return k;
+}
+/* 「描かれる大きさ」を指定して書く（端末の倍率で割ってから書く） */
+function setFontPx(el, shown){
+  el.style.fontSize = (Math.floor((shown / fontBoost()) * 100) / 100) + 'px';
+}
+/* 決めた幅に収まるまで、実際に測りながら字を詰める */
+function shrinkToFit(el, room){
+  if (!el || !(room > 0)) return;
+  el.style.fontSize = '';
+  for (var i = 0; i < 3; i++){
+    var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
+    if (!(w > room)) return;
+    var now = parseFloat(getComputedStyle(el).fontSize);
+    if (!(now > 0)) return;
+    setFontPx(el, Math.max(6, now * (room / w) * 0.98));
+  }
+}
+
 function fitCaps(){
   slides.forEach(function(s){
     var cap = s.querySelector('.cap');
@@ -1116,16 +1155,19 @@ function fitCaps(){
       var el = s.querySelector(sel);
       if (!el) return;
       el.style.fontSize = '';                     /* いったん元の大きさに戻す */
-      var base = parseFloat(getComputedStyle(el).fontSize);
-      var widest = 0;
-      /* 動きの拡大を含めない実際の幅で測る（含めると必要以上に小さくなる） */
-      el.querySelectorAll('.nb').forEach(function(n){
-        var w = Math.max(n.scrollWidth, n.offsetWidth, n.getBoundingClientRect().width);
-        if (w > widest) widest = w;
-      });
-      if (widest > room) {
+      /* 動きの拡大を含めない実際の幅で測る（含めると必要以上に小さくなる）。
+         収まるまでくり返す＝端末が字を大きくする設定でも必ず収まる。 */
+      for (var i = 0; i < 3; i++){
+        var widest = 0;
+        el.querySelectorAll('.nb').forEach(function(n){
+          var w = Math.max(n.scrollWidth, n.offsetWidth, n.getBoundingClientRect().width);
+          if (w > widest) widest = w;
+        });
+        if (!(widest > room)) break;
+        var now = parseFloat(getComputedStyle(el).fontSize);
+        if (!(now > 0)) break;
         /* 2%だけ余裕を持たせて、ぎりぎりで欠けないようにする */
-        el.style.fontSize = Math.floor(base * (room / widest) * 0.98 * 100) / 100 + 'px';
+        setFontPx(el, Math.max(6, now * (room / widest) * 0.98));
       }
     });
   });
@@ -1139,14 +1181,7 @@ function fitIntro(){
   if (!box) return;
   var room = (box.clientWidth - 44) * 0.96;
   if (room <= 0) return;
-  intro.querySelectorAll('.ln').forEach(function(el){
-    el.style.fontSize = '';
-    var base = parseFloat(getComputedStyle(el).fontSize);
-    var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
-    if (w > room) {
-      el.style.fontSize = Math.floor(base * (room / w) * 0.97 * 100) / 100 + 'px';
-    }
-  });
+  intro.querySelectorAll('.ln').forEach(function(el){ shrinkToFit(el, room); });
 }
 
 /* 2つの大きなボタンの文字も、はみ出しそうなら詰めて必ず収める */
@@ -1156,17 +1191,8 @@ function fitCards(){
     if (!box) return;
     var room = (box.clientWidth - 24) * 0.95;   /* 左右の余白ぶん＋機種差の余裕 */
     if (room <= 0) return;
-    ['.jp', '.en', '.ds'].forEach(function(sel){
-      var el = g.querySelector(sel);
-      if (!el) return;
-      el.style.fontSize = '';
-      var base = parseFloat(getComputedStyle(el).fontSize);
-      /* ★はみ出して切られている時は、見えている幅ではなく中身の幅で測る */
-      var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
-      if (w > room) {
-        el.style.fontSize = Math.floor(base * (room / w) * 0.97 * 100) / 100 + 'px';
-      }
-    });
+    /* ★はみ出して切られている時は、見えている幅ではなく中身の幅で測る */
+    ['.jp', '.en', '.ds'].forEach(function(sel){ shrinkToFit(g.querySelector(sel), room); });
   });
 
   /* 2つのボタンで字の大きさをそろえる（片方だけ詰まって見えないように） */
@@ -1176,7 +1202,7 @@ function fitCards(){
     var min = Math.min.apply(null, els.map(function(e){
       return parseFloat(getComputedStyle(e).fontSize);
     }));
-    els.forEach(function(e){ e.style.fontSize = min + 'px'; });
+    els.forEach(function(e){ setFontPx(e, min); });
   });
 }
 
@@ -1219,14 +1245,7 @@ function fitTitle(){
      実機（字が少し太い）だと端が欠けた。他と同じ「9%の余裕」にそろえる。 */
   var room = (titleEl.clientWidth - 16) * 0.95;
   if (room <= 0) return;
-  ['.ten', '.tja'].forEach(function(sel){
-    var el = titleEl.querySelector(sel);
-    if (!el) return;
-    el.style.fontSize = '';
-    var base = parseFloat(getComputedStyle(el).fontSize);
-    var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
-    if (w > room) el.style.fontSize = Math.floor(base * (room / w) * 0.97 * 100) / 100 + 'px';
-  });
+  ['.ten', '.tja'].forEach(function(sel){ shrinkToFit(titleEl.querySelector(sel), room); });
 }
 
 /* 押すボタンの字も、はみ出しそうなら詰めて必ず1行に収める
@@ -1235,16 +1254,7 @@ function fitBuys(){
   document.querySelectorAll('.buy').forEach(function(b){
     var room = (b.clientWidth - 36) * 0.93;   /* 左右の余白ぶん＋機種差の余裕 */
     if (!(room > 0)) return;                  /* 隠れている時は測れないので何もしない */
-    ['.t', '.s'].forEach(function(sel){
-      var el = b.querySelector(sel);
-      if (!el) return;
-      el.style.fontSize = '';
-      var base = parseFloat(getComputedStyle(el).fontSize);
-      var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
-      if (w > room) {
-        el.style.fontSize = Math.floor(base * (room / w) * 0.98 * 100) / 100 + 'px';
-      }
-    });
+    ['.t', '.s'].forEach(function(sel){ shrinkToFit(b.querySelector(sel), room); });
   });
 }
 
