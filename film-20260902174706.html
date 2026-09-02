@@ -4,15 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -575,7 +569,22 @@ body:not(.ready) .buy .s{visibility:hidden}
 body.dark .stephead{border-bottom-color:rgba(201,171,115,.28)}
 body.dark .stephead .nm{color:#f5efe5}
 body.dark .stephead .pr{color:#e8d3a6}
-body.dark .stepttl{color:#c9ab73}
+/* ★上の見出し＝左に商品の写真、右に名前と金額（2026-09-02 まるちゃん）。
+   写真の高さは、名前の上から金額の下までとほぼ同じ。 */
+body.dark .stephead{
+  display:flex;align-items:center;justify-content:center;gap:14px;text-align:left;
+}
+body.dark .stephead .pic{
+  flex:0 0 auto;width:76px;height:76px;object-fit:cover;
+  border-radius:2px;background:#151210;display:block;
+}
+body.dark .stephead .tx{min-width:0}
+body.dark .stephead .pr{margin-top:4px}
+/* 「お受け取り方法をお選びください」は小さすぎたので大きく */
+body.dark .stepttl{color:#c9ab73;font-size:15px;letter-spacing:.22em;margin-bottom:18px}
+/* お受け取り方法の2つのボタンは、文字を大きくどっしり見せる */
+body.dark #stepWay .buy{padding:26px 18px}
+body.dark #stepWay .buy .t{font-size:21px;letter-spacing:.14em}
 .qrside{margin-top:18px}
 .qrnote{margin-top:8px;font-size:12px;color:var(--ink-soft);text-align:center}
 body.dark .qrnote{color:#a2947f}
@@ -845,9 +854,23 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
-  <button class="back" id="backTop">← 前へ戻る（返回上一頁）</button>
+  <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
+  <button class="back" id="backTop">← 前へ戻る</button>
 
   <!-- ══ ホーム ══ -->
   <div id="viewHome">
@@ -938,16 +961,20 @@ body.dark .todoline{color:#a2947f}
 
     <!-- 画面2・画面3の上に出る、いま何を買おうとしているかの小さな見出し -->
     <div class="stephead" id="stepHead" style="display:none">
-      <div class="nm" id="stepName"></div>
-      <div class="pr" id="stepPrice"></div>
+      <!-- 左に商品の小さな写真（名前の上から金額の下までの高さ・2026-09-02 まるちゃん） -->
+      <img class="pic" id="stepPic" alt="">
+      <div class="tx">
+        <div class="nm" id="stepName"></div>
+        <div class="pr" id="stepPrice"></div>
+      </div>
     </div>
 
     <!-- ═ 画面2＝お受け取り方法をえらぶ ═ -->
     <div id="stepWay" style="display:none">
       <div class="stepttl">お受け取り方法をお選びください</div>
       <div class="buys">
-        <button class="buy line" id="buyShop" type="button"><span class="t">お店で受け取る</span><span class="s">お支払いはこの画面で・商品はお店でお渡し</span></button>
-        <a class="buy net" id="buyNet" href="#"><span class="t">蝦皮で購入</span><span class="s">蝦皮（Shopee）の商品ページへ</span></a>
+        <button class="buy line" id="buyShop" type="button"><span class="t">お店で受け取る</span></button>
+        <a class="buy net" id="buyNet" href="#"><span class="t">郵送で受け取る</span></a>
       </div>
     </div>
 
@@ -1247,12 +1274,28 @@ function fontBoost(){
 function setFontPx(el, shown){
   el.style.fontSize = (Math.floor((shown / fontBoost()) * 100) / 100) + 'px';
 }
+/* 「字そのものの幅」を測る。
+   ★入れ物いっぱいに広がる書き方（block）の物は、入れ物の幅を返してしまうので、
+     中の字だけを測る（そうしないと、短い字なのに小さくされてしまう）。 */
+function textWidth(el){
+  var w = 0;
+  try{
+    var rg = document.createRange();
+    rg.selectNodeContents(el);
+    w = rg.getBoundingClientRect().width;
+  }catch(e){}
+  /* 本当にはみ出している時は、はみ出した分の幅も見る */
+  if (el.scrollWidth > el.clientWidth + 1) w = Math.max(w, el.scrollWidth);
+  if (!(w > 0)) w = el.getBoundingClientRect().width;
+  return w;
+}
+
 /* 決めた幅に収まるまで、実際に測りながら字を詰める */
 function shrinkToFit(el, room){
   if (!el || !(room > 0)) return;
   el.style.fontSize = '';
   for (var i = 0; i < 3; i++){
-    var w = Math.max(el.scrollWidth, el.offsetWidth, el.getBoundingClientRect().width);
+    var w = textWidth(el);
     if (!(w > room)) return;
     var now = parseFloat(getComputedStyle(el).fontSize);
     if (!(now > 0)) return;
@@ -1896,7 +1939,8 @@ var payStep = 0;   /* 0＝商品／1＝受け取り方／2＝お支払い */
 function setStep(n){
   payStep = n;
   document.getElementById('stepItem').style.display = (n===0) ? 'block' : 'none';
-  document.getElementById('stepHead').style.display = (n===0) ? 'none'  : 'block';
+  /* flex＝左に写真・右に名前と金額を横に並べる（block だと写真が上に乗ってしまう） */
+  document.getElementById('stepHead').style.display = (n===0) ? 'none'  : 'flex';
   document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
   document.getElementById('payPane').style.display  = (n===2) ? 'block' : 'none';
 
@@ -1904,6 +1948,11 @@ function setStep(n){
     document.getElementById('stepName').textContent  = curItem.nm;
     document.getElementById('stepPrice').textContent =
       curItem.now!=null ? yen(curItem.now) : 'お値段は追ってご案内します';
+    /* 左の小さな写真（商品の写真と同じ1枚） */
+    var sp = document.getElementById('stepPic');
+    var spic = (curItem.img === 'NO31') ? IMG_NO31 : IMG_ITEM;
+    if (spic && spic.indexOf('data:') === 0){ sp.src = spic; sp.style.display = ''; }
+    else { sp.removeAttribute('src'); sp.style.display = 'none'; }
   }
   if (n===2){
     document.getElementById('payRow').innerHTML = PAYWAYS.map(function(p){
