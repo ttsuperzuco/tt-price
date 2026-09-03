@@ -4,16 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Zen+Old+Mincho:wght@400;500&display=swap">
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
@@ -800,12 +794,15 @@ body.dark #stepItem.tight .buys{margin-top:11px}
    字の大きさは写真の大きさに合わせて fitItem が決める（どの機種でも同じ見え方）。 */
 body.dark .dhero{position:relative}
 body.dark .dlead{
-  /* 縦は写真のちょうど真ん中（2026-09-03 まるちゃん） */
-  position:absolute;left:7.5%;top:50%;transform:translateY(-50%);
+  /* 縦は写真のちょうど真ん中・字は中央そろえ（2026-09-03 まるちゃん）。
+     瓶は右にいるので、写真の左半分を持ち場にして、その中で真ん中にそろえる */
+  position:absolute;left:4%;width:54%;top:50%;transform:translateY(-50%);
   z-index:2;pointer-events:none;
-  font-family:"Zen Old Mincho","Shippori Mincho","Hiragino Mincho ProN",serif;
-  font-weight:400;text-align:left;color:#fff;
-  letter-spacing:.12em;line-height:2.05;
+  /* ★高級ブランドらしい、細くて背の高い明朝（2026-09-03 まるちゃん「ポップすぎる」）。
+     字を細くして、字と字の間を広く取ると落ち着いた高級感になる */
+  font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
+  font-weight:200;text-align:center;color:#fff;
+  letter-spacing:.22em;text-indent:.22em;line-height:2.3;
   text-shadow:0 1px 5px rgba(0,0,0,.8), 0 0 20px rgba(0,0,0,.55);
 }
 body.dark .dlead span{display:block;white-space:nowrap}
@@ -838,14 +835,10 @@ body.dark .dsecret a{
 }
 body.dark .dsecret a:active{color:#fff4e0;border-bottom-color:#f0e6d6}
 body.dark .dsecret a .ar{margin-left:8px;font-family:inherit}
-body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:0}
+/* 左に通常の値段（線を引いた小さい字）、右に実際に払う値段。近づけて並べる */
+body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:14px}
 body.dark .dprice .pc{align-items:center}
-/* 当店の値段はきっちり真ん中。消し線の通常価格は、その右にはみ出す形で添える
-   （真ん中がずれないように、場所を取らない置き方にしている） */
-body.dark .dprice .nowrow{position:relative;display:inline-flex;align-items:baseline}
-body.dark .dprice .nowrow .was{
-  position:absolute;left:100%;bottom:.3em;margin-left:9px;white-space:nowrap;font-size:15px;
-}
+body.dark .dprice .was{font-size:15px;margin-bottom:.3em;white-space:nowrap}
 body.dark .dprice .lb{color:#c9ab73}
 body.dark .dprice .now{
   font-family:"EB Garamond",serif;font-weight:500;color:#f0e6d6;letter-spacing:.04em;
@@ -1015,6 +1008,19 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -2085,14 +2091,14 @@ function openItem(cat, id){
   dsub.textContent  = it.unit ? '' : (it.sub || '');
   dsub.style.display = it.unit ? 'none' : '';
 
-  /* 値段の並べ方（2026-09-03 まるちゃん）
-     当店の値段を真ん中に大きく／その「すぐ右」に、線で消した通常の値段を小さく添える */
+  /* 値段の並べ方（2026-09-03 まるちゃん・世界で一番多い並び）
+     左＝線で消した通常の値段（小さく）／右＝実際に払う値段（大きく・名前つき） */
   document.getElementById('dprice').innerHTML =
+    (it.was!=null ? '<div class="was">' + yen(it.was) + '</div>' : '')
+    +
     (it.now!=null
       ? '<div class="pc"><div class="lb">' + (it.lb_now || '当店価格') + '</div>'
-        + '<div class="nowrow"><div class="now">' + yen(it.now) + '</div>'
-        + (it.was!=null ? '<div class="was">' + yen(it.was) + '</div>' : '')
-        + '</div></div>'
+        + '<div class="now">' + yen(it.now) + '</div></div>'
       : '<div class="pc"><div class="now" style="color:#b4544f;font-size:22px">値段 未定</div></div>');
 
   document.getElementById('dtags').innerHTML = (it.tags||[]).map(function(t){
