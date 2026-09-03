@@ -794,9 +794,12 @@ body.dark #stepItem.tight .buys{margin-top:11px}
    字の大きさは写真の大きさに合わせて fitItem が決める（どの機種でも同じ見え方）。 */
 body.dark .dhero{position:relative}
 body.dark .dlead{
-  position:absolute;left:7.5%;top:8%;z-index:2;pointer-events:none;
+  /* 縦は写真のちょうど真ん中・字は中央そろえ（2026-09-03 まるちゃん）。
+     瓶は右にいるので、写真の左半分を持ち場にして、その中で真ん中にそろえる */
+  position:absolute;left:4%;width:54%;top:50%;transform:translateY(-50%);
+  z-index:2;pointer-events:none;
   font-family:"Zen Old Mincho","Shippori Mincho","Hiragino Mincho ProN",serif;
-  font-weight:400;text-align:left;color:#fff;
+  font-weight:400;text-align:center;color:#fff;
   letter-spacing:.12em;line-height:2.05;
   text-shadow:0 1px 5px rgba(0,0,0,.8), 0 0 20px rgba(0,0,0,.55);
 }
@@ -830,8 +833,14 @@ body.dark .dsecret a{
 }
 body.dark .dsecret a:active{color:#fff4e0;border-bottom-color:#f0e6d6}
 body.dark .dsecret a .ar{margin-left:8px;font-family:inherit}
-body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:28px}
+body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:0}
 body.dark .dprice .pc{align-items:center}
+/* 当店の値段はきっちり真ん中。消し線の通常価格は、その右にはみ出す形で添える
+   （真ん中がずれないように、場所を取らない置き方にしている） */
+body.dark .dprice .nowrow{position:relative;display:inline-flex;align-items:baseline}
+body.dark .dprice .nowrow .was{
+  position:absolute;left:100%;bottom:.3em;margin-left:9px;white-space:nowrap;font-size:15px;
+}
 body.dark .dprice .lb{color:#c9ab73}
 body.dark .dprice .now{
   font-family:"EB Garamond",serif;font-weight:500;color:#f0e6d6;letter-spacing:.04em;
@@ -1701,9 +1710,9 @@ function fitItem(){
   if (lead && lead.offsetParent !== null){
     var ls = [].slice.call(lead.querySelectorAll('span'));
     if (ls.length){
-      var base = Math.max(9, side * 0.058);
+      var base = Math.max(8, side * 0.049);
       ls.forEach(function(s){ setFontPx(s, base); });
-      var lroom = side * 0.56;
+      var lroom = side * 0.50;
       for (var k = 0; k < 3; k++){
         var widest = 0;
         ls.forEach(function(s){ widest = Math.max(widest, textWidth(s)); });
@@ -2084,14 +2093,14 @@ function openItem(cat, id){
   dsub.textContent  = it.unit ? '' : (it.sub || '');
   dsub.style.display = it.unit ? 'none' : '';
 
-  /* 値段の並べ方（まるちゃん指示・2026-08-31）
-     左＝通常の値段を線で消したもの（名前は付けない）／右＝当店の値段（名前つき・大きく） */
+  /* 値段の並べ方（2026-09-03 まるちゃん）
+     当店の値段を真ん中に大きく／その「すぐ右」に、線で消した通常の値段を小さく添える */
   document.getElementById('dprice').innerHTML =
-    (it.was!=null ? '<div class="was">' + yen(it.was) + '</div>' : '')
-    +
     (it.now!=null
       ? '<div class="pc"><div class="lb">' + (it.lb_now || '当店価格') + '</div>'
-        + '<div class="now">' + yen(it.now) + '</div></div>'
+        + '<div class="nowrow"><div class="now">' + yen(it.now) + '</div>'
+        + (it.was!=null ? '<div class="was">' + yen(it.was) + '</div>' : '')
+        + '</div></div>'
       : '<div class="pc"><div class="now" style="color:#b4544f;font-size:22px">値段 未定</div></div>');
 
   document.getElementById('dtags').innerHTML = (it.tags||[]).map(function(t){
