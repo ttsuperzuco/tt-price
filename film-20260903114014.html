@@ -4,15 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Zen+Old+Mincho:wght@400;500&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -799,18 +793,35 @@ body.dark #stepItem.tight .buys{margin-top:11px}
 body.dark .dlead{
   font-family:"Zen Old Mincho","Shippori Mincho","Hiragino Mincho ProN",serif;
   font-weight:400;text-align:center;color:#d8bd8a;
-  font-size:clamp(12.5px,3.4vw,15px);letter-spacing:.16em;line-height:2;
+  /* 1行に収めるため小さめ・字の間も詰める（2026-09-03 まるちゃん） */
+  font-size:clamp(10px,3.2vw,13px);letter-spacing:.04em;line-height:1.9;
   margin-top:20px;
 }
 body.dark .dlead span{display:block;white-space:nowrap}
 body.dark .dname{
   font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
   font-weight:400;letter-spacing:.1em;color:#f5efe5;text-align:center;margin-top:10px;
+  white-space:nowrap;   /* 名前と（50ml）は1行のまま。入らない時は下の仕組みが字を詰める */
+}
+/* 商品名の右に添える量（50ml）＝控えめに、名前より小さく淡く */
+body.dark .dname .u{
+  font-size:.56em;letter-spacing:.04em;color:#cfc0a4;margin-left:.5em;
 }
 body.dark .dsub{
-  font-family:"EB Garamond",serif;font-style:italic;color:#c9ab73;
+  /* 量（50ml など）は白（2026-09-03 まるちゃん） */
+  font-family:"EB Garamond",serif;font-style:italic;color:#f5efe5;
   text-align:center;margin-top:8px;letter-spacing:.06em;
 }
+/* 説明と購入ボタンの間の読みものリンク（金の細い下線・押せると分かる形） */
+body.dark .dsecret{text-align:center;margin-top:16px}
+body.dark .dsecret a{
+  display:inline-block;color:#e8d3a6;text-decoration:none;
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-size:15px;letter-spacing:.14em;padding-bottom:4px;
+  border-bottom:1px solid rgba(232,211,166,.6);
+}
+body.dark .dsecret a:active{color:#fff4e0;border-bottom-color:#f0e6d6}
+body.dark .dsecret a .ar{margin-left:8px;font-family:inherit}
 body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:28px}
 body.dark .dprice .pc{align-items:center}
 body.dark .dprice .lb{color:#c9ab73}
@@ -982,6 +993,19 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1094,6 +1118,8 @@ body.dark .todoline{color:#a2947f}
       <!-- 産地・認証などの説明は値段のすぐ下。そのさらに下に購入ボタン（まるちゃん指示・2026-08-31） -->
       <div class="dbody" id="dbody"></div>
       <div id="dnote"></div>
+      <!-- 説明と購入ボタンの間に出す、詳しい読みものへのリンク（2026-09-03 まるちゃん） -->
+      <div class="dsecret" id="dsecret"></div>
       <div class="buys">
         <button class="buy line start" id="buyStart" type="button"></button>
       </div>
@@ -1309,9 +1335,14 @@ var DATA = {
       { id:"jojoba_no31", img:"NO31",
         nm:"ホホバエッセンス No.31", nm_zh:"荷荷芭精華 No.31",
         sub:"50ml",
+        /* 詳しい画面では商品名の右に（50ml）と小さく添える（2026-09-03 まるちゃん） */
+        unit:"50ml",
         one:"TaiwanTomato のオリジナル。ホホバの美容エッセンス。",
-        /* 商品名の上に出す一言（映像の最後の言葉・2行）*/
-        lead:["１５０万の中から選ばれし", "真の最高峰を あなたの肌に"],
+        /* 商品名の上に出す一言（映像の最後の言葉・1行・2026-09-03 まるちゃん）*/
+        lead:["１５０万の中から選ばれし 真の最高峰を あなたの肌に"],
+        /* 説明と購入ボタンの間に出す読みものリンク（★飛び先はまるちゃん待ち。
+           今は既にある「ホホバの使い方」の案内を仮に入れてある） */
+        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/JojobaUsageJ" },
         now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
         lb_now:"当店LINE会員価格", lb_was:"通常価格",
         tags:[],
@@ -1652,6 +1683,10 @@ function fitItem(){
   side = Math.floor(side);
   hero.style.height = side + 'px';
   hero.style.width  = side + 'px';
+
+  /* 商品名（＋その右の量）も、1行のまま画面に収める */
+  var dn = document.getElementById('dname');
+  if (dn && dn.offsetParent !== null) shrinkToFit(dn, (dn.clientWidth - 6) * 0.95);
 
   /* 商品名の上の一言も、2行そろえたまま画面に収める（片方だけ小さくならないように） */
   var lead = document.getElementById('dlead');
@@ -2021,8 +2056,21 @@ function openItem(cat, id){
     ? it.lead.map(function(s){ return '<span>' + esc(s) + '</span>'; }).join('')
     : '';
   dl.style.display = (it.lead && it.lead.length) ? '' : 'none';
-  document.getElementById('dname').textContent = it.nm;
-  document.getElementById('dsub').textContent  = it.sub || '';
+  /* 説明と購入ボタンの間の読みものリンク（ある商品だけ出す） */
+  var ds = document.getElementById('dsecret');
+  ds.innerHTML = (it.secret && it.secret.url)
+    ? '<a href="' + it.secret.url + '" target="_blank" rel="noopener">'
+      + esc(it.secret.t) + '<span class="ar">›</span></a>'
+    : '';
+  ds.style.display = (it.secret && it.secret.url) ? '' : 'none';
+  /* 商品名。量（50ml）がある商品は、その右に小さく添える */
+  document.getElementById('dname').innerHTML =
+      '<span class="nm">' + esc(it.nm) + '</span>'
+    + (it.unit ? '<span class="u">（' + esc(it.unit) + '）</span>' : '');
+  /* 量を商品名の右に出した商品は、下の行には出さない（同じことを二度書かない） */
+  var dsub = document.getElementById('dsub');
+  dsub.textContent  = it.unit ? '' : (it.sub || '');
+  dsub.style.display = it.unit ? 'none' : '';
 
   /* 値段の並べ方（まるちゃん指示・2026-08-31）
      左＝通常の値段を線で消したもの（名前は付けない）／右＝当店の値段（名前つき・大きく） */
