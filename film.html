@@ -32,7 +32,7 @@
 <script>
 /* ★中身は毎回いちばん新しい番号のものを読む（スマホに古い画面が残らない） */
 (function(){
-  var here = '20260904114404', done = false;
+  var here = '20260904114810', done = false;
   function go(v){ if (done) return; done = true; document.getElementById('fr').src = 'film-' + v + '.html'; }
   try{
     fetch('filmver.txt?t=' + Date.now(), {cache:'no-store'})
