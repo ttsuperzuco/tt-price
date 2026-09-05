@@ -4,15 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1047,6 +1041,19 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1411,9 +1418,8 @@ var DATA = {
         one:"TaiwanTomato のオリジナル。ホホバの美容エッセンス。",
         /* 写真の中に白い字で重ねる一言（映像の最後の言葉・4行・2026-09-03 まるちゃん）*/
         lead:["１５０万の中から", "選ばれし", "真の最高峰を", "あなたの肌に"],
-        /* 説明と購入ボタンの間に出す読みものリンク（★飛び先はまるちゃん待ち。
-           今は既にある「ホホバの使い方」の案内を仮に入れてある） */
-        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/JojobaUsageJ" },
+        /* 説明と購入ボタンの間に出す読みものリンク（2026-09-05 まるちゃんから飛び先をもらった） */
+        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/4mSe0" },
         now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
         lb_now:"当店LINE会員価格", lb_was:"通常価格",
         tags:[],
@@ -1422,7 +1428,7 @@ var DATA = {
          値段も「詳細を見る」も出さない。押しても何も起きない（詳しい画面はまだ無いので）。
          写真が用意できたら soon を消して、ふつうの商品と同じように書けばよい。 */
       { id:"gumi_tea", soon:true,
-        nm:"グミ茶", nm_zh:"【中文名 未定】",
+        nm:"ぐみ茶", nm_zh:"【中文名 未定】",   /* 名前はひらがな（2026-09-05 まるちゃん） */
         sub:"",                      /* 「近日登場」は出さない（2026-09-02 まるちゃん） */
         one:"", now:null, was:null, tags:[], body:"" }
     ],
@@ -2305,6 +2311,21 @@ function nowText(){
 /* 注文の文をあらかじめ書いた状態で、お店のLINEを開くための行き先
    ★日時は「ご注文をお送りするを押した瞬間」を自動で入れる（お客様は何も打たない）。
      押すのはお支払いの直後なので、入金の時刻とほぼ同じになる＝お店で突き合わせやすい。 */
+/* ★注文ボタンを押した合図を、お店の窓口へ1つ飛ばす（2026-09-05 まるちゃん決定）。
+   事務所のパソコンはこの合図を受け取ると、そこから15分だけLINEを1秒ごとに見て、
+   注文が届いた瞬間にお支払いのご案内を返す。
+   ・鍵は要らない軽い記録（action=hit）だけを使う＝この住所は既にアプリ側で公開されている物。
+   ・失敗しても注文は止めない（合図が飛ばなくても、ふだんの見張りが5秒で気づく）。 */
+var SHOP_PIPE = "https://script.google.com/macros/s/"
+  + "AKfycbzSxho3e4CHyAuoymGlzcVwGnLshGoCg53zY18laLrHMq5Cun_pBv8XgRsNxKMDxlKwUA/exec";
+function orderPing(){
+  try{
+    var u = SHOP_PIPE + "?action=hit&who=shop&role=customer&view=order&device=page";
+    if (navigator.sendBeacon) { navigator.sendBeacon(u); return; }
+    fetch(u, { mode:"no-cors", cache:"no-store" }).catch(function(){});
+  }catch(e){}
+}
+
 function orderLink(payName, payKey){
   if (!LINE_ID || !cart.length) return '';
   var tot = cartTotal();
@@ -2372,7 +2393,7 @@ function drawConfirm(){
   var href = orderLink(way.name, key);
   document.getElementById('confirmBtn').innerHTML = href
      ? '<a class="buy line order" href="' + href + '" target="_blank" rel="noopener"'
-       + ' onclick="this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 押した瞬間の日時を入れ直す */
+       + ' onclick="orderPing();this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 合図を飛ばし、押した瞬間の日時を入れ直す */
        + '<span class="t">この内容で注文する</span></a>'
      : '<a class="buy line order" href="#" onclick="return false">'
        + '<span class="t">この内容で注文する</span>'
