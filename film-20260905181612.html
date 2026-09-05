@@ -1296,6 +1296,8 @@ var HEROS = [
     jaSteps:[2, 2],
     /* ★「１５０万…／選びに…」が画面に出ている時間を1.5倍に（2026-09-05 まるちゃん） */
     jaAfter:[0, 1600],
+    /* ★「選びに選び抜き…」のあと、英語が出るまでの間を半分に（3.0秒→1.5秒・2026-09-05 まるちゃん） */
+    enAfter:1500,
     en:["Then the research team spent thirty years",
         "selecting from 1.5 million jojoba plants…"],
     enAlways2:true },  /* 英語は画面の広さにかかわらず必ず2行にする */
@@ -1416,9 +1418,8 @@ var DATA = {
         one:"TaiwanTomato のオリジナル。ホホバの美容エッセンス。",
         /* 写真の中に白い字で重ねる一言（映像の最後の言葉・4行・2026-09-03 まるちゃん）*/
         lead:["１５０万の中から", "選ばれし", "真の最高峰を", "あなたの肌に"],
-        /* 説明と購入ボタンの間に出す読みものリンク（★飛び先はまるちゃん待ち。
-           今は既にある「ホホバの使い方」の案内を仮に入れてある） */
-        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/JojobaUsageJ" },
+        /* 説明と購入ボタンの間に出す読みものリンク（2026-09-05 まるちゃんから飛び先をもらった） */
+        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/4mSe0" },
         now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
         lb_now:"当店LINE会員価格", lb_was:"通常価格",
         tags:[],
@@ -1427,7 +1428,7 @@ var DATA = {
          値段も「詳細を見る」も出さない。押しても何も起きない（詳しい画面はまだ無いので）。
          写真が用意できたら soon を消して、ふつうの商品と同じように書けばよい。 */
       { id:"gumi_tea", soon:true,
-        nm:"グミ茶", nm_zh:"【中文名 未定】",
+        nm:"ぐみ茶", nm_zh:"【中文名 未定】",   /* 名前はひらがな（2026-09-05 まるちゃん） */
         sub:"",                      /* 「近日登場」は出さない（2026-09-02 まるちゃん） */
         one:"", now:null, was:null, tags:[], body:"" }
     ],
@@ -1859,7 +1860,11 @@ function capPlan(k){
     if (after && after[g]) t += after[g];
     i += group.length; g++;
   }
-  return { plan: plan, enAt: t - 300, box: box, en: box.querySelector('.en'),
+  /* 英語が出る時刻。ふだんは日本語が出そろった直後だが、
+     enAfter を書いた場面は「最後の日本語が出てから◯ミリ秒後」にする（2026-09-05 まるちゃん） */
+  var lastAt = plan.length ? plan[plan.length - 1].at : FIRST_MS;
+  var enAt = (HEROS[k] && HEROS[k].enAfter) ? (lastAt + HEROS[k].enAfter) : (t - 300);
+  return { plan: plan, enAt: enAt, box: box, en: box.querySelector('.en'),
            total: t + LINGER_MS };
 }
 var introEl  = document.getElementById('intro');
