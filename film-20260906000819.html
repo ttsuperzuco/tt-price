@@ -4,15 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1047,6 +1041,19 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1245,14 +1252,16 @@ var QR = { linepay:"", jkopay:"" };
    （スマホ1台でこのページを見ているお客様も、そのままお支払いできる）。
    ★中身は1文字も変えずにそのまま貼ること。空にすると、その方法はQRの絵だけになる。 */
 var PAYLINK = {
-  linepay:"https://qrcodepay.line.me/qr/payment/pi59Sao8KC9RcjomD8KnWcm5qtU%252F93vBeU9cHiojh813%252B7QGuWB6AGmM1NSOLqFB",
+  /* ★短いリンクにした（2026-09-06 まるちゃん指定）。飛び先はx.gdの管理画面から後で変えられる
+     ＝お店のお支払い口が変わっても、このページを作り直さずに済む。中身＝上の長い住所と同じ。 */
+  linepay:"https://x.gd/TTLINEPAY",
   /* ★街口は「収款コードが2つある」のが肝（2026-09-02）。
      ・共通のQR（中身が TWQRP:// で始まる物）＝カメラで読み取る専用。押しても何も起きない（実機で確認済み）
      ・街口だけのQR（中身が http://www.jkos.com/index.html?j=S%23…%3AP%23）＝ふつうの住所なので押せる ←こちら
      押すと街口の受け渡しページへ回され、そこから街口のアプリが開く作り
      （お店の番号を取り出して「お客様が金額を入れて払う」画面を出す）。LINE Payと同じ形。
      ★中身は1文字も変えずにそのまま貼ること。 */
-  jkopay:"http://www.jkos.com/index.html?j=S%2339adaea5-337b-11ed-bdc1-f8f21e0d1b98%3AP%23"
+  jkopay:"https://x.gd/TTJKOPAY"   /* ★短いリンク（2026-09-06 まるちゃん指定）。中身＝上の住所と同じ */
 };
 /* ★お振込み先（2026-09-02 まるちゃんから）。台湾の振込は「銀行の番号＋口座番号」だけで足りるので、
    日本のような支店名は入れない。名義（口座の持ち主の名前）は分かり次第 holder に入れる＝
@@ -1421,7 +1430,7 @@ var DATA = {
          値段も「詳細を見る」も出さない。押しても何も起きない（詳しい画面はまだ無いので）。
          写真が用意できたら soon を消して、ふつうの商品と同じように書けばよい。 */
       { id:"gumi_tea", soon:true,
-        nm:"グミ茶", nm_zh:"【中文名 未定】",
+        nm:"ぐみ茶", nm_zh:"【中文名 未定】",   /* 名前はひらがな（2026-09-05 まるちゃん） */
         sub:"",                      /* 「近日登場」は出さない（2026-09-02 まるちゃん） */
         one:"", now:null, was:null, tags:[], body:"" }
     ],
@@ -2304,6 +2313,21 @@ function nowText(){
 /* 注文の文をあらかじめ書いた状態で、お店のLINEを開くための行き先
    ★日時は「ご注文をお送りするを押した瞬間」を自動で入れる（お客様は何も打たない）。
      押すのはお支払いの直後なので、入金の時刻とほぼ同じになる＝お店で突き合わせやすい。 */
+/* ★注文ボタンを押した合図を、お店の窓口へ1つ飛ばす（2026-09-05 まるちゃん決定）。
+   事務所のパソコンはこの合図を受け取ると、そこから15分だけLINEを1秒ごとに見て、
+   注文が届いた瞬間にお支払いのご案内を返す。
+   ・鍵は要らない軽い記録（action=hit）だけを使う＝この住所は既にアプリ側で公開されている物。
+   ・失敗しても注文は止めない（合図が飛ばなくても、ふだんの見張りが5秒で気づく）。 */
+var SHOP_PIPE = "https://script.google.com/macros/s/"
+  + "AKfycbzSxho3e4CHyAuoymGlzcVwGnLshGoCg53zY18laLrHMq5Cun_pBv8XgRsNxKMDxlKwUA/exec";
+function orderPing(){
+  try{
+    var u = SHOP_PIPE + "?action=hit&who=shop&role=customer&view=order&device=page";
+    if (navigator.sendBeacon) { navigator.sendBeacon(u); return; }
+    fetch(u, { mode:"no-cors", cache:"no-store" }).catch(function(){});
+  }catch(e){}
+}
+
 function orderLink(payName, payKey){
   if (!LINE_ID || !cart.length) return '';
   var tot = cartTotal();
@@ -2371,7 +2395,7 @@ function drawConfirm(){
   var href = orderLink(way.name, key);
   document.getElementById('confirmBtn').innerHTML = href
      ? '<a class="buy line order" href="' + href + '" target="_blank" rel="noopener"'
-       + ' onclick="this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 押した瞬間の日時を入れ直す */
+       + ' onclick="orderPing();this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 合図を飛ばし、押した瞬間の日時を入れ直す */
        + '<span class="t">この内容で注文する</span></a>'
      : '<a class="buy line order" href="#" onclick="return false">'
        + '<span class="t">この内容で注文する</span>'
