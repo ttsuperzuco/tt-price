@@ -4,9 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1241,19 +1247,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1464,21 +1457,26 @@ var ZH = {
   "研究を開始した。":"展開了研究。",
   "それがホホバだった…":"答案，就是荷荷芭…",
   "そして、研究チームが、":"研究團隊",
-  "３０年もの歳月をかけ、":"耗費長達三十年的歲月，",
-  "１５０万ものホホバの木の中から":"從一百五十萬棵荷荷芭樹中",
+  /* ★数字は日本語版と同じく全角の算用数字で出す（2026-09-07 まるちゃん）。
+     漢数字（三十・一百五十）より、縦の明朝の中で数の大きさが目に入りやすい。 */
+  "３０年もの歳月をかけ、":"耗費長達３０年的歲月，",
+  "１５０万ものホホバの木の中から":"從１５０萬棵荷荷芭樹中",
   "選びに選び抜き…":"層層嚴選…",
   "ついにたどり着いた":"最終抵達的",
   "最高の品質をもつ":"是擁有最高品質的",
   "至高のホホバ…":"至高荷荷芭…",
   "それが":"那就是",
   "“ホホバエッセンス No.31”":"「荷荷芭精華 No.31」",
-  "１５０万の中から選ばれし":"從一百五十萬中選出",
+  "１５０万の中から選ばれし":"從１５０萬中選出",
   "真の最高峰を":"真正的顛峰",
   "あなたの肌に":"獻給您的肌膚",
   "海の哲学者と砂漠の奇跡が紡いだ、ひとつの物語":"海洋哲學家與沙漠奇蹟交織而成的故事",
   "お手持ちの化粧品の効果を":"讓您手邊的保養品",
   "最大限に引き出し":"發揮最大的效果",
-  "あなたのお肌を劇的に変える":"徹底改變您的肌膚",
+  /* ★2026-09-07 まるちゃん決定。政府の「使ってはいけない言葉」の一覧（34個）に「新生」は
+     毛髪の1件しか無く、肌には無いことを原文で確かめたうえで、この言い方に決めた。
+     詳しくは 共通\台湾の化粧品広告ルール\必読_台湾の化粧品広告で使ってよい言葉.md */
+  "あなたのお肌を劇的に変える":"讓您的肌膚煥然新生",
   "奇跡の美容成分":"奇蹟般的美容成分",
   "ホホバエッセンス":"荷荷芭精華",
 
@@ -1597,7 +1595,7 @@ var ZH = {
   "骨盤底筋をととのえるケアツール。":"調整骨盆底肌的保養工具。",
   "ホホバエッセンス No.31":"荷荷芭精華 No.31",
   "TaiwanTomato のオリジナル。ホホバの美容エッセンス。":"TaiwanTomato 自有品牌。荷荷芭美容精華。",
-  "１５０万の中から":"從一百五十萬之中",
+  "１５０万の中から":"從１５０萬之中",
   "選ばれし":"脫穎而出",
   "ホホバエッセンスの秘密":"荷荷芭精華的秘密",
   "月室美容液の秘密":"月室精華液的秘密",
@@ -2641,7 +2639,7 @@ var titleEl  = document.getElementById('introTitle');
 /* ★ラベルの一枚（2026-09-07 まるちゃん）。言葉のあと・物語の題名の前にはさむ。
    出ている時間は下の数字で決まる（画面に出る→2.8秒そのまま→そっと消える） */
 var labelEl     = document.getElementById('introLabel');
-var LABEL_MS    = 2800;   /* ラベルが画面に出ている時間 */
+var LABEL_MS    = 4000;   /* ラベルが画面に出ている時間（2026-09-07 まるちゃん「4秒にして」） */
 var LABEL_OUT_MS = 1100;  /* そっと消えきるまで（上の見た目の指定と同じ長さ） */
 
 /* ★題名を1文字ずつ打ち出す（映画の題名のように・2026-09-04 まるちゃん）。
