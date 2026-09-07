@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/film.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
+<style>
+  html,body{margin:0;height:100%;background:#000;overflow:hidden}
+  .stage{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:#000}
+  /* ★ここは画面いっぱいの黒い場所を用意するだけ。
+     「正方形でいちばん大きく」の見せ方は中身のページ側が決める。
+     ★こうしておく理由＝この入口のページはスマホに残りやすい（10分ほど）ので、
+       見た目をここに書くと、直しても古いままの見え方になる（2026-09-02 実際に起きた）。 */
+  .phone{position:relative;background:#000;overflow:hidden;width:100%;height:100%}
+  .phone iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}
+  /* ★画面には文字を一切出さない（2026-09-02 まるちゃん）。
+     パソコンだけ、映像の左右の黒い所を押すと画面いっぱいになる（もう一度押すと戻る）。 */
+  @media (min-width:780px){ .stage{cursor:pointer} }
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <div class="phone" id="phone"><iframe id="fr" title="T&amp;T SIGNATURE" allow="autoplay"></iframe></div>
+</div>
+<script>
+/* ★中身は毎回いちばん新しい番号のものを読む（スマホに古い画面が残らない） */
+(function(){
+  var here = '20260907141359', done = false;
+  function go(v){ if (done) return; done = true; document.getElementById('fr').src = 'film-' + v + '.html'; }
+  try{
+    fetch('filmver.txt?t=' + Date.now(), {cache:'no-store'})
+      .then(function(r){ return r.text(); })
+      .then(function(t){ go(((t||'').trim()) || here); })
+      .catch(function(){ go(here); });
+  }catch(e){ go(here); }
+  setTimeout(function(){ go(here); }, 4000);
+
+  /* 画面いっぱい＝パソコンで、映像の左右の黒い所を押した時だけ（文字は出さない）。
+     映像そのものを押しても何も起きない（見ている最中に切り替わらないように）。 */
+  var st = document.getElementById('stage');
+  function isFull(){ return document.fullscreenElement || document.webkitFullscreenElement; }
+  st.addEventListener('click', function(e){
+    if (e.target !== st) return;                       /* 黒い所を押した時だけ */
+    if (!window.matchMedia('(min-width:780px)').matches) return;   /* スマホでは何もしない */
+    try{
+      if (isFull()){ (document.exitFullscreen || document.webkitExitFullscreen).call(document); }
+      else { (st.requestFullscreen || st.webkitRequestFullscreen).call(st); }
+    }catch(e2){}
+  });
+})();
+</script>
+</body>
+</html>

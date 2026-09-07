@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
+<style>html,body{margin:0;height:100%;background:#123f4b}</style>
+</head>
+<body>
+<script>
+/* ★ここは「入口」だけ。中身は毎回 ver.txt を見て、最新の番号のページへ移る。
+   こうすると、スマホに古い画面が残っていても必ず新しい画面が出る。 */
+(function(){
+  var here = '20260907141359';
+  function go(v){ location.replace('page-' + v + '.html'); }
+  var moved = false;
+  function once(v){ if (moved) return; moved = true; go(v); }
+  try{
+    fetch('ver.txt?t=' + Date.now(), {cache:'no-store'})
+      .then(function(r){ return r.text(); })
+      .then(function(t){ once(((t||'').trim()) || here); })
+      .catch(function(){ once(here); });
+  }catch(e){ once(here); }
+  /* 取りに行けない時（電波が悪い等）も、4秒で今わかっている番号へ進む */
+  setTimeout(function(){ once(here); }, 4000);
+})();
+</script>
+<noscript><a href="page-20260907141359.html">開く</a></noscript>
+</body>
+</html>
