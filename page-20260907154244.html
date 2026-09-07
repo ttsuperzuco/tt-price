@@ -13,7 +13,7 @@
 <meta name="twitter:card" content="summary">
 </head>
 <body style="margin:0"><title>T&amp;T SIGNATURE</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
@@ -254,6 +254,19 @@ body:not(.ready) .buy .s{visibility:hidden}
   .intro.flare .l3,.intro.flare .l4{animation:none !important;opacity:0}
   .intro.flare .wash{animation:none;opacity:1;transform:scale(4.2)}
 }
+
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。「奇跡の美容成分／ホホバエッセンス」のあと、
+   「海の哲学者と…ひとつの物語」の字幕の前に、ひと呼吸はさむ。
+   絵は差し込む時に、元のデザインをそのままに、クリーム色の地だけを左右に足して
+   画面の形ぴったりに作ってあるので、ここでは画面いっぱいに敷くだけでよい。 */
+.intro .label{
+  /* ★重ねる高さ7＝光のもや(6)より上、物語の題名(8)より下。
+     ここを6より下にすると、光のもやに隠れて出ない（2026-09-07に実際に起きた） */
+  position:absolute;inset:0;z-index:7;opacity:0;pointer-events:none;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  transition:opacity 1.1s ease;
+}
+.intro .label.on{opacity:1}
 
 /* 重ねて置く絵（白黒→緑→青と、ゆっくり色がついていく） */
 .slide .layer{
@@ -861,10 +874,13 @@ body.dark .dlead{
      瓶は右にいるので、写真の左半分を持ち場にして、その中で真ん中にそろえる */
   position:absolute;left:4%;width:54%;top:50%;transform:translateY(-50%);
   z-index:2;pointer-events:none;
-  /* ★高級ブランドらしい、細くて背の高い明朝（2026-09-03 まるちゃん「ポップすぎる」）。
-     字を細くして、字と字の間を広く取ると落ち着いた高級感になる */
-  font-family:"Noto Serif JP","Hiragino Mincho ProN","Yu Mincho",serif;
-  font-weight:200;text-align:center;color:#fff;
+  /* ★書体は「上の映像の字幕とまったく同じ物」にする（2026-09-07 まるちゃん
+     「映像の字体と違うように見える」）。ここは映像の最後の言葉をそのまま写真に重ねる場所なので、
+     映像と別の書体だと同じ言葉なのに別物に見えてしまう。
+     ※上の .cap .ja（映像の字幕）と必ず同じにそろえること。片方だけ変えない。
+     字と字の間を広く取るのは今までどおり（2026-09-03 まるちゃん「ポップすぎる」への手当て）。 */
+  font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  font-weight:400;text-align:center;color:#fff;
   letter-spacing:.22em;text-indent:.22em;line-height:2.3;
   text-shadow:0 1px 5px rgba(0,0,0,.8), 0 0 20px rgba(0,0,0,.55);
 }
@@ -1273,6 +1289,9 @@ body.dark .todoline{color:#a2947f}
           <div class="ln l3">奇跡の美容成分</div>
           <div class="ln l4">ホホバエッセンス</div>
         </div>
+        <!-- ★ラベルの一枚（2026-09-07 まるちゃん）。言葉が消えたあと、物語の題名の前にはさむ。
+             写真がまだ無いときは出ない（画像フォルダに置くだけで出るようになる） -->
+        <div class="label" id="introLabel"></div>
         <!-- 最後に灰色へ包まれる演出の部品（ふだんは見えない） -->
         <div class="dim"></div>    <!-- 光が集まる直前、いったん暗くなる -->
         <div class="rays"></div>   <!-- 放射状にのびる光の筋 -->
@@ -1740,6 +1759,17 @@ var HEROS = [
 /* 一番はじめの画面に出す「白い背景の瓶だけ」の写真。まだ無い時は空になり、この画面は出ない */
 var IMG_BOTTLE_WHITE = "img/binw-9de5b69389.jpg";      /* 緑＝ホホバが入っている */
 var IMG_BOTTLE_BLUE  = "img/binb-232f84d6c1.jpg";       /* 青＝中身が無い状態の瓶 */
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。「奇跡の美容成分」のあと、物語の題名の前にはさむ。
+   画像フォルダに `ラベル_No31.jpg` を置くだけで出るようになる（無ければ今までどおり出ない）。
+   元のデザインはそのままに、クリーム色の地だけを左右に足して画面の形にそろえてある。 */
+var IMG_LABEL_SP = "img/labelsp-cd60a480aa.jpg";   /* スマホ用（正方形） */
+var IMG_LABEL_PC = "img/labelpc-5f5c431570.jpg";   /* パソコン用（横長） */
+function labelPic(){
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false : window.matchMedia('(min-width:780px)').matches;
+  var p = wide ? IMG_LABEL_PC : IMG_LABEL_SP;
+  return hasPic(p) ? p : (hasPic(IMG_LABEL_SP) ? IMG_LABEL_SP : '');
+}
 var IMG_ITEM  = "img/sample-14544d11a5.jpg";     /* 商品の仮の写真 */
 var IMG_NO31  = "img/no31-54c2a15477.jpg";   /* ホホバエッセンス No.31＝青の瓶の写真 */
 
@@ -2470,6 +2500,8 @@ function preloadAll(){
            ? false
            : window.matchMedia('(min-width:780px)').matches;
   var list = [];
+  /* ラベルの一枚は、映像の写真より先に要る（言葉のすぐあとに出るので）*/
+  list.push({ url: labelPic() });
   HEROS.forEach(function(h, i){
     if (h.seq) {
       h.seq.forEach(function(g, k){
@@ -2504,6 +2536,7 @@ preloadAll();
       });
       for (var k in ITEM_PICS) { if (ITEM_PICS.hasOwnProperty(k)) use.push(ITEM_PICS[k]); }
       use.push(IMG_BOTTLE_WHITE); use.push(IMG_BOTTLE_BLUE); use.push(IMG_ITEM);
+      use.push(IMG_LABEL_SP); use.push(IMG_LABEL_PC);
       use = use.filter(function(u){ return hasPic(u) && u.indexOf('data:') !== 0; });
       function tell(){
         var c = navigator.serviceWorker.controller;
@@ -2598,6 +2631,11 @@ function capPlan(k){
 }
 var introEl  = document.getElementById('intro');
 var titleEl  = document.getElementById('introTitle');
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。言葉のあと・物語の題名の前にはさむ。
+   出ている時間は下の数字で決まる（画面に出る→2.8秒そのまま→そっと消える） */
+var labelEl     = document.getElementById('introLabel');
+var LABEL_MS    = 4000;   /* ラベルが画面に出ている時間（2026-09-07 まるちゃん「4秒にして」） */
+var LABEL_OUT_MS = 1100;  /* そっと消えきるまで（上の見た目の指定と同じ長さ） */
 
 /* ★題名を1文字ずつ打ち出す（映画の題名のように・2026-09-04 まるちゃん）。
    ・字は最初から全部置いておき、見え方だけを順に変える（行が動かない・幅も変わらない
@@ -2744,6 +2782,7 @@ function playIntro(instant){
   if (instant) introEl.style.transition = 'none';   /* じわっとではなく即座に出す */
   introEl.classList.remove('gone');
   introEl.classList.remove('flare');
+  labelEl.classList.remove('on');       /* ラベルの一枚も、毎回はじめに戻す */
   titleEl.classList.remove('on', 'out');
   resetTitleType();
   if (instant) { void introEl.offsetWidth; introEl.style.transition = ''; }
@@ -2753,6 +2792,22 @@ function playIntro(instant){
   clearTimeout(flareTimer);
   flareTimer = setTimeout(function(){ introEl.classList.add('flare'); }, INTRO_MS - FLARE_MS);
   later(function(){
+    /* ★言葉が光に包まれて消えたあと、ラベルの一枚をはさんでから題名へ進む
+       （2026-09-07 まるちゃん）。写真がまだ無いときは、今までどおりすぐ題名へ進む。 */
+    var lb = labelPic();
+    if (hasPic(lb)) {
+      labelEl.style.backgroundImage = 'url("' + lb + '")';
+      labelEl.classList.add('on');
+      later(function(){
+        labelEl.classList.remove('on');
+        later(showTitle, LABEL_OUT_MS);
+      }, LABEL_MS);
+    } else {
+      showTitle();
+    }
+  }, INTRO_MS);
+
+  function showTitle(){
     /* 灰色になりきったところで、映画の題名のような一枚を出す */
     titleEl.classList.add('on');
     /* 1文字ずつ打ち出す。打ち終わりの時刻が返るので、
@@ -2766,7 +2821,7 @@ function playIntro(instant){
         runPhotos(0);                 /* ここから写真が順に進む */
       }, TITLE_OUT_MS);
     }, typedAt + TITLE_EN_MS + TITLE_HOLD_MS);
-  }, INTRO_MS);
+  }
 }
 
 /* ★一番はじめ：まっ白な画面に瓶だけを出してから、いつもの言葉の画面へ入る
