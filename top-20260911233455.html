@@ -5,8 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -377,6 +376,10 @@ body:not(.ready) .buy .s{visibility:hidden}
   gap:.25em;max-width:none;margin-left:0;
   /* ★「から選ばれし」との間に1行ぶんの空きを入れる（2026-09-10 まるちゃん） */
   margin-top:1.3em;
+  /* ★この2行だけ、ホホバの実と葉にかからない高さへ上げられるようにする
+     （2026-09-11 まるちゃん）。並びの高さは変えずに見た目だけ動かす形にしてある
+     ＝上の行（商品名・１５０万の中）の高さは動かない。上げ幅は下の処理が測って入れる。 */
+  position:relative;
 }
 /* ★スマホ（正方形の写真）だけ、字を右そろえにする（2026-09-10 まるちゃん）。
    右はしは、瓶の「太い金の部分」のぎりぎり手前（位置は字を並べる処理が測って決める）。
@@ -390,6 +393,12 @@ body:not(.ready) .buy .s{visibility:hidden}
    並びの幅は変えずに見た目だけ動かす形にしてある（余白でずらすと、かたまりの幅が変わって
    字がどんどん小さくなる＝2026-09-10 に実際に起きた）。 */
 .cap .ja4 .p1,.cap .ja4 .p2{position:relative}
+/* ★字の置き場所を測っている間だけ、登場の演出（拡大・ぼかし・ずらし）を止める。
+   演出の途中で測ると、拡大された大きさで場所を決めてしまい、
+   出る前と出たあとで見え方が変わる（2026-09-11 に日本語版と中国語版がそろわなかった原因）。 */
+.cap.hakaru .p1,.cap.hakaru .p2,.cap.hakaru .p4,.cap.hakaru .p5,.cap.hakaru .p6{
+  transform:none !important;filter:none !important;
+}
 @media (prefers-reduced-motion: reduce){
   .cap .p2{transform:none;filter:none}
 }
@@ -1259,22 +1268,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
-/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
-.cap .ja4{align-items:flex-end}
-.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -2313,6 +2306,9 @@ function alignTextTop(){
          外さずに測ると「ずらしたぶん」まで幅に数えてしまい、測り直すたびに
          字がどんどん小さくなる（2026-09-10 に実際に起きた）。 */
       li.style.transform = '';
+      /* ★測っている間は登場の演出を止める（止めないと拡大された大きさで場所が決まる） */
+      var lcap = last.querySelector('.cap');
+      if (lcap) lcap.classList.add('hakaru');
       /* ★この1枚は自分で置き場所を決めるので、全体を縮める指定は使わない
          （縮む指定が入ると、測って出したずらし幅がずれる） */
       li.style.setProperty('--cap-scale', '1');
@@ -2322,9 +2318,30 @@ function alignTextTop(){
       var hb2 = heroEl.getBoundingClientRect();
       /* 瓶の「太い金の部分」の左ふち＝帯の幅の58.9%（実測：帯375のとき221） */
       var kin = hb2.width * 0.589;
-      /* ★商品名の行がいちばん長いので、その行が置ける幅で字の大きさを決める。
-         商品名は瓶の細い白い首の高さに置くので、そこの左ふち（帯の幅の66%）まで使える。 */
-      shrinkToFit(lja, hb2.width * 0.62);
+      /* ★字の大きさは「帯の幅の4.032%」に決め打ちする（帯375のとき約15.1）。
+         ★2026-09-11 まるちゃん「字の大きさを4/5に」＝それまでの5.04%を0.8倍した値。
+         ★なぜ決め打ちか（2026-09-11 まるちゃん「中国語版と日本語版、最後の画面がちがう」）＝
+           行の長さから自動で決めていたため、言葉が短い中国語だけ字が大きくなり、
+           日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           決め打ちにすれば、どちらの言葉でも同じ大きさ・同じ場所になる。
+         そのうえで、機種の字の太さの違いではみ出す時だけ、念のため詰める。 */
+      setFontPx(lja, hb2.width * 0.04032);
+      /* ★はみ出す時だけ、今の大きさから詰める。
+         ★ここで shrinkToFit や textWidth を使ってはいけない（2026-09-11 に両方で事故った）：
+           ①shrinkToFit は先頭で大きさを元に戻すので、上で決め打ちした値が消える。
+           ②textWidth は「見た目の幅」を測るので、商品名の登場の演出（一瞬1.45倍に拡大）まで
+             数えてしまい、字が必要以上に小さくなる。しかも演出が終わる前か後かで答えが変わるため、
+             日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           → 演出に左右されない「並びの上の幅」で測る。 */
+      var room2 = hb2.width * 0.62;
+      for (var t = 0; t < 3; t++){
+        var w2 = 0;
+        lja.querySelectorAll('.nb').forEach(function(n){ if (n.offsetWidth > w2) w2 = n.offsetWidth; });
+        if (!(w2 > room2)) break;
+        var now2 = parseFloat(getComputedStyle(lja).fontSize);
+        if (!(now2 > 0)) break;
+        setFontPx(lja, Math.max(6, now2 * (room2 / w2) * 0.98));
+      }
       /* ★商品名の行だけ、他の行より右へ出す（2026-09-10 まるちゃん）。
          その高さは瓶がいちばん細いので、いちばん右まで置ける。
          動きの指定（ぱっと現れる演出）を壊さないよう、右の余白を減らす形でずらす。 */
@@ -2343,14 +2360,38 @@ function alignTextTop(){
       var cur = pt ? (pt.getBoundingClientRect().top - hb2.top) : 0;
       last.style.setProperty('--text-top',
         Math.max(0, Math.round(hb2.height * 0.144 - cur)) + 'px');
+      /* ★最後の2行（真の最高峰を／あなたの肌に）は、ホホバの実と葉に字がかからない
+         高さに置く（2026-09-11 まるちゃん）。
+         ★実と葉の明るい所は、実測で帯の高さの69.2%から始まる
+           （画像\帯5c_スマホ.jpg を、字が来る横30〜58%の帯で明るさを測って出した。
+            68.5%＝いちばん明るい22／69.5%＝232 と、ここではっきり変わる）。
+           少し余裕を見て、2行の下はしが帯の高さの66%より下へ出ないようにする。
+         ★上の行（から選ばれし）に近づきすぎないよう、半行ぶんの空きは必ず残す。
+         ★並びの高さは変えずに見た目だけ上げるので、商品名と「それが」の高さは動かない。 */
+      var lside = last.querySelector('.side');
+      if (lside){
+        lside.style.top = '';
+        var sb = lside.getBoundingClientRect();
+        var kagiri = hb2.top + hb2.height * 0.66;      /* ここより下へ出さない */
+        var ue = Math.min(0, Math.round(kagiri - sb.bottom));
+        var p4s = last.querySelectorAll('.p4');
+        if (p4s.length){
+          var lastp4 = p4s[p4s.length - 1].getBoundingClientRect();
+          var aki = parseFloat(getComputedStyle(lja).fontSize) * 0.5;
+          ue = Math.max(ue, Math.round(lastp4.bottom + aki - sb.top));
+        }
+        lside.style.top = ue + 'px';
+      }
       /* 右そろえの右はしを、太い金のふちのぎりぎり手前に置く */
       var dx = (kin - hb2.width * 0.02)
              - (lbox.getBoundingClientRect().right - hb2.left);
       li.style.transform = 'translateX(' + Math.round(dx) + 'px)';
+      if (lcap) lcap.classList.remove('hakaru');   /* 測り終わり＝演出をもとに戻す */
     } else {
       if (li) li.style.transform = '';        /* パソコンは指定を外して元のまま */
       if (lp2) lp2.style.left = '';
       var xp1 = last.querySelector('.p1'); if (xp1) xp1.style.left = '';
+      var xsd = last.querySelector('.side'); if (xsd) xsd.style.top = '';
     }
   }
 }
@@ -3665,5 +3706,16 @@ show('home');
 })();
 </script>
 
-
+<script>
+(function(){
+  function tomeru(){
+    var b = document.querySelectorAll("[data-go]");
+    for (var i = 0; i < b.length; i++){
+      b[i].onclick = function(e){ if (e && e.preventDefault) e.preventDefault(); };
+    }
+  }
+  tomeru();
+  setTimeout(tomeru, 1500);
+})();
+</script>
 </body></html>
