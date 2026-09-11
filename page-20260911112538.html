@@ -345,13 +345,21 @@ body:not(.ready) .buy .s{visibility:hidden}
 
 /* 2段階で出す字幕。「それが」→ 少し間をおいて商品名が右へ、劇的に現れる
    （※この3つは上の .cap .ja / .cap .en より後ろに置くこと。順番が逆だと効かない） */
-/* 4行を1行ずつ縦に並べる（各行は中身の幅ちょうどになる） */
+/* 1行ずつ縦に並べる。
+   ★2026-09-10 まるちゃん：商品名（ホホバエッセンス No.31）以外は右そろえにする。
+     右そろえの位置は、瓶の「太い金の部分」にぎりぎり届かない所（下の .in のずらし幅で決まる）。 */
 .cap .ja4{display:flex;flex-direction:column;align-items:center;gap:.3em}
 .cap .p1{opacity:0;transition:opacity 1.0s ease}
 .cap .p1.lit{opacity:1}
 .cap .p2{
   opacity:0;transform:scale(1.45);filter:blur(8px);
   transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.16,.9,.2,1), filter 1.1s ease;
+  /* ★商品名の下に空きを入れる（2026-09-10 まるちゃん）。
+     下の「１５０万の中」の高さは変えず、この行と「それが」の方が上へ上がる。
+     ★上げ幅は「瓶のいちばん細い白い首の所」に商品名が来る高さに合わせてある
+     （そこなら瓶が細いので、いちばん右まで置ける）。 */
+  /* 空きは1行ぶんだけ（下の「真の最高峰を」の前の空きと同じ幅） */
+  margin-bottom:1.3em;
 }
 .cap .p2.lit{opacity:1;transform:none;filter:none}
 .cap .en.p3{opacity:0;transition:opacity 1.1s ease}
@@ -367,16 +375,32 @@ body:not(.ready) .buy .s{visibility:hidden}
   text-shadow:0 1px 2px rgba(0,0,0,.95), 0 0 10px rgba(0,0,0,.9),
               0 0 22px rgba(0,0,0,.82), 0 0 42px rgba(0,0,0,.6);
 }
-/* 最後の2行は、瓶にかからないように左寄せで置く（瓶は絵の右側にある） */
+/* ★最後の2行（真の最高峰を／あなたの肌に）も、「それが」と同じ中央ぞろえにする
+   （2026-09-10 まるちゃん）。以前は瓶を避けるために左寄せ＋右へずらしていたが、
+   かたまりごと左上へ寄せる形にしたので、その必要が無くなった。スマホもパソコンも同じ。 */
 .cap .side{
-  align-self:flex-start;display:flex;flex-direction:column;align-items:flex-start;
-  gap:.25em;margin-left:3%;max-width:50%;margin-top:.15em;
-  /* 瓶にぎりぎり触れる位置まで右へ（瓶の左ふち＝スマホ59%・パソコン66%、ラベルは62%・70%から） */
-  transform:translateX(7vw);
+  align-self:center;display:flex;flex-direction:column;align-items:center;
+  gap:.25em;max-width:none;margin-left:0;
+  /* ★「から選ばれし」との間に1行ぶんの空きを入れる（2026-09-10 まるちゃん） */
+  margin-top:1.3em;
 }
-/* パソコンでは全部の行を中央ぞろえにする */
-@media (min-width:780px){
-  .cap .side{align-self:center;align-items:center;max-width:none;margin-left:0;transform:none}
+/* ★スマホ（正方形の写真）だけ、字を右そろえにする（2026-09-10 まるちゃん）。
+   右はしは、瓶の「太い金の部分」のぎりぎり手前（位置は字を並べる処理が測って決める）。
+   パソコンは横長の写真で瓶の場所が違うので、今までどおり中央ぞろえのまま。
+   ※この2つは上の .cap .ja4 / .cap .side より後ろに置くこと（順番が逆だと効かない）。 */
+@media (max-width:779px){
+  .cap .ja4{align-items:flex-end}
+  .cap .side{align-self:flex-end;align-items:flex-end}
+}
+/* ★「それが」と商品名だけ、右そろえの位置から少し横へずらす（下の処理が数字を入れる）。
+   並びの幅は変えずに見た目だけ動かす形にしてある（余白でずらすと、かたまりの幅が変わって
+   字がどんどん小さくなる＝2026-09-10 に実際に起きた）。 */
+.cap .ja4 .p1,.cap .ja4 .p2{position:relative}
+/* ★字の置き場所を測っている間だけ、登場の演出（拡大・ぼかし・ずらし）を止める。
+   演出の途中で測ると、拡大された大きさで場所を決めてしまい、
+   出る前と出たあとで見え方が変わる（2026-09-11 に日本語版と中国語版がそろわなかった原因）。 */
+.cap.hakaru .p1,.cap.hakaru .p2,.cap.hakaru .p4,.cap.hakaru .p5,.cap.hakaru .p6{
+  transform:none !important;filter:none !important;
 }
 @media (prefers-reduced-motion: reduce){
   .cap .p2{transform:none;filter:none}
@@ -1466,8 +1490,8 @@ var ZH = {
   "最高の品質をもつ":"是擁有最高品質的",
   "至高のホホバ…":"至高荷荷芭…",
   "それが":"那就是",
-  "“ホホバエッセンス No.31”":"「荷荷芭精華 No.31」",
-  "１５０万の中から選ばれし":"從１５０萬中選出",
+  "１５０万の中":"從１５０萬之中",
+  "から選ばれし":"脫穎而出",
   "真の最高峰を":"真正的顛峰",
   "あなたの肌に":"獻給您的肌膚",
   "海の哲学者と砂漠の奇跡が紡いだ、ひとつの物語":"海洋哲學家與沙漠奇蹟交織而成的故事",
@@ -1756,10 +1780,14 @@ var HEROS = [
     /* 字の出る時刻（ミリ秒）。最後の3行は同じ間合い(tGap)でそろえる */
     tP1:700, tP2:4200, tP3:5100, tP4:5900, tGap:1850,
     /* 白黒のうちに「それが」だけ出て、色がついた瞬間に商品名がその右へ劇的に現れる */
-    jaA:"それが", jaB:"“ホホバエッセンス No.31”",
-    /* 青くなり始めた時に、2行目・3行目として続けて出る */
-    jaC:"１５０万の中から選ばれし",
-    jaD:"真の最高峰を", jaE:"あなたの肌に" }   /* この2行は瓶にかからないよう左寄せ */
+    /* ★かぎかっこは付けない（2026-09-10 まるちゃん） */
+    jaA:"それが", jaB:"ホホバエッセンス No.31",
+    /* 青くなり始めた時に、2行目・3行目として続けて出る。
+       ★2026-09-10 まるちゃん：「１５０万の中」と「から選ばれし」の2行に分けて、
+         この2行は同時に出す（どちらも同じ組の字として扱う） */
+    jaC:"１５０万の中", jaC2:"から選ばれし",
+    /* この2行は、上の組から1行ぶん空けてから出す */
+    jaD:"真の最高峰を", jaE:"あなたの肌に" }
 ];
 /* 一番はじめの画面に出す「白い背景の瓶だけ」の写真。まだ無い時は空になり、この画面は出ない */
 var IMG_BOTTLE_WHITE = "img/binw-9de5b69389.jpg";      /* 緑＝ホホバが入っている */
@@ -2016,6 +2044,7 @@ HEROS.forEach(function(h, i){
                  '<span class="nb p1">' + esc(h.jaA) + '</span>' +
                  '<span class="nb p2">' + esc(h.jaB) + '</span>' +
                (h.jaC ? '<span class="nb p4">' + esc(h.jaC) + '</span>' : '') +
+               (h.jaC2 ? '<span class="nb p4">' + esc(h.jaC2) + '</span>' : '') +
                (h.jaD ? '<span class="side">' +
                           '<span class="nb p5">' + esc(h.jaD) + '</span>' +
                           (h.jaE ? '<span class="nb p6">' + esc(h.jaE) + '</span>' : '') +
@@ -2258,6 +2287,92 @@ function alignTextTop(){
     var k = (room > 0 && h > room) ? Math.max(0.6, room / h) : 1;
     el.style.setProperty('--cap-scale', k.toFixed(3));
   });
+
+  /* ★最後の1枚（No.31の瓶）だけ、字のかたまりを上と左へ寄せる（2026-09-10 まるちゃん）。
+     瓶の金色は「上が細く・下が太い」形。「１５０万の中から選ばれし」の行が、
+     金の細い所の高さで収まる位置まで下げ、かつ金に触れないところまで左へ寄せる。
+     ★上げすぎると前の4枚の字幕と高さのバランスが崩れるので、これ以上は上げない。
+     ★数字は帯の大きさに対する割合。実測（帯375のとき 上へ68・左へ72）から出した。
+     パソコンは横長の写真で瓶の位置が違うので、今までどおり動かさない。 */
+  var last = slides[slides.length - 1];
+  if (last){
+    var li = last.querySelector('.cap .in');
+    var lja = last.querySelector('.ja');
+    var lbox = last.querySelector('.ja4');
+    /* ★「映像だけ」の版は、画面が広くても正方形（スマホ用）の写真を使うので、
+       字の置き方もスマホと同じにする（2026-09-10） */
+    var sema = (window.__FILM_ONLY__ === true)
+             ? true : !window.matchMedia('(min-width:780px)').matches;
+    var lp2 = last.querySelector('.p2');
+    if (sema && li && lja && lbox){
+      /* ★測る前に、前回つけたずらしを全部いったん外す。
+         外さずに測ると「ずらしたぶん」まで幅に数えてしまい、測り直すたびに
+         字がどんどん小さくなる（2026-09-10 に実際に起きた）。 */
+      li.style.transform = '';
+      /* ★測っている間は登場の演出を止める（止めないと拡大された大きさで場所が決まる） */
+      var lcap = last.querySelector('.cap');
+      if (lcap) lcap.classList.add('hakaru');
+      /* ★この1枚は自分で置き場所を決めるので、全体を縮める指定は使わない
+         （縮む指定が入ると、測って出したずらし幅がずれる） */
+      li.style.setProperty('--cap-scale', '1');
+      if (lp2) lp2.style.left = '';
+      var lp1b = last.querySelector('.p1');
+      if (lp1b) lp1b.style.left = '';
+      var hb2 = heroEl.getBoundingClientRect();
+      /* 瓶の「太い金の部分」の左ふち＝帯の幅の58.9%（実測：帯375のとき221） */
+      var kin = hb2.width * 0.589;
+      /* ★字の大きさは「帯の幅の5.04%」に決め打ちする（帯375のとき約18.9）。
+         ★なぜ決め打ちか（2026-09-11 まるちゃん「中国語版と日本語版、最後の画面がちがう」）＝
+           行の長さから自動で決めていたため、言葉が短い中国語だけ字が大きくなり、
+           日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           決め打ちにすれば、どちらの言葉でも同じ大きさ・同じ場所になる。
+         そのうえで、機種の字の太さの違いではみ出す時だけ、念のため詰める。 */
+      setFontPx(lja, hb2.width * 0.0504);
+      /* ★はみ出す時だけ、今の大きさから詰める。
+         ★ここで shrinkToFit や textWidth を使ってはいけない（2026-09-11 に両方で事故った）：
+           ①shrinkToFit は先頭で大きさを元に戻すので、上で決め打ちした値が消える。
+           ②textWidth は「見た目の幅」を測るので、商品名の登場の演出（一瞬1.45倍に拡大）まで
+             数えてしまい、字が必要以上に小さくなる。しかも演出が終わる前か後かで答えが変わるため、
+             日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           → 演出に左右されない「並びの上の幅」で測る。 */
+      var room2 = hb2.width * 0.62;
+      for (var t = 0; t < 3; t++){
+        var w2 = 0;
+        lja.querySelectorAll('.nb').forEach(function(n){ if (n.offsetWidth > w2) w2 = n.offsetWidth; });
+        if (!(w2 > room2)) break;
+        var now2 = parseFloat(getComputedStyle(lja).fontSize);
+        if (!(now2 > 0)) break;
+        setFontPx(lja, Math.max(6, now2 * (room2 / w2) * 0.98));
+      }
+      /* ★商品名の行だけ、他の行より右へ出す（2026-09-10 まるちゃん）。
+         その高さは瓶がいちばん細いので、いちばん右まで置ける。
+         動きの指定（ぱっと現れる演出）を壊さないよう、右の余白を減らす形でずらす。 */
+      if (lp2) lp2.style.left = Math.round(hb2.width * (0.645 - 0.568)) + 'px';
+      /* ★「それが」は「１５０万の中」の行の中央にそろえる（2026-09-10 まるちゃん） */
+      var lp1 = last.querySelector('.p1'), lp4 = last.querySelector('.p4');
+      if (lp1 && lp4){
+        var c1 = lp1.getBoundingClientRect(), c4 = lp4.getBoundingClientRect();
+        lp1.style.left = Math.round(((c4.left + c4.right) - (c1.left + c1.right)) / 2) + 'px';
+      }
+      /* ★商品名の行が、いつも同じ高さ（帯の15.5%＝瓶のいちばん細い白い首の所）に
+         来るように上下を決める。ここを基準にすると、下の行の空きを変えても
+         商品名と「それが」の高さは動かない。 */
+      last.style.setProperty('--text-top', '0px');
+      var pt = last.querySelector('.p2') || last.querySelector('.p4');
+      var cur = pt ? (pt.getBoundingClientRect().top - hb2.top) : 0;
+      last.style.setProperty('--text-top',
+        Math.max(0, Math.round(hb2.height * 0.144 - cur)) + 'px');
+      /* 右そろえの右はしを、太い金のふちのぎりぎり手前に置く */
+      var dx = (kin - hb2.width * 0.02)
+             - (lbox.getBoundingClientRect().right - hb2.left);
+      li.style.transform = 'translateX(' + Math.round(dx) + 'px)';
+      if (lcap) lcap.classList.remove('hakaru');   /* 測り終わり＝演出をもとに戻す */
+    } else {
+      if (li) li.style.transform = '';        /* パソコンは指定を外して元のまま */
+      if (lp2) lp2.style.left = '';
+      var xp1 = last.querySelector('.p1'); if (xp1) xp1.style.left = '';
+    }
+  }
 }
 
 /* 映画の題名の2行を、それぞれ必ず1行に収める（はみ出しそうなら少しだけ小さくする） */
@@ -2755,8 +2870,12 @@ function setPhoto(i, prep){
     if (p2) seqTimers.push(setTimeout(function(){ p2.classList.add('lit'); }, tP2));
     if (p3) seqTimers.push(setTimeout(function(){ p3.classList.add('lit'); }, tP3));
     /* 最後の3行は、まったく同じ間合いで1行ずつ出す */
-    var p4 = s.querySelector('.p4'), p5 = s.querySelector('.p5'), p6 = s.querySelector('.p6');
-    if (p4) seqTimers.push(setTimeout(function(){ p4.classList.add('lit'); }, tP4));
+    /* ★「１５０万の中」「から選ばれし」は2行あるが、同時に出す（2026-09-10 まるちゃん） */
+    var p4s = s.querySelectorAll('.p4');
+    var p5 = s.querySelector('.p5'), p6 = s.querySelector('.p6');
+    if (p4s.length) seqTimers.push(setTimeout(function(){
+      p4s.forEach(function(e){ e.classList.add('lit'); });
+    }, tP4));
     if (p5) seqTimers.push(setTimeout(function(){ p5.classList.add('lit'); }, tP4 + gap));
     if (p6) seqTimers.push(setTimeout(function(){ p6.classList.add('lit'); }, tP4 + gap * 2));
   });
