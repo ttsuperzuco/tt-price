@@ -1,0 +1,3849 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>T&amp;T SIGNATURE</title>
+</head>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+
+:root{
+  --cream:#faf6f0;
+  --cream2:#f2ebe1;
+  --ink:#20323a;
+  --ink-soft:#5c6f78;
+  --teal:#1f6b7d;
+  --teal-dark:#164e5c;
+  --gold:#b08a4e;
+  --gold-soft:#d9c39a;
+  --card:#ffffff;
+  --line:#e6ddd0;
+  --shadow:0 10px 30px rgba(32,50,58,.10);
+  --shadow-lift:0 18px 44px rgba(32,50,58,.16);
+}
+
+html,body{
+  margin:0;padding:0;overflow-x:hidden;
+  /* ★Androidが勝手に字を大きくして、はみ出させるのを止める */
+  -webkit-text-size-adjust:100%;text-size-adjust:100%;
+}
+body{
+  background:var(--cream);
+  color:var(--ink);
+  font-family:"Hiragino Sans","Noto Sans JP","Yu Gothic",-apple-system,"Segoe UI",sans-serif;
+  line-height:1.7;
+  -webkit-font-smoothing:antialiased;
+}
+.serif{font-family:"Hiragino Mincho ProN","Noto Serif JP","Yu Mincho",serif}
+
+/* ★大きさを合わせ終えるまで、字は場所を取ったまま隠しておく。
+   （合わせる前に見せると、大きい字が一瞬出てから縮む動きがお客様に見える） */
+body:not(.ready) .cap,
+body:not(.ready) .intro .ln,
+body:not(.ready) .title,
+body:not(.ready) .gcard .in,
+body:not(.ready) .buy .t,
+body:not(.ready) .buy .s{visibility:hidden}
+
+/* 最初の画面は、写真とボタンまでがスマホの1画面にきっちり収まるようにする */
+.wrap{
+  max-width:760px;margin:0 auto;padding:0 18px;
+  min-height:100vh;min-height:100dvh;
+  display:flex;flex-direction:column;
+}
+#viewHome{flex:1;display:flex;flex-direction:column}
+/* 帯の下の残りを、見出しとボタンで受け止める（下に空白を余らせない） */
+.homelower{flex:1;display:flex;flex-direction:column;justify-content:center;padding-bottom:6px}
+/* ボタンが余った分を吸い上げて大きくなる（下に空白を残さない） */
+.homelower .gate{flex:1 1 auto;max-height:250px}
+.homelower .gcard{height:100%}
+#viewList,#viewItem{padding-bottom:64px}
+
+/* ── 上のバー ───────────────────────── */
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:rgba(250,246,240,.92);
+  backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:760px;margin:0 auto;padding:10px 18px;
+  display:flex;align-items:center;gap:12px;
+}
+.brand{
+  font-size:15px;letter-spacing:.22em;font-weight:700;color:var(--teal);
+  flex:1;white-space:nowrap;
+}
+.langbtn{
+  border:1px solid var(--line);background:#fff;color:var(--ink-soft);
+  border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;
+}
+.langbtn.on{background:var(--teal);color:#fff;border-color:var(--teal)}
+
+/* ── 戻る ───────────────────────── */
+.back{
+  display:none;width:100%;margin:14px 0 4px;
+  border:none;border-radius:14px;cursor:pointer;
+  background:linear-gradient(to bottom,#ffb347,#ff9800);
+  color:#fff;font-weight:800;font-size:18px;padding:16px;
+  box-shadow:0 4px 0 rgba(130,75,0,.45),0 8px 16px rgba(0,0,0,.14);
+}
+.back:active{transform:translateY(2px);box-shadow:0 2px 0 rgba(130,75,0,.45)}
+.show{display:block}
+
+/* ── 表紙（絵がゆっくり入れ替わる） ─────────── */
+/* 表紙＝画面の上半分を写真だけで埋める（左右いっぱい・角も落とさない・余白なし） */
+.hero{
+  position:relative;overflow:hidden;
+  width:100vw;margin-left:calc(50% - 50vw);margin-top:0;margin-bottom:0;
+  /* ★スマホ用の写真（1600×1600）とぴったり同じ形＝1枚も切れない */
+  aspect-ratio:1/1;
+}
+/* ★パソコンは横長の写真（2000×900）とぴったり同じ形＝ここも切れない */
+@media (min-width:780px){
+  .hero{aspect-ratio:20/9}
+}
+.slide{
+  position:absolute;inset:0;opacity:0;transition:opacity 1.6s ease;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+.slide.on{opacity:1}
+.s1{background:linear-gradient(140deg,#2d7c8e 0%,#1f6b7d 45%,#123f4b 100%)}
+.s2{background:linear-gradient(140deg,#c9a978 0%,#a9834b 55%,#6f5227 100%)}
+.s3{background:linear-gradient(140deg,#e6d9c6 0%,#cbb493 50%,#8d7a5c 100%)}
+/* ── 冒頭の白い光の画面（映画の予告のように、言葉がゆっくり浮かぶ） ───── */
+.intro{
+  position:absolute;inset:0;z-index:5;
+  background:radial-gradient(120% 90% at 50% 42%, #ffffff 0%, #fffdfa 46%, #f6f1e8 100%);
+  transition:opacity 1.1s ease;
+}
+/* 2行ずつのまとまり。どちらも帯のまん中にそろえる（重ねて置く） */
+/* ★ここも「まん中ぞろえ」をやめ、字の書き出しを写真の字幕と同じ高さにそろえる */
+.intro .grp{
+  position:absolute;left:0;right:0;bottom:auto;top:var(--text-top);z-index:3;
+  display:flex;flex-direction:column;align-items:center;
+  gap:.5em;padding:0 22px;text-align:center;
+}
+.intro.gone{opacity:0;pointer-events:none}
+/* ★一番はじめの画面：まっ白の中に、瓶だけがすーっと浮かび上がる */
+.opening{
+  position:absolute;inset:0;z-index:7;background:#ffffff;
+  display:flex;align-items:center;justify-content:center;
+  transition:opacity .8s ease;
+}
+.opening.off{display:none}
+.opening .btl{
+  /* 縦450。ただし帯からはみ出さないよう、画面が低い時は帯の82%までにする */
+  position:relative;height:min(450px, 82%);
+  opacity:0;transform:scale(.93);
+  transition:opacity 1.3s ease, transform 1.7s cubic-bezier(.2,.7,.3,1);
+}
+.opening.lit .btl{opacity:1;transform:none}
+.opening .btl img{height:100%;width:auto;display:block}
+/* 緑（中身入り）を青（空）の上にぴったり重ねる。同じ1枚の写真から作ってあるので
+   位置は完全に一致する＝色が変わる途中で瓶が1ミリも動かない */
+.opening .btl .top{position:absolute;left:0;top:0;opacity:1}
+/* 上から減らすのではなく、瓶ぜんたいが4秒かけてゆっくり緑から青へ変わる */
+.opening.drain .btl .top{opacity:0;transition:opacity 4s linear}
+.opening.gone{opacity:0;pointer-events:none}
+/* ★次の写真へ移る直前：白い画面が、まん中からじわっと灰色に包まれていき、
+   最後は1枚目のクジラの写真とまったく同じ色あいの灰色で画面が埋まる。
+   そこから写真へ切り替わるので、境目が分からず自然につながる。 */
+.intro .dim,.intro .rays,.intro .core{display:none}   /* 昔の演出の名残（使わない） */
+/* ★灰色になりきったあとに出る「映画の題名」の一枚。
+   白文字・細めの明朝系・字間を広めにとって、映画のタイトルらしい品を出す。
+   英語をほんの少し大きく、日本語はその下に控えめに。 */
+.intro .title{
+  position:absolute;left:0;right:0;top:50%;z-index:8;
+  transform:translateY(-50%);
+  padding:0 12px;text-align:center;color:#fff;
+  opacity:0;transition:opacity 1.2s ease;
+  pointer-events:none;
+}
+.intro .title.on{opacity:1}
+.intro .title.out{opacity:0;transition:opacity .8s ease}
+.intro .title .ten{
+  font-family:"Cormorant Garamond","EB Garamond",Garamond,serif;
+  /* 英語は日本語より小さく、下に添える。必ず1行（入りきらない画面では自動で少し縮む） */
+  white-space:nowrap;
+  font-weight:400;letter-spacing:.12em;line-height:1.5;
+  font-size:clamp(10px,2.5vw,18px);
+  margin-top:.9em;
+  text-shadow:0 1px 14px rgba(0,0,0,.45);
+}
+.intro .title .tja{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  white-space:nowrap;
+  font-weight:400;letter-spacing:.14em;line-height:1.6;
+  font-size:clamp(13px,3.4vw,25px);
+  text-shadow:0 1px 14px rgba(0,0,0,.45);
+}
+/* ★題名は1文字ずつ浮かび上がる（映画の題名のように・2026-09-04 まるちゃん）。
+   場所は最初から全部取っておき、見え方だけを1文字ずつ変える
+   （こうすると、打っている途中で行の位置が動かない） */
+.intro .title .tja .ch{opacity:0;transition:opacity .16s linear}
+.intro .title .tja .ch.on{opacity:1}
+/* 英語は、日本語を打ち終わってから静かに出る */
+.intro .title .ten{opacity:0}
+.intro .title.typed .ten{opacity:.9;transition:opacity 1s ease}
+/* 打ち出す時は、題名の枠そのものはすっと出す（ゆっくり浮かぶと打つ動きが見えない） */
+.intro .title.typing{transition:opacity .35s ease}
+.intro .wash{
+  position:absolute;inset:0;pointer-events:none;z-index:6;
+  will-change:opacity,transform;
+  /* まん中はしっかり灰色、外へいくほど自然に消えていく「1枚だけ」の層。
+     これを大きくしていくと、境目のないまま画面が灰色で満ちる。
+     （前は〈丸い層〉と〈四角い層〉の2枚だったので、縁が段になって見えていた） */
+  background:radial-gradient(circle at 50% 46%,
+    rgba(91,83,77,1) 0%,   rgba(91,83,77,1) 22%,  rgba(91,83,77,.88) 38%,
+    rgba(91,83,77,.62) 55%, rgba(91,83,77,.34) 72%, rgba(91,83,77,.12) 87%,
+    rgba(91,83,77,0) 100%);
+  opacity:0;transform:scale(.35);
+}
+@keyframes fxWash{
+  0%  {opacity:0;   transform:scale(.35)}
+  100%{opacity:1;   transform:scale(4.2)}
+}
+.intro.flare .wash{animation:fxWash .9s cubic-bezier(.35,0,.5,1) forwards}
+/* 字が、広がってくる灰色にすーっとのまれて見えなくなる */
+@keyframes lnFlare{
+  0%  {opacity:1;filter:blur(0);transform:none}
+  30% {opacity:1;filter:blur(0);transform:scale(1.01)}
+  62% {opacity:.45;filter:blur(4px);transform:scale(1.06)}
+  100%{opacity:0;filter:blur(11px);transform:scale(1.12)}
+}
+.intro.flare .l3,.intro.flare .l4{animation:lnFlare .9s ease forwards !important}
+.intro .ln{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  font-weight:400;color:#2b2420;
+  line-height:1.55;opacity:0;
+  /* ★どの機種でも1行のまま折り返さない（字が1文字だけ次の行に落ちるのを防ぐ）。
+     字の大きさは画面の幅から決め、余裕を多めにとってある。 */
+  white-space:nowrap;
+}
+.intro .l1,.intro .l2,.intro .l2b{font-size:clamp(15px,5.2vw,30px);letter-spacing:.16em}
+.intro .l3{font-size:clamp(22px,6.8vw,42px);letter-spacing:.2em}
+.intro .l4{
+  font-size:clamp(24px,7.2vw,44px);font-weight:500;letter-spacing:.14em;
+  margin-top:.15em;
+}
+/* 出したり消したりの間合い（白い光だけの間から始まって、合計およそ7.7秒） */
+@keyframes lnIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+@keyframes lnOut{ from{opacity:1} to{opacity:0} }
+/* 1行ずつ順番に出して、3行そろってから静かに引く。
+   ★1行目は、瓶の画面が消えたらすぐ出る（待たせない） */
+.intro .l1 {animation:lnIn .8s ease .85s forwards, lnOut .6s ease 5.65s forwards}
+.intro .l2 {animation:lnIn .8s ease 2.05s forwards, lnOut .6s ease 5.65s forwards}
+.intro .l2b{animation:lnIn .8s ease 3.25s forwards, lnOut .6s ease 5.65s forwards}
+/* 「奇跡の美容成分」と「ホホバエッセンス」は同時に出す */
+.intro .l3{animation:lnIn .9s ease 6.5s forwards}
+.intro .l4{animation:lnIn .9s ease 6.5s forwards}
+@media (prefers-reduced-motion: reduce){
+  .intro .l1,.intro .l2,.intro .l2b{animation:none;opacity:0}
+  .intro .l3,.intro .l4{animation:none;opacity:1}
+  .intro.flare .l3,.intro.flare .l4{animation:none !important;opacity:0}
+  .intro.flare .wash{animation:none;opacity:1;transform:scale(4.2)}
+}
+
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。「奇跡の美容成分／ホホバエッセンス」のあと、
+   「海の哲学者と…ひとつの物語」の字幕の前に、ひと呼吸はさむ。
+   絵は差し込む時に、元のデザインをそのままに、クリーム色の地だけを左右に足して
+   画面の形ぴったりに作ってあるので、ここでは画面いっぱいに敷くだけでよい。 */
+.intro .label{
+  /* ★重ねる高さ7＝光のもや(6)より上、物語の題名(8)より下。
+     ここを6より下にすると、光のもやに隠れて出ない（2026-09-07に実際に起きた） */
+  position:absolute;inset:0;z-index:7;opacity:0;pointer-events:none;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+  transition:opacity 1.1s ease;
+}
+.intro .label.on{opacity:1}
+
+/* 重ねて置く絵（白黒→緑→青と、ゆっくり色がついていく） */
+.slide .layer{
+  position:absolute;inset:0;opacity:0;
+  /* ★はじめから「削っていない」形を書いておく。これが無いと、削る形へ
+     なめらかに変われず（形が無い→形あり は途中が作れない）、パッと消えてしまう。 */
+  clip-path:inset(0 0 0 0);
+  transition:opacity 2.6s ease;
+  background-size:cover;background-position:center;background-repeat:no-repeat;
+}
+.slide .layer.on{opacity:1}
+/* 中身が減って現れる方の絵（空の瓶）は、じわっと出さずに最初から置いておく
+   ＝上の絵に隠れているので見えない。こうすると減った所が濁らない。 */
+.slide .layer.instant{transition:none}
+/* 上から中身が減っていく見せ方：上に重ねた緑を、上のふちから少しずつ削って
+   下に敷いた青（空の瓶）を現す。削れていく線が液面に見える。
+   ★2026-08-31に写真を新しくした（白黒は瓶が写っていない背景だけ、緑と青は瓶あり）。
+     測り直すと、緑と青で色が違うのは スマホ51.0〜86.8% / パソコン53.0〜89.2% の帯だけで、
+     その上下はまったく同じ絵だった。だから削り始めを 50% に置いても見た目は変わらない。
+     ここから始めれば、動いている間ずっと「液面が瓶の中をゆっくり下りる」だけになり、
+     一気に減ったように見えない（0%から始めると、瓶より上の何も変わらない所で
+     時間を使いきってしまい、肝心の瓶の中を短時間で走り抜けていた）。
+   ★パソコン用の3枚も同じように調べたら、色が違うのは 54.2%〜91.3% の帯だけだった。
+     どちらも50%から始めれば見た目が変わらないので、スマホもパソコンも同じ50%にした。 */
+.slide{--drain-from:50%}
+.slide .layer.drain-start{clip-path:inset(var(--drain-from) 0 0 0);transition:none}
+.slide .layer.drained{
+  clip-path:inset(90% 0 0 0);       /* 瓶の底まで＝ここから下は2枚とも同じ絵 */
+  /* 段をつけて減らす（一気に流れるより液面らしい）。
+     ★2026-09-04 まるちゃん「かくかくしてる」＝5段では段差が大きすぎたので20段にし、
+     2026-09-05 にさらに30段へ。7秒を30回に分ける＝0.23秒ごとに下りるので段はほぼ見えない */
+  transition:clip-path 7s steps(30, start);
+}
+
+/* ── 写真の上に書く字幕（絵に焼き込まず、ページが書く） ───── */
+.cap{
+  position:absolute;inset:0;z-index:2;
+  /* ★上下のまん中ぞろえだけをやめて、書き出しの高さを全部の画面でそろえる。
+     （左右のそろえ方は今までどおり＝字のかたまりは中身の幅ちょうどで真ん中に置く。
+       ここを変えると、瓶ぎわに寄せた最後の2行の位置がずれる） */
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:10px;text-align:center;
+  padding-top:var(--text-top,10px);
+  /* 明るい写真でも白い字が沈まないように、真ん中だけうっすら影を敷く */
+  background:linear-gradient(to bottom,
+    rgba(0,0,0,0) 26%, rgba(0,0,0,.34) 40%,
+    rgba(0,0,0,.34) 62%, rgba(0,0,0,0) 76%);
+}
+.cap{overflow:hidden}                      /* 万一はみ出しても帯の外へ出さない */
+/* 書き出しの高さ＝帯の上から何割の所か。5枚とも・冒頭の白い光の画面とも同じ値を使う */
+.slide,.intro{--text-top:35%}
+.cap .in{
+  max-width:min(98%,760px);min-width:0;
+  /* 行数が多くて帯の下からはみ出す画面だけ、書き出しの高さは変えずに全体を少し小さくする */
+  transform:scale(var(--cap-scale,1));transform-origin:top center;
+}
+.cap .nb{white-space:nowrap;display:inline-block}
+/* 1行ずつ順番に浮かび上がらせる（写真の字幕） */
+.cap .in.stepped .line,
+.cap .in.stepped .en{opacity:0;transition:opacity .55s ease}
+.cap .in.stepped .line.lit{opacity:1}
+.cap .in.stepped .en.lit{opacity:.92}
+
+.cap .ja{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  color:#fff;letter-spacing:.08em;line-height:1.55;
+  font-size:clamp(17px,5.4vw,34px);
+  text-shadow:0 2px 12px rgba(0,0,0,.6), 0 0 2px rgba(0,0,0,.5);
+}
+.cap .en{
+  font-family:"EB Garamond",Garamond,serif;font-style:italic;
+  color:#fff;opacity:.92;letter-spacing:.03em;line-height:1.5;
+  font-size:clamp(11px,3.0vw,19px);margin-top:.5em;
+  text-shadow:0 2px 10px rgba(0,0,0,.6);
+}
+
+/* 2段階で出す字幕。「それが」→ 少し間をおいて商品名が右へ、劇的に現れる
+   （※この3つは上の .cap .ja / .cap .en より後ろに置くこと。順番が逆だと効かない） */
+/* 1行ずつ縦に並べる。
+   ★2026-09-10 まるちゃん：商品名（ホホバエッセンス No.31）以外は右そろえにする。
+     右そろえの位置は、瓶の「太い金の部分」にぎりぎり届かない所（下の .in のずらし幅で決まる）。 */
+.cap .ja4{display:flex;flex-direction:column;align-items:center;gap:.3em}
+.cap .p1{opacity:0;transition:opacity 1.0s ease}
+.cap .p1.lit{opacity:1}
+.cap .p2{
+  opacity:0;transform:scale(1.45);filter:blur(8px);
+  transition:opacity 1.1s ease, transform 1.1s cubic-bezier(.16,.9,.2,1), filter 1.1s ease;
+  /* ★商品名の下に空きを入れる（2026-09-10 まるちゃん）。
+     下の「１５０万の中」の高さは変えず、この行と「それが」の方が上へ上がる。
+     ★上げ幅は「瓶のいちばん細い白い首の所」に商品名が来る高さに合わせてある
+     （そこなら瓶が細いので、いちばん右まで置ける）。 */
+  /* 空きは1行ぶんだけ（下の「真の最高峰を」の前の空きと同じ幅） */
+  margin-bottom:1.3em;
+}
+.cap .p2.lit{opacity:1;transform:none;filter:none}
+.cap .en.p3{opacity:0;transition:opacity 1.1s ease}
+.cap .en.p3.lit{opacity:.92}
+/* 2行目・3行目。青くなり始めた時に、ゆっくり静かに立ち上がる（荘厳に） */
+.cap .p4,.cap .p5,.cap .p6{
+  opacity:0;transform:translateY(12px) scale(1.06);
+  transition:opacity 1.8s ease, transform 1.8s cubic-bezier(.16,.9,.2,1);
+}
+.cap .p4.lit,.cap .p5.lit,.cap .p6.lit{opacity:1;transform:none}
+/* 最後の2行は、明るい地面の上に重なるので、字のまわりに濃い影をしっかり付けて読めるようにする */
+.cap .side .nb{
+  text-shadow:0 1px 2px rgba(0,0,0,.95), 0 0 10px rgba(0,0,0,.9),
+              0 0 22px rgba(0,0,0,.82), 0 0 42px rgba(0,0,0,.6);
+}
+/* ★最後の2行（真の最高峰を／あなたの肌に）も、「それが」と同じ中央ぞろえにする
+   （2026-09-10 まるちゃん）。以前は瓶を避けるために左寄せ＋右へずらしていたが、
+   かたまりごと左上へ寄せる形にしたので、その必要が無くなった。スマホもパソコンも同じ。 */
+.cap .side{
+  align-self:center;display:flex;flex-direction:column;align-items:center;
+  gap:.25em;max-width:none;margin-left:0;
+  /* ★「から選ばれし」との間に1行ぶんの空きを入れる（2026-09-10 まるちゃん） */
+  margin-top:1.3em;
+  /* ★この2行だけ、ホホバの実と葉にかからない高さへ上げられるようにする
+     （2026-09-11 まるちゃん）。並びの高さは変えずに見た目だけ動かす形にしてある
+     ＝上の行（商品名・１５０万の中）の高さは動かない。上げ幅は下の処理が測って入れる。 */
+  position:relative;
+}
+/* ★スマホ（正方形の写真）だけ、字を右そろえにする（2026-09-10 まるちゃん）。
+   右はしは、瓶の「太い金の部分」のぎりぎり手前（位置は字を並べる処理が測って決める）。
+   パソコンは横長の写真で瓶の場所が違うので、今までどおり中央ぞろえのまま。
+   ※この2つは上の .cap .ja4 / .cap .side より後ろに置くこと（順番が逆だと効かない）。 */
+@media (max-width:779px){
+  .cap .ja4{align-items:flex-end}
+  .cap .side{align-self:flex-end;align-items:flex-end}
+}
+/* ★「それが」と商品名だけ、右そろえの位置から少し横へずらす（下の処理が数字を入れる）。
+   並びの幅は変えずに見た目だけ動かす形にしてある（余白でずらすと、かたまりの幅が変わって
+   字がどんどん小さくなる＝2026-09-10 に実際に起きた）。 */
+.cap .ja4 .p1,.cap .ja4 .p2{position:relative}
+/* ★字の置き場所を測っている間だけ、登場の演出（拡大・ぼかし・ずらし）を止める。
+   演出の途中で測ると、拡大された大きさで場所を決めてしまい、
+   出る前と出たあとで見え方が変わる（2026-09-11 に日本語版と中国語版がそろわなかった原因）。 */
+.cap.hakaru .p1,.cap.hakaru .p2,.cap.hakaru .p4,.cap.hakaru .p5,.cap.hakaru .p6{
+  transform:none !important;filter:none !important;
+}
+@media (prefers-reduced-motion: reduce){
+  .cap .p2{transform:none;filter:none}
+}
+
+.dots{
+  position:absolute;left:0;right:0;bottom:12px;z-index:6;
+  display:flex;gap:7px;justify-content:center;
+  opacity:0;transition:opacity .8s ease;
+}
+.dots.show{opacity:1}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.45)}
+.dot.on{background:#fff;width:20px;border-radius:99px}
+
+/* ── 見出し ───────────────────────── */
+.lede{text-align:center;margin:20px 0 4px}
+.lede .en{font-size:11px;letter-spacing:.34em;color:var(--gold);font-weight:700}
+.lede h1{
+  font-family:"EB Garamond",Garamond,"Times New Roman",serif;
+  font-style:italic;font-weight:500;
+  color:#4a3b30;
+  font-size:clamp(24px,6.4vw,38px);margin:0;letter-spacing:.01em;line-height:1.2;
+}
+.lede p{color:var(--ink-soft);font-size:14px;margin:10px 0 0}
+
+/* ── 入口の2枚 ───────────────────── */
+/* 左＝オリジナル／右＝セレクト の横ならび */
+.gate{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0 8px}
+/* とても細い画面（小さな窓で開いた時など）は、横に並べると文字が潰れるので縦に積む */
+@media (max-width:345px){
+  .gate{grid-template-columns:1fr}
+  .gcard{min-height:118px}
+}
+.gcard{
+  position:relative;border-radius:20px;overflow:hidden;cursor:pointer;
+  border:none;padding:0;text-align:left;color:#fff;
+  box-shadow:var(--shadow);transition:transform .18s,box-shadow .18s;
+  min-height:168px;display:block;width:100%;font-family:inherit;
+}
+.gcard:active{transform:translateY(2px)}
+.gcard:hover{box-shadow:var(--shadow-lift)}
+.gcard .bg{position:absolute;inset:0}
+.g1 .bg{background:linear-gradient(135deg,#2a7688 0%,#164e5c 100%)}
+.g2 .bg{background:linear-gradient(135deg,#bf9c68 0%,#7d5f30 100%)}
+/* 左寄せの大きなボタン。上に日本語（小さく）／下に英語（大きく） */
+.gcard .in{
+  position:relative;z-index:2;padding:20px 12px;
+  display:flex;flex-direction:column;align-items:flex-start;justify-content:center;
+  height:100%;text-align:left;
+}
+/* 上のちいさな肩書き（日本語）＝いちばん小さく */
+.gcard .jp{
+  font-size:clamp(8.5px,2.35vw,11px);letter-spacing:.16em;opacity:.82;
+  white-space:nowrap;margin:0 0 7px;
+}
+/* 主役の大きな名前（英語） */
+.gcard .en{
+  font-size:clamp(23.5px,6.4vw,34px);font-weight:700;letter-spacing:.07em;
+  white-space:nowrap;line-height:1.05;margin:0 0 10px;
+}
+/* 下の説明書き */
+.gcard .ds{
+  font-size:clamp(11px,3.0vw,13.5px);line-height:1.55;opacity:.9;
+  white-space:nowrap;   /* 決めた2行のまま。勝手に3行にならない */
+}
+
+/* ── 商品の並び ───────────────────── */
+.sechead{margin:22px 0 14px;text-align:center}
+.sechead .en{font-size:11px;letter-spacing:.32em;color:var(--gold);font-weight:700}
+.sechead h2{font-size:clamp(20px,4.8vw,25px);margin:6px 0 0;font-weight:600;letter-spacing:.05em}
+
+.items{display:grid;gap:14px}
+.item{
+  display:flex;gap:14px;align-items:stretch;width:100%;
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:12px;cursor:pointer;text-align:left;font-family:inherit;color:inherit;
+  box-shadow:0 4px 14px rgba(32,50,58,.06);transition:transform .16s,box-shadow .16s;
+}
+.item:hover{box-shadow:var(--shadow);transform:translateY(-1px)}
+.item:active{transform:translateY(1px)}
+.thumb{
+  width:96px;min-width:96px;height:96px;border-radius:13px;overflow:hidden;
+  background:linear-gradient(135deg,var(--cream2),#e2d6c3);
+  display:flex;align-items:center;justify-content:center;
+  color:#a8987f;font-size:10.5px;text-align:center;padding:6px;line-height:1.4;
+}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.itxt{flex:1;min-width:0;padding:2px 2px 2px 0}
+.itxt .nm{font-size:16.5px;font-weight:700;line-height:1.4}
+.itxt .sub{font-size:12px;color:var(--ink-soft);margin-top:3px}
+.itxt .one{font-size:13px;color:var(--ink-soft);margin-top:7px;line-height:1.6}
+.price{margin-top:8px;display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.price .now{font-size:19px;font-weight:800;color:var(--teal)}
+.price .was{font-size:12.5px;color:#9aa8ae;text-decoration:line-through}
+.tagrow{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+.tag{
+  font-size:11px;padding:3px 9px;border-radius:999px;
+  background:#eef5f6;color:var(--teal);font-weight:700;
+}
+.tag.gold{background:#f7f0e2;color:var(--gold)}
+.tag.warn{background:#fdeeee;color:#b4544f}
+
+/* ── まとめ買い ───────────────────── */
+.setbox{
+  margin:20px 0 4px;background:linear-gradient(135deg,#fdf8ef,#f6ecd9);
+  border:1px solid var(--gold-soft);border-radius:18px;padding:18px 20px;
+}
+.setbox h3{margin:0 0 10px;font-size:16px;letter-spacing:.05em;color:var(--gold)}
+.setrow{display:flex;justify-content:space-between;gap:12px;padding:7px 0;font-size:14.5px}
+.setrow+.setrow{border-top:1px dashed var(--gold-soft)}
+.setrow b{color:var(--teal);font-size:16px;white-space:nowrap}
+
+/* ── 商品の詳しい画面 ─────────────── */
+.dhero{
+  /* 商品の写真は 正方形（例 1200×1200）。一覧の小さい四角と同じ1枚を使う */
+  border-radius:20px;overflow:hidden;margin:14px auto 0;
+  width:100%;max-width:420px;aspect-ratio:1/1;
+  background:linear-gradient(135deg,var(--cream2),#ded0ba);
+  display:flex;align-items:center;justify-content:center;
+  color:#9d8c72;font-size:13px;text-align:center;padding:20px;box-shadow:var(--shadow);
+}
+.dhero img{width:100%;height:100%;object-fit:cover;display:block}
+.dname{font-size:clamp(21px,5.2vw,26px);font-weight:700;margin:18px 0 4px;line-height:1.4}
+.dsub{color:var(--ink-soft);font-size:13px}
+/* 左＝通常の値段（線で消す・名前なし）／右＝当店の値段（名前つき・大きく） */
+.dprice{margin:16px 0 2px;display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap}
+.dprice .pc{display:flex;flex-direction:column;align-items:flex-start;gap:5px}
+.dprice .lb{
+  font-size:9.5px;letter-spacing:.24em;font-weight:700;color:var(--gold);
+  white-space:nowrap;
+}
+.dprice .now{font-size:30px;font-weight:800;color:var(--teal);line-height:1}
+.dprice .was{font-size:16px;color:#9aa8ae;text-decoration:line-through;line-height:1.2}
+.dbody{
+  background:var(--card);border:1px solid var(--line);border-radius:18px;
+  padding:18px 20px;margin:16px 0 0;font-size:14.5px;line-height:1.85;white-space:pre-wrap;
+}
+.note{
+  margin-top:12px;background:#fbf4e8;border:1px solid var(--gold-soft);
+  border-radius:14px;padding:13px 16px;font-size:13px;color:#7a6437;line-height:1.75;
+}
+.buys{display:grid;gap:12px;margin:22px 0 0}
+.buy{
+  display:block;width:100%;border:none;border-radius:16px;cursor:pointer;
+  padding:19px 16px;font-size:18px;font-weight:800;font-family:inherit;text-align:center;
+  text-decoration:none;
+}
+.buy.line{
+  background:linear-gradient(to bottom,#2a8f5f,#1e7049);color:#fff;
+  box-shadow:0 4px 0 rgba(15,70,45,.45),0 10px 20px rgba(0,0,0,.12);
+}
+.buy.net{
+  background:linear-gradient(to bottom,#fff,#f0e8db);color:var(--teal-dark);
+  border:2px solid var(--gold-soft);
+  box-shadow:0 4px 0 rgba(150,120,70,.22),0 10px 20px rgba(0,0,0,.08);
+}
+.buy:active{transform:translateY(2px)}
+/* ★ボタンの字は「絶対に折り返さない」。入らない時は fitBuys が字を詰めて必ず収める
+   （帯の字幕・2つの大きなボタンと同じやり方。機種による字の太さの違いで欠けるのを防ぐ） */
+/* ★字と字のすき間は最後の1文字のうしろにも付くので、そのぶん右が広く見える。
+   同じ幅だけ左に足して、左右の余白をきっちりそろえる（2026-09-06 まるちゃん）。 */
+.buy .t{display:block;white-space:nowrap;text-indent:.12em}
+.buy .s{display:block;white-space:nowrap;font-size:12.5px;font-weight:600;opacity:.85;margin-top:4px;text-indent:.02em}
+
+/* ── お店で受け取る時のお支払い（LINE Pay／街口支付／銀行振込を選ぶ） ───── */
+.pays{margin:18px 0 0;text-align:center}
+.pays .ttl{
+  font-size:10.5px;letter-spacing:.3em;color:var(--gold);font-weight:700;
+}
+.pays .row{
+  display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:10px;
+}
+.pays .pay{
+  border:1px solid var(--gold-soft);border-radius:999px;
+  padding:9px 16px;font-size:13px;font-weight:700;color:#7a6437;background:#fbf4e8;
+  white-space:nowrap;cursor:pointer;font-family:inherit;
+}
+.pays .pay.on{background:var(--gold);color:#fff;border-color:var(--gold)}
+
+.paybox{margin-top:18px}
+.payqr{
+  display:block;width:210px;max-width:72%;margin:0 auto;
+  background:#fff;padding:10px;border-radius:8px;
+}
+.qrtodo{
+  width:210px;max-width:72%;margin:0 auto;aspect-ratio:1/1;
+  border:1px dashed var(--gold-soft);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12.5px;color:#9a8557;text-align:center;padding:10px;
+}
+.payamt{
+  font-family:"EB Garamond",serif;font-size:30px;font-weight:600;
+  color:var(--gold);margin:14px 0 0;letter-spacing:.04em;
+}
+.paysteps{
+  text-align:left;max-width:340px;margin:14px auto 0;
+  font-size:13.5px;line-height:1.95;color:var(--ink-soft);
+}
+.paysteps b{color:var(--gold);font-size:16px}
+.bankbox{
+  max-width:340px;margin:14px auto 0;text-align:left;
+  border:1px solid var(--gold-soft);border-radius:12px;padding:14px 16px;
+  font-size:14px;line-height:2;background:#fbf4e8;color:#7a6437;
+}
+.todoline{color:#9a8557;font-size:12.5px}
+.buy.order{margin-top:18px}
+.buy.paygo{margin-top:16px}
+/* 画面2・3の上に出す「いま何をいくらで買おうとしているか」 */
+.stephead{text-align:center;margin:10px 0 26px;padding-bottom:20px;border-bottom:1px solid var(--line)}
+.stephead .nm{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-size:20px;letter-spacing:.08em;line-height:1.5;
+}
+.stephead .pr{
+  font-family:"EB Garamond",serif;font-size:28px;font-weight:600;
+  color:var(--gold);letter-spacing:.04em;margin-top:6px;
+}
+.stepttl{
+  text-align:center;font-size:10.5px;letter-spacing:.3em;
+  color:var(--gold);font-weight:700;margin-bottom:14px;
+}
+body.dark .stephead{border-bottom-color:rgba(201,171,115,.28)}
+body.dark .stephead .nm{color:#f5efe5}
+body.dark .stephead .pr{color:#e8d3a6}
+/* ★上の見出し＝左に商品の写真、右に名前と金額（2026-09-02 まるちゃん）。
+   写真の高さは、名前の上から金額の下までとほぼ同じ。 */
+body.dark .stephead{
+  display:flex;align-items:center;justify-content:center;gap:14px;text-align:left;
+}
+body.dark .stephead .pic{
+  flex:0 0 auto;width:76px;height:76px;object-fit:cover;
+  border-radius:2px;background:#151210;display:block;
+}
+body.dark .stephead .tx{min-width:0}
+body.dark .stephead .pr{margin-top:4px}
+/* 「お受け取り方法をお選びください」は小さすぎたので大きく */
+body.dark .stepttl{color:#c9ab73;font-size:15px;letter-spacing:.22em;margin-bottom:18px}
+/* お受け取り方法の2つのボタンは、文字を大きくどっしり見せる */
+body.dark #stepWay .buy{padding:26px 18px}
+body.dark #stepWay .buy .t{font-size:21px;letter-spacing:.14em}
+.qrside{margin-top:18px}
+.qrnote{margin-top:8px;font-size:12px;color:var(--ink-soft);text-align:center}
+body.dark .qrnote{color:#a2947f}
+/* 「◯◯を購入する」は商品名が入るので、長い名前でも収まるように折り返す */
+.buy.start{font-size:17px;line-height:1.45;word-break:normal;overflow-wrap:anywhere}
+#stepWay .buys{margin-top:0}
+
+.foot{
+  margin:40px 0 0;text-align:center;color:var(--ink-soft);font-size:12px;line-height:1.9;
+}
+
+/* ══════ 商品の一覧・詳しい画面を「高級感のある暗い世界」にそろえる ══════
+   （上の映像の続きに見えるよう、白いカードをやめて写真を主役にする） */
+/* 背景は「セレクト」のボタンと同じ深い青緑 */
+body.dark{
+  background:linear-gradient(160deg,#22707f 0%,#1a5a69 45%,#123f4b 100%) fixed;
+  color:#eef3f2;
+}
+body.dark .wrap{background:none}
+
+/* 戻るボタン：オレンジの塊をやめ、細い金の線に */
+body.dark .back{
+  background:none;color:#e7dcc9;font-weight:500;font-size:13px;
+  letter-spacing:.24em;padding:13px;border:1px solid rgba(214,186,138,.45);
+  border-radius:2px;box-shadow:none;margin:18px 0 6px;
+}
+body.dark .back:active{transform:none;background:rgba(214,186,138,.08)}
+
+/* 見出し */
+body.dark .sechead{margin:26px 0 26px}
+body.dark .sechead .en{color:#c9ab73;letter-spacing:.42em;font-size:10.5px;font-weight:600}
+body.dark .sechead h2{
+  font-family:"EB Garamond",Garamond,serif;
+  font-weight:500;letter-spacing:.22em;margin-top:0;color:#c9ab73;
+}
+body.dark .sechead h2::after{
+  content:"";display:block;width:38px;height:1px;background:#c9ab73;
+  margin:16px auto 0;opacity:.8;
+}
+
+/* 商品：写真を大きく、文字は下に静かに */
+/* ★一覧は「1行に2枚」＝画面を半分ずつ使う（まるちゃん指示・2026-09-02。
+   2026-08-31の「1行に3枚」は小さすぎたので取り消し）
+   写真の下は 商品名・量・金額だけ。その下に「詳細を見る」。写真を押しても詳しい画面へ飛ぶ */
+/* ★「前へ戻る」の右に置く「もう一方へ切り替える」ボタン（2026-09-06 まるちゃん）。
+   前へ戻る＝3分の1、切り替える＝3分の2。細い金の枠だけの控えめな作りで、2行で出す。 */
+body.dark .backrow{display:flex;gap:10px;align-items:stretch}
+body.dark .backrow .back{flex:1 1 0;min-width:0;margin:18px 0 6px}
+body.dark .backrow .lswbtn{flex:2 1 0;min-width:0;margin:18px 0 6px}
+/* 一覧でない画面＝切り替えボタンは出ないので、前へ戻るが横いっぱいになる */
+body.dark .lswbtn{
+  border:1px solid rgba(201,171,115,.55);border-radius:2px;
+  color:#c9ab73;font-family:inherit;cursor:pointer;
+  padding:9px 10px;line-height:1.3;text-align:center;
+  display:flex;flex-direction:column;justify-content:center;
+  /* ★行き先の色をうすく敷く（2026-09-06 まるちゃん）。
+     ホームの2枚の面（オリジナル＝金茶／セレクト＝青緑）と同じ色づかいなので、
+     全体の色のまとまりをこわさない。金の面の「詳細を見る」とも別物に見える。 */
+  background:linear-gradient(135deg,#17505e 0%,#0d3542 100%);
+}
+/* 行き先がオリジナル商品の時＝金茶のうすい面 */
+body.dark .lswbtn.to-original{
+  background:linear-gradient(135deg,#7d6440 0%,#523c20 100%);
+  border-color:rgba(232,211,166,.55);color:#eddcbb;
+}
+body.dark .lswbtn.to-original .b{color:#d8c49b}
+/* 行き先がセレクト商品の時＝青緑のうすい面 */
+body.dark .lswbtn.to-select{
+  background:linear-gradient(135deg,#17505e 0%,#0d3542 100%);
+  border-color:rgba(150,201,214,.55);color:#dceef3;
+}
+body.dark .lswbtn.to-select .b{color:#a9cbd5}
+body.dark .lswbtn .a{display:block;font-size:12px;font-weight:700;letter-spacing:.16em}
+body.dark .lswbtn .b{display:block;font-size:10.5px;letter-spacing:.08em;color:#a3937a;margin-top:3px}
+body.dark .lswbtn:active{background:rgba(201,171,115,.14)}
+body.dark .items{
+  display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 14px;
+}
+/* 商品が1つだけの時は、まん中に少し大きめで1枚 */
+body.dark .items.one{grid-template-columns:1fr;justify-items:center}
+body.dark .items.one .item{width:66%;min-width:200px}
+/* ★セットの品は、その行を1つで使い、まん中に大きく置く（2026-09-03 まるちゃん） */
+body.dark .items .item{min-width:0}
+body.dark .items .item .nm{white-space:nowrap;max-width:100%}
+body.dark .items .item .szn{white-space:nowrap}
+body.dark .items .item.wide{grid-column:1 / -1;width:62%;min-width:210px;margin:0 auto}
+/* 大きさが2つある品の値段（130ml ◯◯元／200ml ◯◯元） */
+body.dark .price.sz{flex-direction:column;align-items:center;gap:3px}
+body.dark .price.sz .szrow{display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+body.dark .price.sz .szn{font-size:11.5px;color:#c1b6a6;letter-spacing:.04em}
+body.dark .price.sz .now{font-size:15px}
+
+/* ★まだ発売前の商品の「COMING SOON」の面（2026-09-02 まるちゃん）。
+   ★動きは付けない（気になると言われた）。止まったままの1枚の絵として高級感を出す。 */
+body.dark .item.soon{cursor:default}
+.thumb.comingsoon{
+  position:relative;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;overflow:hidden;
+  /* 重ねているもの（上から順に）
+     ①斜めに走る太い光　②その少しあとを追う細い光　③絹のような細かい縦の織り
+     ④上からの淡い光　⑤四隅に落ちる陰　⑥地の色（深い夜） */
+  background:
+    linear-gradient(114deg,
+      rgba(255,246,228,0) 30%, rgba(255,246,228,.10) 41%, rgba(255,246,228,.19) 45.5%,
+      rgba(255,246,228,.05) 50%, rgba(255,246,228,0) 57%),
+    linear-gradient(114deg,
+      rgba(255,246,228,0) 61%, rgba(255,246,228,.075) 65.5%, rgba(255,246,228,0) 69%),
+    repeating-linear-gradient(100deg,
+      rgba(255,255,255,.02) 0 1px, rgba(255,255,255,0) 1px 4px),
+    radial-gradient(100% 72% at 50% 2%,  rgba(232,211,166,.26) 0%, rgba(232,211,166,.05) 38%, rgba(232,211,166,0) 62%),
+    radial-gradient(118% 118% at 50% 46%, rgba(0,0,0,0) 26%, rgba(0,0,0,.62) 100%),
+    linear-gradient(163deg,#0f3b47 0%,#08242d 52%,#03111a 100%);
+  border:1px solid rgba(201,171,115,.38);
+  box-shadow:inset 0 1px 0 rgba(255,246,228,.14), inset 0 -18px 34px rgba(0,0,0,.35);
+}
+/* 内側にもう一本の細い枠＝額装したような佇まい */
+.thumb.comingsoon .frame{
+  position:absolute;inset:10px;border:1px solid rgba(201,171,115,.24);pointer-events:none;
+}
+/* 枠の左上と右下に、金の短いかぎ印（宝飾箱の留め金のような佇まい） */
+.thumb.comingsoon .frame::before,
+.thumb.comingsoon .frame::after{
+  content:"";position:absolute;width:13px;height:13px;
+  border:1px solid rgba(224,199,152,.85);
+}
+.thumb.comingsoon .frame::before{top:-1px;left:-1px;border-right:0;border-bottom:0}
+.thumb.comingsoon .frame::after{bottom:-1px;right:-1px;border-left:0;border-top:0}
+.thumb.comingsoon .cs{
+  position:relative;z-index:2;
+  font-family:"Cormorant Garamond","EB Garamond",serif;
+  font-size:clamp(15px,4.6vw,22px);font-weight:300;line-height:1.3;
+  letter-spacing:.38em;text-indent:.38em;text-align:center;color:#ecd9b0;
+  text-shadow:0 1px 10px rgba(0,0,0,.55);
+}
+/* 金の箔押しのような、わずかな濃淡をつけた文字（使えない機種は上の色のまま） */
+@supports (-webkit-background-clip:text) or (background-clip:text){
+  .thumb.comingsoon .cs{
+    background:linear-gradient(176deg,#fdf1d8 0%,#e6cd9c 38%,#c2a068 58%,#f2e0bc 100%);
+    -webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;color:transparent;
+    text-shadow:none;
+    filter:drop-shadow(0 1px 7px rgba(0,0,0,.5));
+  }
+}
+/* 文字の下に、細い金の線を一本だけ（両端が消えていく） */
+.thumb.comingsoon .rule{
+  position:relative;z-index:2;display:block;width:46px;height:1px;
+  background:linear-gradient(to right,
+    rgba(201,171,115,0) 0%, rgba(232,211,166,.9) 50%, rgba(201,171,115,0) 100%);
+  box-shadow:0 0 6px rgba(232,211,166,.35);
+}
+/* 名前も少し落ち着いた色にして、売っている商品と見分けがつくように */
+body.dark .item.soon .itxt .nm{color:#e6ddd0}
+body.dark .item{
+  display:flex;flex-direction:column;background:none;border:none;box-shadow:none;padding:0;
+  text-align:center;
+}
+body.dark .item:hover{transform:none;box-shadow:none}
+body.dark .thumb{
+  width:100%;min-width:0;height:auto;aspect-ratio:1/1;border-radius:2px;
+  background:rgba(0,0,0,.22);color:#9fb8bd;font-size:10px;
+}
+body.dark .itxt{flex:1;display:flex;flex-direction:column;padding:9px 1px 0}
+body.dark .itxt .nm{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-size:15px;font-weight:400;letter-spacing:.03em;color:#f5efe5;line-height:1.55;
+}
+body.dark .itxt .sub{
+  font-family:"EB Garamond",serif;font-style:italic;
+  color:#c9ab73;font-size:12.5px;letter-spacing:.04em;margin-top:3px;
+}
+/* 「詳細を見る」は一番下にそろえる（名前の長さがちがっても高さが合う） */
+body.dark .detail{margin-top:auto}
+/* 値段と「詳細を見る」の間に、量と値段の間と同じくらいの隙間をあける */
+body.dark .price{justify-content:center;margin-top:6px;margin-bottom:9px;gap:5px}
+body.dark .price .now{
+  font-family:"EB Garamond",serif;font-weight:500;color:#f0e6d6;
+  font-size:18px;letter-spacing:.03em;
+}
+body.dark .price .was{color:#7d7263;font-size:12px}
+
+/* 一覧の「詳細を見る」（写真と同じく、押すと詳しい画面へ飛ぶ）
+   ★押すボタンなので、購入ボタンと同じ金の面にそろえる（2026-09-02 まるちゃん） */
+.detail{
+  margin-top:10px;border:1px solid rgba(255,246,228,.5);border-radius:2px;
+  padding:12px 6px;font-size:12.5px;letter-spacing:.14em;font-weight:700;
+  text-align:center;white-space:nowrap;
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  color:#0f333d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 20px rgba(0,0,0,.25);
+}
+.item:active .detail{
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 3px 10px rgba(0,0,0,.3);
+}
+body.dark .tagrow{justify-content:center;margin-top:12px}
+body.dark .tag{
+  background:none;border:1px solid rgba(201,171,115,.5);color:#d5bd91;
+  font-weight:500;letter-spacing:.04em;
+}
+body.dark .tag.warn{border-color:rgba(200,120,110,.6);color:#d69b93}
+
+/* まとめ買い */
+body.dark .setbox{
+  background:none;border:1px solid rgba(201,171,115,.35);border-radius:2px;
+}
+body.dark .setbox h3{
+  color:#c9ab73;font-family:"Shippori Mincho",serif;font-weight:400;letter-spacing:.2em;
+}
+body.dark .setrow{color:#e6dccd}
+body.dark .setrow+.setrow{border-top:1px solid rgba(201,171,115,.22)}
+body.dark .setrow b{color:#f0e6d6;font-family:"EB Garamond",serif;font-weight:500}
+
+/* 詳しい画面 */
+body.dark .dhero{
+  /* 商品の写真は横幅いっぱいの3分の2。左右に余白を残す（まるちゃん指示・2026-08-31） */
+  max-width:66.7%;aspect-ratio:4/5;border-radius:2px;background:#151210;
+  color:#6d6255;box-shadow:none;
+}
+/* ★「◯◯を購入する」までが1画面に収まるようにする（2026-09-02 まるちゃん）。
+   写真の枠が余った高さを吸い上げ、画面が短い時は枠が縮む。
+   写真そのものは切り取らず、枠の中にきちんと収める（背景と同じ暗い色なので継ぎ目は見えない）。 */
+#viewItem{flex:1 1 auto;min-height:0;flex-direction:column;padding-bottom:14px}
+body.dark #stepItem{
+  flex:1 1 auto;min-height:0;display:flex;flex-direction:column;
+}
+/* ★写真は正方形なので、枠も正方形にする（2026-09-03）。
+   こうすると上下や左右に帯（余った所）が出ない＝明るい写真でも継ぎ目が見えない。
+   大きさ（1辺）は fitItem が測って決める。 */
+body.dark #stepItem .dhero{
+  flex:0 0 auto;aspect-ratio:1/1;
+  max-width:66.7%;margin:10px auto 0;padding:0;
+}
+body.dark #stepItem .dhero img{object-fit:cover}
+/* 2枚並び（2026-09-07 まるちゃん）＝横に半分ずつ。写真は正方形なので切れずに収まる */
+body.dark #stepItem .dhero.two{display:flex;gap:6px}
+body.dark #stepItem .dhero.two img{width:calc(50% - 3px);height:100%;object-fit:cover}
+/* 文字まわりの間を少し詰めて、ボタンまで入りやすくする */
+body.dark #stepItem .dname{margin-top:16px}
+body.dark #stepItem .dprice{margin-top:14px}
+body.dark #stepItem .dbody{padding-top:14px;margin-top:16px}
+body.dark #stepItem .buys{margin-top:14px;margin-bottom:0}
+/* 画面の縦が短い機種では、文字まわりの間をさらに詰める（fitItem が付け外しする） */
+body.dark #stepItem.tight .dname{margin-top:10px;font-size:clamp(18px,4.6vw,22px)}
+body.dark #stepItem.tight .dsub{margin-top:5px}
+body.dark #stepItem.tight .dprice{margin-top:9px}
+body.dark #stepItem.tight .dbody{padding-top:11px;margin-top:11px;font-size:13px;line-height:1.7}
+body.dark #stepItem.tight .buys{margin-top:11px}
+/* ★映像の最後の言葉を、写真の中に白い字で重ねる（2026-09-03 まるちゃん）。
+   瓶は写真の右寄りにいるので、字は左上に置いて邪魔をしない。
+   字の大きさは写真の大きさに合わせて fitItem が決める（どの機種でも同じ見え方）。 */
+body.dark .dhero{position:relative}
+body.dark .dlead{
+  /* 縦は写真のちょうど真ん中・字は中央そろえ（2026-09-03 まるちゃん）。
+     瓶は右にいるので、写真の左半分を持ち場にして、その中で真ん中にそろえる */
+  position:absolute;left:4%;width:54%;top:50%;transform:translateY(-50%);
+  z-index:2;pointer-events:none;
+  /* ★書体は「上の映像の字幕とまったく同じ物」にする（2026-09-07 まるちゃん
+     「映像の字体と違うように見える」）。ここは映像の最後の言葉をそのまま写真に重ねる場所なので、
+     映像と別の書体だと同じ言葉なのに別物に見えてしまう。
+     ※上の .cap .ja（映像の字幕）と必ず同じにそろえること。片方だけ変えない。
+     字と字の間を広く取るのは今までどおり（2026-09-03 まるちゃん「ポップすぎる」への手当て）。 */
+  font-family:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  font-weight:400;text-align:center;color:#fff;
+  letter-spacing:.22em;text-indent:.22em;line-height:2.3;
+  text-shadow:0 1px 5px rgba(0,0,0,.8), 0 0 20px rgba(0,0,0,.55);
+}
+body.dark .dlead span{display:block;white-space:nowrap}
+/* 字が乗る左側だけ、ほんの少し暗くして読みやすくする（右の瓶には掛からない） */
+body.dark .dhero.hasLead::after{
+  content:'';position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:linear-gradient(118deg,rgba(0,0,0,.5) 0%,rgba(0,0,0,.26) 34%,rgba(0,0,0,0) 62%);
+}
+/* ★白っぽい写真に言葉を重ねる時の形（2026-09-06 まるちゃん・VIO専用泡ソープ）。
+   絹の写真は全体が明るいので、白い字はどこに置いても読めない。そこで
+   ・字は濃い温かみのある灰色（黒よりやわらかく、化粧品の広告らしい）
+   ・置き場所は写真のいちばん上＝商品が写っていない絹だけの帯（実際に測って決めた）
+   ・後ろにごく薄い白のもやを敷いて、絹の柄に紛れないようにする              */
+body.dark .dhero.leadLight .dlead{
+  left:6%; width:88%; top:7%; transform:none;
+  /* ★2026-09-06 まるちゃん「字が目立たない」→ 濃さと太さを上げた。
+     ただし太いゴシックにはせず、明朝のまま中太にして品を保つ。 */
+  color:#241e19; font-weight:600;
+  line-height:1.85; letter-spacing:.12em; text-indent:.12em;
+  text-shadow:0 1px 2px rgba(255,255,255,.98), 0 0 10px rgba(255,255,255,.95),
+              0 0 22px rgba(255,255,255,.85), 0 0 40px rgba(255,255,255,.6);
+}
+body.dark .dhero.leadLight.hasLead::after{
+  background:linear-gradient(180deg,rgba(255,255,255,.9) 0%,rgba(255,255,255,.72) 18%,
+                                    rgba(255,255,255,.34) 32%,rgba(255,255,255,0) 50%);
+}
+body.dark .dname{
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-weight:400;letter-spacing:.1em;color:#f5efe5;text-align:center;margin-top:10px;
+  white-space:nowrap;   /* 名前と（50ml）は1行のまま。入らない時は下の仕組みが字を詰める */
+}
+/* 商品名の右に添える量（50ml）＝控えめに、名前より小さく淡く */
+body.dark .dname .u{
+  font-size:.56em;letter-spacing:.04em;color:#cfc0a4;margin-left:.5em;
+}
+body.dark .dsub{
+  /* 量（50ml など）は白（2026-09-03 まるちゃん） */
+  font-family:"EB Garamond",serif;font-style:italic;color:#f5efe5;
+  text-align:center;margin-top:8px;letter-spacing:.06em;
+}
+/* 説明と購入ボタンの間の読みものリンク（金の細い下線・押せると分かる形） */
+body.dark .dsecret{text-align:center;margin-top:16px}
+body.dark .dsecret a{
+  display:inline-block;color:#e8d3a6;text-decoration:none;
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;
+  font-size:15px;letter-spacing:.14em;padding-bottom:4px;
+  border-bottom:1px solid rgba(232,211,166,.6);
+}
+body.dark .dsecret a:active{color:#fff4e0;border-bottom-color:#f0e6d6}
+body.dark .dsecret a .ar{margin-left:8px;font-family:inherit}
+/* 飛び先がまだ無い読みもの（2026-09-07 まるちゃん）＝押せないと分かる控えめな見た目 */
+body.dark .dsecret a.soon{color:#9d9182;border-bottom-color:rgba(157,145,130,.5);cursor:default}
+body.dark .dsecret a.soon .soonmk{margin-left:8px;font-size:.72em;letter-spacing:.1em;color:#8e8172}
+/* 左に通常の値段（線を引いた小さい字）、右に実際に払う値段。近づけて並べる */
+body.dark .dprice{justify-content:center;align-items:flex-end;margin-top:22px;gap:14px}
+body.dark .dprice .pc{align-items:center}
+body.dark .dprice .was{font-size:15px;margin-bottom:.3em;white-space:nowrap}
+body.dark .dprice .lb{color:#c9ab73}
+/* ★消してある値段の側にも一言（「日本価格」など）を出す時の見た目（2026-09-06 まるちゃん）。
+   右の当店価格より控えめにして、目が先に当店価格へ行くようにする。 */
+body.dark .dprice .wasbox{gap:4px}
+body.dark .dprice .wasbox .lb{font-size:11px;letter-spacing:.14em;color:#a3937a}
+body.dark .dprice .wasbox .was{margin-bottom:0}
+body.dark .dprice .now{
+  font-family:"EB Garamond",serif;font-weight:500;color:#f0e6d6;letter-spacing:.04em;
+}
+body.dark .dprice .was{
+  font-family:"EB Garamond",serif;color:#9d9182;letter-spacing:.03em;
+}
+/* ★大きさを選ぶボタン（2026-09-03）。選んでいる方は金色で塗る */
+body.dark .dsizes{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+body.dark .dsizes button{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  width:100%;padding:11px 14px;cursor:pointer;
+  background:none;border:1px solid rgba(201,171,115,.5);border-radius:2px;
+  color:#e8dccb;font-family:inherit;font-size:14px;letter-spacing:.04em;
+}
+body.dark .dsizes button .p{font-family:"EB Garamond",serif;font-style:italic;font-size:20px;color:#f0e6d6;line-height:1;white-space:nowrap}
+/* ★棒の右半分＝日本価格（線を引いた小さい字）と当店価格（大きい字）を横に並べる
+   （2026-09-06 まるちゃん「棒の中に全部入れる」）。上に小さな見出しを添える。 */
+body.dark .dsizes button .pp{display:flex;align-items:flex-end;gap:12px}
+body.dark .dsizes button .w,
+body.dark .dsizes button .c{display:flex;flex-direction:column;align-items:center;gap:3px}
+body.dark .dsizes button .lb{
+  font-size:9.5px;letter-spacing:.14em;font-weight:700;line-height:1;white-space:nowrap;color:#a3937a;
+}
+body.dark .dsizes button .c .lb{color:#c9ab73}
+body.dark .dsizes button .was{
+  font-family:"EB Garamond",serif;font-style:italic;font-size:14px;line-height:1;
+  color:#9d9182;text-decoration:line-through;white-space:nowrap;
+}
+body.dark .dsizes button .n{font-size:15px;letter-spacing:.06em;white-space:nowrap}
+body.dark .dsizes button.on{
+  background:linear-gradient(180deg,#e8d3a6,#c9ab73);border-color:#e8d3a6;color:#25201a;font-weight:600;
+}
+body.dark .dsizes button.on .p{color:#25201a;font-style:normal;font-weight:700}
+body.dark .dsizes button.on .lb{color:#5c4a2a}
+body.dark .dsizes button.on .was{color:#6b5a3c}
+body.dark #stepItem.tight .dsizes{margin-top:10px;gap:6px}
+body.dark #stepItem.tight .dsizes button{padding:8px 12px;font-size:13px}
+body.dark #stepItem.tight .dsizes button .p{font-size:18px}
+body.dark #stepItem.tight .dsizes button .n{font-size:14px}
+body.dark .dtags{justify-content:center}
+body.dark .dbody{
+  background:none;border:none;border-top:1px solid rgba(201,171,115,.28);
+  border-radius:0;color:#c8bdae;padding:22px 2px 0;margin-top:26px;text-align:center;
+}
+/* ★成分などの箇条書き（2026-09-06 まるちゃん）。見出しは金色、番号は左に立て、
+   成分名を明るく、説明は少し落として読みやすくする。 */
+body.dark .dbody.haslist{white-space:normal;text-align:left}
+/* 長い説明は左そろえ（2026-09-07 まるちゃん。中央そろえだと行の頭がガタつく） */
+body.dark .dbody.bodyleft{text-align:left}
+body.dark .dbody .sttl{
+  text-align:center;color:#c9ab73;font-size:13px;font-weight:700;
+  letter-spacing:.2em;margin-bottom:12px;
+}
+/* 4行をひとかたまりにして、そのかたまりを横の真ん中に置く（①〜④の頭はそろったまま） */
+body.dark .dbody .slist{width:max-content;max-width:100%;margin:0 auto}
+body.dark .dbody .srow{display:flex;gap:6px;align-items:flex-start;line-height:1.65}
+body.dark .dbody .srow+.srow{margin-top:9px}
+body.dark .dbody .sno{flex:0 0 auto;color:#c9ab73;font-size:13px;line-height:1.65}
+body.dark .dbody .stx{min-width:0;font-size:13px;white-space:nowrap}
+body.dark .dbody .stx b{color:#f0e6d6;font-weight:600}
+body.dark .dbody .stx .sd{color:#b4a795;display:inline}
+body.dark .dbody .stx .sd::before{content:'：';color:#8e8172}
+body.dark .dbody .stx .sd.plain::before{content:''}
+/* 小見出し（セットの中で商品を分けて見せる時に出る・2026-09-06） */
+body.dark .dbody .shd{color:#c9ab73;font-weight:700;letter-spacing:.1em;margin:10px 0 5px}
+body.dark .dbody .shd:first-child{margin-top:0}
+body.dark #stepItem.tight .dbody .sttl{font-size:12px;margin-bottom:8px}
+body.dark #stepItem.tight .dbody .srow+.srow{margin-top:6px}
+body.dark #stepItem.tight .dbody .srow{line-height:1.55}
+body.dark .note{
+  background:none;border:1px solid rgba(201,171,115,.3);border-radius:2px;
+  color:#bda98a;
+}
+/* ★押して先へ進むボタンは全部「金の面」でそろえる（2026-09-02 まるちゃん）。
+   細い線だけだと押せると分からないため。角は立てたまま・文字を広げて高級感は保つ。
+   ※「前へ戻る」と「お支払い方法の3つ（選ぶだけ）」は、押すボタンと見分けが付くよう細い線のまま。 */
+body.dark .buy{
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);
+  color:#0f333d;font-weight:700;letter-spacing:.12em;font-size:16px;
+  border-radius:2px;padding:21px 18px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
+}
+body.dark .buy:active{
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
+  transform:translateY(1px);
+}
+/* 小さい添え書きは、金の面の上なので濃い色にする */
+body.dark .buy .s{
+  color:#26454e;opacity:.92;font-weight:600;
+  letter-spacing:.02em;font-size:11.5px;margin-top:5px;
+}
+/* ── 蝦皮の割引コードのご案内（2026-09-13 まるちゃん） ─────────
+   郵送でのお受け取りの画面に出す。上から「説明の文」→「コードとコピー」→
+   「入れ方の絵」→「蝦皮で購入するボタン」の順。 */
+body.dark .spnote{
+  color:#dcd2c0;font-size:13.5px;line-height:1.9;letter-spacing:.03em;
+  text-align:left;margin:2px 0 16px;
+}
+body.dark .spnote b{color:#e8d3a6;font-weight:700}
+body.dark .spcode{
+  display:flex;align-items:stretch;gap:10px;margin:0 0 18px;
+}
+body.dark .spcode .v{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(201,171,115,.55);border-radius:2px;
+  background:rgba(255,255,255,.05);color:#f3e7cd;
+  font-size:22px;font-weight:700;letter-spacing:.22em;padding:14px 8px;
+  user-select:all;-webkit-user-select:all;
+}
+body.dark .spcode .cp{
+  flex:0 0 auto;border:1px solid rgba(201,171,115,.55);border-radius:2px;cursor:pointer;
+  background:none;color:#e8d3a6;font-family:inherit;font-size:13px;font-weight:700;
+  letter-spacing:.1em;padding:0 16px;white-space:nowrap;
+}
+body.dark .spcode .cp:active{background:rgba(201,171,115,.18)}
+body.dark .spcode .cp.done{background:rgba(201,171,115,.9);color:#0f333d}
+body.dark .spgttl{
+  color:#c9ab73;font-size:12.5px;letter-spacing:.2em;text-align:center;margin:0 0 10px;
+}
+body.dark .spguide{
+  display:block;width:100%;height:auto;border-radius:2px;
+  border:1px solid rgba(201,171,115,.35);
+}
+body.dark .spfrom{
+  color:#9fb0b5;font-size:11px;letter-spacing:.04em;text-align:center;margin:8px 0 0;
+}
+/* 「お支払い方法をお選びください」も、受け取り方法の見出しと同じ大きさにそろえる（2026-09-02 まるちゃん） */
+body.dark .pays .ttl{color:#c9ab73;font-size:15px;letter-spacing:.22em}
+body.dark .pays .row{margin-top:14px}
+
+/* ── 本数をえらぶ画面（2026-09-02 まるちゃん） ───────────── */
+body.dark .qtybox{
+  display:flex;align-items:center;justify-content:center;gap:22px;margin:6px 0 4px;
+}
+body.dark .qbtn{
+  width:62px;height:62px;border-radius:2px;cursor:pointer;
+  background:none;border:1px solid rgba(201,171,115,.55);color:#e8d3a6;
+  font-family:inherit;font-size:26px;line-height:1;font-weight:400;
+}
+body.dark .qbtn:active{background:rgba(201,171,115,.16)}
+body.dark .qbtn[disabled]{opacity:.3}
+body.dark .qnum{
+  min-width:104px;text-align:center;color:#f5efe5;
+  font-family:"EB Garamond",serif;font-size:44px;font-weight:500;line-height:1;
+}
+body.dark .qnum .qunit{
+  font-family:"Shippori Mincho",serif;font-size:16px;margin-left:6px;color:#c9ab73;
+}
+body.dark .qsum{
+  margin:22px 0 0;padding:16px 0 0;border-top:1px solid rgba(201,171,115,.28);
+  text-align:center;
+}
+body.dark .qsum .ql{font-size:12px;letter-spacing:.24em;color:#c9ab73;font-weight:700}
+body.dark .qsum .qv{
+  font-family:"EB Garamond",serif;font-size:34px;font-weight:500;color:#f0e6d6;
+  letter-spacing:.04em;margin-top:6px;
+}
+/* ★縦の短い機種で「お支払いへ進む」まで1画面に収める（2026-09-06 まるちゃん）。
+   下の fitQty が、はみ出した時だけ qtight／qtighter を付ける（付かない機種は今までどおり）。 */
+body.dark #viewItem.qtight .stepttl{margin-bottom:10px}
+body.dark #viewItem.qtight .qbtn{width:54px;height:54px;font-size:23px}
+body.dark #viewItem.qtight .qnum{font-size:36px;min-width:92px}
+body.dark #viewItem.qtight .qsum{margin-top:14px;padding-top:11px}
+body.dark #viewItem.qtight .qsum .qv{font-size:28px;margin-top:4px}
+body.dark #viewItem.qtight #stepQty .buy{padding:18px 14px}
+body.dark #viewItem.qtight #stepQty .buy .t{font-size:19px}
+body.dark #viewItem.qtight #stepQty .buy.keep{padding:14px 12px}
+body.dark #viewItem.qtight #stepQty .buy.keep .t{font-size:15px}
+body.dark #viewItem.qtight .buys{margin-top:12px;gap:10px}
+body.dark #viewItem.qtight .stephead{margin-top:8px;padding-bottom:10px}
+
+body.dark #viewItem.qtighter .stepttl{margin-bottom:6px;font-size:13px}
+body.dark #viewItem.qtighter .qbtn{width:46px;height:46px;font-size:20px}
+body.dark #viewItem.qtighter .qnum{font-size:30px;min-width:80px}
+body.dark #viewItem.qtighter .qtybox{gap:16px;margin:2px 0}
+body.dark #viewItem.qtighter .qsum{margin-top:10px;padding-top:8px}
+body.dark #viewItem.qtighter .qsum .qv{font-size:24px}
+body.dark #viewItem.qtighter #stepQty .buy{padding:14px 12px}
+body.dark #viewItem.qtighter #stepQty .buy .t{font-size:17px}
+body.dark #viewItem.qtighter #stepQty .buy.keep{padding:11px 10px}
+body.dark #viewItem.qtighter #stepQty .buy.keep .t{font-size:14px}
+body.dark #viewItem.qtighter .buys{margin-top:9px;gap:8px}
+body.dark #viewItem.qtighter .stephead{margin-top:6px;padding-bottom:8px}
+
+body.dark #stepQty .buy{padding:26px 18px}
+body.dark #stepQty .buy .t{font-size:21px;letter-spacing:.14em}
+/* 「カートに入れて買い物を続ける」は、お支払いへ進むより少し控えめの高さにする */
+body.dark #stepQty .buy.keep{padding:20px 14px}
+body.dark #stepQty .buy.keep .t{font-size:17px;letter-spacing:.08em}
+
+/* ── お支払い方法の3つ＝金色の大きな縦長ボタン（2026-09-02 まるちゃん） ── */
+body.dark .pays .row{
+  display:grid;grid-template-columns:1fr;gap:12px;margin-top:16px;
+}
+body.dark .pays .pay{
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);border-radius:2px;
+  color:#0f333d;font-weight:700;font-size:20px;letter-spacing:.14em;
+  padding:26px 18px;width:100%;cursor:pointer;font-family:inherit;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 12px 28px rgba(0,0,0,.3);
+}
+body.dark .pays .pay:active,
+body.dark .pays .pay.on{
+  background:linear-gradient(180deg,#cdad74,#a5814a);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.3), 0 4px 12px rgba(0,0,0,.3);
+}
+
+/* ── カートの印（右上）と、カートの中身の画面（2026-09-02 まるちゃん） ── */
+.cartbtn{
+  position:fixed;top:14px;right:14px;z-index:60;
+  width:52px;height:52px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(180deg,#e2caa0 0%,#cdad74 48%,#b7915a 100%);
+  border:1px solid rgba(255,246,228,.5);color:#0f333d;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.5), 0 8px 20px rgba(0,0,0,.35);
+}
+.cartbtn:active{background:linear-gradient(180deg,#cdad74,#a5814a)}
+/* カートの印が出ている間は、「前へ戻る」を少し短くして重ならないようにする */
+body.cartshow .back{width:calc(100% - 62px)}
+.cartbtn .cnt{
+  position:absolute;top:-4px;right:-4px;min-width:22px;height:22px;border-radius:11px;
+  background:#123f4b;color:#f0e6d6;border:1px solid rgba(232,211,166,.75);
+  font-family:"EB Garamond",serif;font-size:13px;line-height:20px;text-align:center;padding:0 5px;
+}
+body.dark .cartlist{margin:2px 0 0}
+body.dark .cartrow{
+  display:flex;align-items:center;gap:12px;padding:16px 2px;
+  border-bottom:1px solid rgba(201,171,115,.22);
+}
+body.dark .cartrow .nm{
+  flex:1;min-width:0;color:#f5efe5;
+  font-family:"Shippori Mincho","Hiragino Mincho ProN",serif;font-size:15px;line-height:1.5;
+}
+body.dark .cartrow .pr{
+  color:#e8d3a6;font-family:"EB Garamond",serif;font-size:18px;white-space:nowrap;
+}
+body.dark .cartrow .qb{
+  display:flex;align-items:center;gap:8px;
+}
+body.dark .cartrow .qb button{
+  width:38px;height:38px;border-radius:2px;cursor:pointer;font-family:inherit;
+  background:none;border:1px solid rgba(201,171,115,.55);color:#e8d3a6;font-size:18px;line-height:1;
+}
+body.dark .cartrow .qb .n{
+  min-width:34px;text-align:center;color:#f5efe5;
+  font-family:"EB Garamond",serif;font-size:22px;
+}
+body.dark .cartempty{
+  text-align:center;color:#c8bdae;padding:26px 0;font-size:15px;
+}
+body.dark #viewCart .buy{padding:24px 18px}
+body.dark #viewCart .buy .t{font-size:19px;letter-spacing:.12em}
+/* 「カートを空にする」は、押し間違えないよう控えめな見た目にする（2026-09-06） */
+body.dark #viewCart .buy.empty{background:none;border:1px solid rgba(201,171,115,.45);
+  color:#c9ab73;box-shadow:none;padding:15px 14px}
+body.dark #viewCart .buy.empty .t{font-size:14px;letter-spacing:.1em}
+/* 聞き返している間だけ、はっきり分かる赤みにする */
+body.dark #viewCart .buy.empty.armed{border-color:#c9756f;color:#e8a49e}
+body.dark #viewCart .buy.empty.armed .s{color:#c9756f;font-size:11px;margin-top:3px}
+
+/* ── ご注文内容のご確認（2026-09-02 まるちゃん） ───────────── */
+body.dark .orderbox{
+  border:1px solid rgba(201,171,115,.35);border-radius:2px;
+  padding:18px 16px;margin:4px 0 0;color:#e6dccd;
+}
+body.dark .orderbox .row2{
+  display:flex;justify-content:space-between;gap:14px;padding:9px 0;font-size:15px;
+}
+body.dark .orderbox .row2+.row2{border-top:1px solid rgba(201,171,115,.18)}
+/* ★商品の行＝「・商品名　990元×2本」（2026-09-06 まるちゃん）。左そろえで、
+   折り返した2行目は「・」の下にもぐらず、商品名の頭にそろう。 */
+body.dark .orderbox .row2.li{justify-content:flex-start;gap:0;text-align:left;padding:6px 0;align-items:baseline}
+body.dark .orderbox .row2.li+.row2.li{border-top:none}
+body.dark .orderbox .row2.li .bl{flex:0 0 auto;color:#c9ab73}
+body.dark .orderbox .row2.li .v2{min-width:0;color:#e6dccd}
+body.dark .orderbox .row2.li .qp{white-space:nowrap;color:#f0e6d6}
+/* 商品の行をまとめた枠。ふだんは何も起きず、入りきらない時だけこの中だけがずれる */
+body.dark .orderbox .olines{overflow-y:auto;-webkit-overflow-scrolling:touch}
+body.dark .orderbox .olines+.row2{border-top:1px solid rgba(201,171,115,.18)}
+body.dark .orderbox .k{color:#c9ab73;white-space:nowrap;letter-spacing:.06em}
+body.dark .orderbox .v{text-align:right;min-width:0}
+body.dark .orderbox .row2.sum .v{
+  font-family:"EB Garamond",serif;font-size:26px;color:#f0e6d6;line-height:1.1;
+}
+/* 「ご注文内容のご確認」の見出しは、ほかの画面より大きく出す（2026-09-06 まるちゃん） */
+body.dark #stepConfirm .stepttl{font-size:19px;letter-spacing:.2em}
+body.dark #stepConfirm .paysteps{margin-top:18px;text-align:left}
+body.dark #stepConfirm .buy{padding:26px 18px}
+body.dark #stepConfirm .buy .t{font-size:21px;letter-spacing:.14em}
+/* ── ①②③の手順（2026-09-06 まるちゃん）。番号は左に立て、文は折り返しても番号の下に潜らない ── */
+body.dark #stepConfirm .ost{display:flex;gap:8px;align-items:flex-start}
+body.dark #stepConfirm .ost+.ost{margin-top:9px}
+body.dark #stepConfirm .ost .no{color:#c9ab73;font-weight:700;flex:0 0 auto;line-height:1.75}
+body.dark #stepConfirm .ost .tx{min-width:0;line-height:1.75}
+body.dark #stepConfirm .ost em{
+  font-style:normal;font-weight:700;color:#f3e4c4;font-size:1.22em;letter-spacing:.02em;
+}
+/* ★ご確認の画面も1画面に収める（はみ出した時だけ2段階で詰める・2026-09-06 まるちゃん） */
+body.dark #viewItem.ctight .stepttl{margin-bottom:10px;font-size:17px}
+body.dark #viewItem.ctight .orderbox{padding:12px 14px}
+body.dark #viewItem.ctight .orderbox .row2{padding:6px 0;font-size:14px}
+body.dark #viewItem.ctight .orderbox .row2.sum .v{font-size:23px}
+body.dark #viewItem.ctight #stepConfirm .paysteps{margin-top:12px;font-size:13px}
+body.dark #viewItem.ctight #stepConfirm .ost+.ost{margin-top:7px}
+body.dark #viewItem.ctight #stepConfirm .buy{padding:19px 14px}
+body.dark #viewItem.ctight #stepConfirm .buy .t{font-size:19px}
+body.dark #viewItem.ctight .buys{margin-top:12px}
+
+body.dark #viewItem.ctighter .stepttl{margin-bottom:6px;font-size:15px}
+body.dark #viewItem.ctighter .orderbox{padding:9px 12px}
+body.dark #viewItem.ctighter .orderbox .row2{padding:4px 0;font-size:13px}
+body.dark #viewItem.ctighter .orderbox .row2.sum .v{font-size:20px}
+body.dark #viewItem.ctighter #stepConfirm .paysteps{margin-top:9px;font-size:12.5px}
+body.dark #viewItem.ctighter #stepConfirm .ost .no,
+body.dark #viewItem.ctighter #stepConfirm .ost .tx{line-height:1.6}
+body.dark #viewItem.ctighter #stepConfirm .ost+.ost{margin-top:5px}
+body.dark #viewItem.ctighter #stepConfirm .buy{padding:15px 12px}
+body.dark #viewItem.ctighter #stepConfirm .buy .t{font-size:17px}
+body.dark #viewItem.ctighter .buys{margin-top:9px}
+/* お支払い方法の3つの見た目は、上の「金色の大きな縦長ボタン」の所に書いてある
+   （2026-09-02 まるちゃん。ここに細い線の古い書き方があると、そちらが勝ってしまうので消した） */
+body.dark .payamt{color:#e8d3a6}
+body.dark .paysteps{color:#c8bdae}
+body.dark .paysteps b{color:#e8d3a6}
+body.dark .bankbox{
+  background:none;border:1px solid rgba(201,171,115,.35);border-radius:2px;color:#cfc0a4;
+}
+body.dark .qrtodo{border-color:rgba(201,171,115,.35);color:#a2947f}
+body.dark .todoline{color:#a2947f}
+.foot .ln{letter-spacing:.24em;color:var(--teal);font-weight:700;font-size:13px}
+
+.todo{
+  margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
+  background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
+}
+</style>
+<div class="wrap">
+  <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
+  <!-- 一覧の時だけ、右に「もう一方へ切り替える」ボタンが並ぶ（2026-09-06 まるちゃん）。
+       前へ戻る＝3分の1、切り替える＝3分の2の幅。 -->
+  <div class="backrow" id="backRow">
+    <button class="back" id="backTop">← 前へ戻る</button>
+    <button class="lswbtn" id="listSwitch" type="button" style="display:none"></button>
+  </div>
+
+  <!-- カートの印（中身がある時だけ右上に出る・押すと中身を見られる） -->
+  <button class="cartbtn" id="cartBtn" type="button" style="display:none" aria-label="カートを見る">
+    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+      <path d="M2 3h3l2.6 11.2a2 2 0 0 0 2 1.6h7.5a2 2 0 0 0 2-1.5L21 7H6"
+            fill="none" stroke="currentColor" stroke-width="1.6"
+            stroke-linecap="round" stroke-linejoin="round"/>
+      <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+      <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+    </svg>
+    <span class="cnt" id="cartCnt">0</span>
+  </button>
+
+  <!-- ══ ホーム ══ -->
+  <div id="viewHome">
+    <div class="hero" id="hero">
+      <!-- ★一番はじめ：まっ白な画面のまん中に No.31 の瓶だけ -->
+      <div class="opening off" id="opening">
+        <div class="btl">
+          <img class="base" id="openingImgB" alt="">  <!-- 青＝中身が無い状態（下） -->
+          <img class="top"  id="openingImg"  alt="">  <!-- 緑＝ホホバが入った状態（上） -->
+        </div>
+      </div>
+      <div class="intro" id="intro">
+        <div class="grp">
+          <div class="ln l1">お手持ちの化粧品の効果を</div>
+          <div class="ln l2">最大限に引き出し</div>
+          <div class="ln l2b">あなたのお肌を劇的に変える</div>
+        </div>
+        <div class="grp">
+          <div class="ln l3">奇跡の美容成分</div>
+          <div class="ln l4">ホホバエッセンス</div>
+        </div>
+        <!-- ★ラベルの一枚（2026-09-07 まるちゃん）。言葉が消えたあと、物語の題名の前にはさむ。
+             写真がまだ無いときは出ない（画像フォルダに置くだけで出るようになる） -->
+        <div class="label" id="introLabel"></div>
+        <!-- 最後に灰色へ包まれる演出の部品（ふだんは見えない） -->
+        <div class="dim"></div>    <!-- 光が集まる直前、いったん暗くなる -->
+        <div class="rays"></div>   <!-- 放射状にのびる光の筋 -->
+        <div class="core"></div>   <!-- まん中の白熱した光の玉 -->
+        <div class="wash"></div>   <!-- 最後、画面全体をおおう淡い光 -->
+        <!-- 灰色になりきったあとに出る、映画の題名のような一枚 -->
+        <div class="title" id="introTitle">
+          <div class="tja">海の哲学者と砂漠の奇跡が紡いだ、ひとつの物語</div>
+          <div class="ten">A Story Born of the Sea&rsquo;s Philosopher and the Desert&rsquo;s Miracle</div>
+        </div>
+      </div>
+      <div class="dots" id="dots"></div>
+    </div>
+
+    <div class="homelower">
+    <div class="lede">
+      <h1>T&amp;T PREMIUM COLLECTION</h1>
+    </div>
+
+    <div class="gate">
+      <button class="gcard g2" data-go="original">
+        <div class="bg"></div>
+        <div class="in">
+          <div class="jp">オリジナル商品</div>
+          <div class="en">ORIGINAL</div>
+          <div class="ds">T&amp;Tのこだわりを極めた<br>唯一無二の逸品</div>
+        </div>
+      </button>
+
+      <button class="gcard g1" data-go="select">
+        <div class="bg"></div>
+        <div class="in">
+          <div class="jp">セレクト商品</div>
+          <div class="en">SELECT</div>
+          <div class="ds">T&amp;Tが厳選した<br>希少で上質なセレクション</div>
+        </div>
+      </button>
+    </div>
+    </div>
+
+  </div>
+
+  <!-- ══ カートの中身（2026-09-02 まるちゃん） ══ -->
+  <div id="viewCart" style="display:none">
+    <div class="sechead"><h2>カートの中身</h2></div>
+    <div class="cartlist" id="cartList"></div>
+    <div class="qsum" id="cartSum" style="display:none">
+      <div class="ql">お支払い金額</div>
+      <div class="qv" id="cartTotal"></div>
+    </div>
+    <div class="buys" id="cartBtns"></div>
+  </div>
+
+  <!-- ══ 一覧 ══ -->
+  <div id="viewList" style="display:none">
+    <div class="sechead"><div class="en" id="listEn"></div><h2 id="listTitle"></h2></div>
+    <div class="items" id="items"></div>
+    <div id="setWrap"></div>
+  </div>
+
+  <!-- ══ 詳しく ══ -->
+  <div id="viewItem" style="display:none">
+
+    <!-- ═ 画面1＝商品の詳しい説明。「◯◯を購入する」で画面2へ ═ -->
+    <div id="stepItem">
+      <!-- 映像の最後の言葉は、この写真の中に白い字で重ねる（2026-09-03 まるちゃん） -->
+      <div class="dhero" id="dhero"></div>
+      <div class="dname" id="dname"></div>
+      <div class="dsub" id="dsub"></div>
+      <div class="dprice" id="dprice"></div>
+      <!-- 大きさ（130ml／200ml など）を選ぶ欄。ある商品だけ出る（2026-09-03 まるちゃん） -->
+      <div class="dsizes" id="dsizes"></div>
+      <div class="tagrow" id="dtags"></div>
+      <!-- 産地・認証などの説明は値段のすぐ下。そのさらに下に購入ボタン（まるちゃん指示・2026-08-31） -->
+      <div class="dbody" id="dbody"></div>
+      <div id="dnote"></div>
+      <!-- 説明と購入ボタンの間に出す、詳しい読みものへのリンク（2026-09-03 まるちゃん） -->
+      <div class="dsecret" id="dsecret"></div>
+      <div class="buys">
+        <button class="buy line start" id="buyStart" type="button"></button>
+      </div>
+    </div>
+
+    <!-- 画面2・画面3の上に出る、いま何を買おうとしているかの小さな見出し -->
+    <div class="stephead" id="stepHead" style="display:none">
+      <!-- 左に商品の小さな写真（名前の上から金額の下までの高さ・2026-09-02 まるちゃん） -->
+      <img class="pic" id="stepPic" alt="">
+      <div class="tx">
+        <div class="nm" id="stepName"></div>
+        <div class="pr" id="stepPrice"></div>
+      </div>
+    </div>
+
+    <!-- ═ 画面2＝お受け取り方法をえらぶ ═ -->
+    <div id="stepWay" style="display:none">
+      <div class="stepttl">お受け取り方法をお選びください</div>
+      <div class="buys">
+        <button class="buy line" id="buyShop" type="button"><span class="t">お店で受け取る</span></button>
+        <button class="buy net" id="buyNet" type="button"><span class="t">郵送で受け取る</span></button>
+      </div>
+    </div>
+
+    <!-- ═ 画面2-2＝郵送でのお受け取り（蝦皮で購入する・2026-09-06 まるちゃん） ═ -->
+    <div id="stepNet" style="display:none">
+      <div class="stepttl">郵送でのお受け取り</div>
+      <!-- 割引コードのご案内（中身は drawNet が入れる。コードが無い時は空のまま） -->
+      <div id="netCoupon"></div>
+      <div class="buys" id="netBtn"></div>
+    </div>
+
+    <!-- ═ 画面3＝本数をえらぶ（増やすと合計が自動で変わる・2026-09-02 まるちゃん） ═ -->
+    <div id="stepQty" style="display:none">
+      <div class="stepttl" id="qTtl">本数をお選びください</div>
+      <div class="qtybox">
+        <button class="qbtn" id="qMinus" type="button" aria-label="減らす">−</button>
+        <div class="qnum"><span id="qNum">1</span><span class="qunit" id="qUnit">本</span></div>
+        <button class="qbtn" id="qPlus" type="button" aria-label="増やす">＋</button>
+      </div>
+      <div class="qsum">
+        <div class="ql">お支払い金額</div>
+        <div class="qv" id="qTotal"></div>
+      </div>
+      <div class="buys">
+        <button class="buy line keep" id="qKeep" type="button"><span class="t">カートに入れて買い物を続ける</span></button>
+        <button class="buy line" id="qNext" type="button"><span class="t">お支払いへ進む</span></button>
+      </div>
+    </div>
+
+    <!-- ═ 画面4＝お支払い方法をえらぶ（中身は下の PAYWAYS で決まる） ═ -->
+    <div class="pays" id="payPane" style="display:none">
+      <div class="ttl">お支払い方法をお選びください</div>
+      <div class="row" id="payRow"></div>
+    </div>
+
+    <!-- ═ 画面5＝ご注文内容の確認（2026-09-02 まるちゃん） ═ -->
+    <div id="stepConfirm" style="display:none">
+      <div class="stepttl">ご注文内容のご確認</div>
+      <div class="orderbox" id="orderBox"></div>
+      <div class="paysteps" id="confirmNote"></div>
+      <div class="buys" id="confirmBtn"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ═══════════ 日本語版／中国語版の切り替え（2026-09-06 まるちゃん） ═══════════
+   ★本体は1つ。出す時に下の LANG が 'ja' か 'zh' に差し替わって、2つのページになる。
+   ★言葉の入れ替えは下の対応表1つだけ。画面に出た文字を見張って置き換えるので、
+     あとから作られる画面（商品・カート・ご注文の確認など）も自動でそろう。
+   ★中国語の決まり（翻訳部屋の知識ファイル）：
+     ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
+     ・VIOは女性向けなので 私密處
+     ・リンクは中国語版があるものに差し替える                                    */
+var LANG = "ja";
+function isZH(){ return LANG === "zh"; }
+
+var ZH = {
+  /* ── 映像の字幕 ── */
+  "それは、1970年代、":"這一切，始於1970年代，",
+  "マッコウクジラを":"為了拯救",
+  "救うために始まった…":"抹香鯨…",
+  "当時、産業に欠かせなかった":"為了尋找當時工業不可或缺的",
+  "クジラ油の代わりを探すため、":"鯨油替代品，",
+  "USDA／米国農務省が":"美國農業部（USDA）",
+  "研究を開始した。":"展開了研究。",
+  "それがホホバだった…":"答案，就是荷荷芭…",
+  "そして、研究チームが、":"研究團隊",
+  /* ★数字は日本語版と同じく全角の算用数字で出す（2026-09-07 まるちゃん）。
+     漢数字（三十・一百五十）より、縦の明朝の中で数の大きさが目に入りやすい。 */
+  "３０年もの歳月をかけ、":"耗費長達３０年的歲月，",
+  "１５０万ものホホバの木の中から":"從１５０萬棵荷荷芭樹中",
+  "選びに選び抜き…":"層層嚴選…",
+  "ついにたどり着いた":"最終抵達的",
+  "最高の品質をもつ":"是擁有最高品質的",
+  "至高のホホバ…":"至高荷荷芭…",
+  "それが":"那就是",
+  "１５０万の中":"從１５０萬之中",
+  "から選ばれし":"脫穎而出",
+  "真の最高峰を":"真正的顛峰",
+  "あなたの肌に":"獻給您的肌膚",
+  "海の哲学者と砂漠の奇跡が紡いだ、ひとつの物語":"海洋哲學家與沙漠奇蹟交織而成的故事",
+  "お手持ちの化粧品の効果を":"讓您手邊的保養品",
+  "最大限に引き出し":"發揮最大的效果",
+  /* ★2026-09-07 まるちゃん決定。政府の「使ってはいけない言葉」の一覧（34個）に「新生」は
+     毛髪の1件しか無く、肌には無いことを原文で確かめたうえで、この言い方に決めた。
+     詳しくは 共通\台湾の化粧品広告ルール\必読_台湾の化粧品広告で使ってよい言葉.md */
+  "あなたのお肌を劇的に変える":"讓您的肌膚煥然新生",
+  "奇跡の美容成分":"奇蹟般的美容成分",
+  "ホホバエッセンス":"荷荷芭精華",
+
+  /* ── ホームの2つのボタン ── */
+  "オリジナル商品":"自有品牌",
+  "T&Tのこだわりを極めた":"T&T 極致堅持",
+  "唯一無二の逸品":"獨一無二的逸品",
+  "セレクト商品":"嚴選商品",
+  "T&Tが厳選した":"T&T 嚴選",
+  "希少で上質なセレクション":"稀有而優質的精選",
+
+  /* ── 画面の言葉 ── */
+  "← 前へ戻る":"← 返回",
+  "カートの中身":"購物車內容",
+  "カートは空です":"購物車是空的",
+  "買い物を続ける":"繼續選購",
+  "お支払い金額":"應付金額",
+  "お受け取り方法をお選びください":"請選擇取貨方式",
+  "お店で受け取る":"到店取貨",
+  "郵送で受け取る":"宅配寄送",
+  "郵送でのお受け取り":"宅配寄送",
+  "本数をお選びください":"請選擇數量",
+  "カートに入れて買い物を続ける":"加入購物車並繼續選購",
+  "お支払いへ進む":"前往結帳",
+  "お支払い方法をお選びください":"請選擇付款方式",
+  "ご注文内容のご確認":"訂單內容確認",
+  "詳細を見る":"查看詳情",
+  "まとめてお得":"超值組合",
+  "写真を":"照片",
+  "ここに":"放在",
+  "入れます":"這裡",
+  "商品の写真をここに入れます":"商品照片放在這裡",
+  "お値段は追ってご案内します":"價格將另行通知",
+  "値段 未定":"價格未定",
+  "日本価格":"日本售價",
+  "当店価格":"本店價格",
+  "当店LINE会員価格":"本店LINE會員價",
+  "通常価格":"原價",
+  "単品で買うと":"單買合計",
+  "1本だけ 250元":"單支 250元",
+  "近日発売":"即將上市",
+  "お支払い":"付款方式",
+  "受け取り":"取貨方式",
+  "お店で受け取り":"到店取貨",
+  "銀行振込":"銀行匯款",
+  "LINE Pay":"LINE Pay",
+  "街口支付":"街口支付",
+
+  /* ── 蝦皮・ご注文の手順 ── */
+  "蝦皮で購入する":"前往蝦皮購買",
+  /* 割引コードのご案内（2026-09-13 まるちゃん） */
+  "蝦皮で、下記の割引コードを入力すると":"在蝦皮輸入以下優惠代碼，即可以",
+  "で購入できます。":"購買。",
+  "割引コード":"優惠代碼",
+  "の入力方法はこちらになります。":"的輸入方式如下。",
+  "割引コードの入れ方":"優惠代碼的輸入方式",
+  "コピー":"複製",
+  "コピーしました":"已複製",
+  "長押しでコピー":"請長按複製",
+  "蝦皮公式の案内より":"引用自蝦皮官方說明",
+  "蝦皮のページをご用意でき次第、こちらから開けるようになります":"蝦皮賣場準備完成後，即可由此開啟",
+  "この内容で注文する":"以此內容下單",
+  "お店のLINEの宛先を入れると押せるようになります":"設定本店LINE帳號後即可點選",
+  "下の「この内容で注文する」を押してください":"請按下方的「以此內容下單」",
+  "すると":"接著",
+  "当店のLINEが開きますので":"本店的LINE會自動開啟",
+  "そのまま送信ボタンを押してください":"請直接按下傳送鍵",
+  "（LINEの入力欄に自動で注文内容が入っています）":"（訂單內容已自動填入LINE的輸入欄）",
+  "お振込先が届きます":"匯款帳號就會送達",
+  "お支払いリンクが届きます":"付款連結就會送達",
+
+  /* ── 商品の名前と説明 ── */
+  "VIO保湿美容オイル":"私密處保濕美容油",
+  "VIO専用泡ソープ":"私密處專用泡沫皂",
+  "VIO専用泡ソープ ＋ VIO保湿美容オイル":"私密處專用泡沫皂 ＋ 私密處保濕美容油",
+  "VIO保湿美容オイル ＋ Muladhara":"私密處保濕美容油 ＋ Muladhara",
+  "VIOオイル＋ムーラダーラ":"私密處美容油＋Muladhara",
+  "オイルとムーラダーラを、まとめてお得に。":"美容油與Muladhara，一次購入更划算。",
+  "4つのこだわり成分で、デリケートゾーンをやさしくうるおす":"4大嚴選成分，溫柔滋潤私密處",
+  "骨盤底筋をほぐしながら血行を促進する女性のマッサージツールです。":"一邊放鬆骨盆底肌、一邊促進血液循環的女性按摩工具。",
+  "Muladhara（ムーラダーラ）":"Muladhara",
+  "骨盤底筋をほぐしながら血行を促進する女性のマッサージツール":"一邊放鬆骨盆底肌、一邊促進血液循環的女性按摩工具",
+  "デリケートゾーンをやさしくうるおす専用オイル。":"溫柔滋潤私密處的專用美容油。",
+  "毎日のデリケートゾーン洗浄に。":"每日私密處清潔的好夥伴。",
+  "まとめてお得なセット":"超值組合",
+  "オイルとソープを、まとめてお得に。":"美容油與泡沫皂，一次購入更划算。",
+  "Aセット（ソープ130ml + オイル）":"A組合（泡沫皂130ml + 美容油）",
+  "Bセット（ソープ200ml + オイル）":"B組合（泡沫皂200ml + 美容油）",
+  "セット価格":"組合價",
+  "本数をお選びください":"請選擇數量",
+  "セット数をお選びください":"請選擇組合數量",
+  "セット":"組",
+  "カートを空にする":"清空購物車",
+  "本当に空にしますか？":"確定要清空嗎？",
+  "もう一度押すと消えます":"再按一次即清空",
+  "VIO保湿美容オイル　4つのこだわり成分":"私密處保濕美容油　4大嚴選成分",
+  "VIO専用泡ソープ":"私密處專用泡沫皂",
+  "VIOソープ＋VIOオイル":"私密處泡沫皂＋私密處美容油",
+  "【オイル】4つのこだわり成分で、デリケートゾーンをやさしくうるおす":"【美容油】4大嚴選成分，溫柔滋潤私密處",
+  "【ソープ】天然・植物由来成分100%、弱酸性でやさしく洗浄":"【泡沫皂】100%天然植物來源成分，弱酸性溫和洗淨",
+  "フランスでは、":"在法國，",
+  "母から娘へ伝えている":"由母親傳承給女兒的",
+  "デリケートゾーンのお手入れを。":"私密處保養之道。",
+  "4つのこだわり成分":"4大嚴選成分",
+  "ひまし油":"蓖麻油",
+  "皮膚の抗菌作用や老廃物の排出促進、免疫アップ":"抗菌、促進老廢物質代謝、提升免疫力",
+  "シロバナワタ種子油":"白花棉籽油",
+  "オメガ6や9が豊富で、保湿作用に優れている":"富含Omega6與Omega9，保濕力優異",
+  "プルーン種子油":"洋李核仁油",
+  "ビタミンEを多く含み、抗酸化作用、抗菌作用":"富含維他命E，具抗氧化與抗菌作用",
+  "ひまわり種子油":"葵花籽油",
+  "皮膚や粘膜を柔らかく滑らかに保つ":"保持肌膚與黏膜的柔軟滑順",
+  "のせて洗う、そして潤う。":"敷上、洗淨，同時滋潤。",
+  "私を愛でる、100%の泡。":"疼愛自己的100%純淨泡沫。",
+  "独自開発技術で汚れを浮かせすみずみまで洗浄":"獨家技術帶走髒污，洗淨每一處",
+  "天然・植物由来成分100%":"100%天然植物來源成分",
+  "デリケートゾーンに優しい弱酸性":"對私密處溫和的弱酸性",
+  "お宮まいり 月室美容液":"產後祈福 月室精華液",
+  "全身を若返らせる膣用美容液":"讓全身回春的陰道精華液",
+  "日本から取り寄せている、膣用の美容液。":"自日本引進的私密處專用精華液。",
+  "1箱 2ml × 10本":"1盒 2ml × 10支",
+  "代行購入の商品のため、割引の対象外です。":"本商品為代購商品，不適用折扣。",
+  "Muladhara（ムーラダーラ）":"Muladhara",
+  "ムーラダーラ":"Muladhara",
+  "骨盤底筋・膣ケアツール":"骨盆底肌・私密處保養工具",
+  "骨盤底筋をととのえるケアツール。":"調整骨盆底肌的保養工具。",
+  "ホホバエッセンス No.31":"荷荷芭精華 No.31",
+  "TaiwanTomato のオリジナル。ホホバの美容エッセンス。":"TaiwanTomato 自有品牌。荷荷芭美容精華。",
+  "１５０万の中から":"從１５０萬之中",
+  "選ばれし":"脫穎而出",
+  "ホホバエッセンスの秘密":"荷荷芭精華的秘密",
+  "月室美容液の秘密":"月室精華液的秘密",
+  "準備中":"準備中",
+  "ぐみ茶":"gumi茶",   /* 中国語版での名前（2026-09-06 まるちゃん） */
+  "本":"支",
+  "点":"項",
+  "1本だけ 250元":"單支 250元",
+  "日本販売価格 ¥11,000":"日本售價 ¥11,000",
+  "膣内を健康に保つ常在菌である、ラクトバチルス乳酸菌1,000億個相当を配合。":"配合維持陰道健康的常在菌——相當於1,000億個的乳酸桿菌。",
+  "さらに、NMN、プラセンタエキスなどの若返り美容成分を、皮膚の約42倍の吸収率を持つ膣へと届ける全身美容です。":"再將NMN、胎盤精華等抗齡美容成分，送入吸收率約為肌膚42倍的陰道，是由內而外的全身美容。",
+  "骨盤底筋をほぐしながら血行を促進する女性のマッサージツールです。":"一邊放鬆骨盆底肌、一邊促進血液循環的女性按摩工具。",
+  "ムーラダーラとは？":"什麼是 Muladhara？",
+  "米国アリゾナ産100%ピュアゴールデンホホバ":"美國亞利桑那州產 100% 純黃金荷荷芭",
+  "USDA（米国農務省）オーガニック認証":"USDA（美國農業部）有機認證",
+  "VIO保湿美容オイルとVIO専用泡ソープのセットです。":"私密處保濕美容油與私密處專用泡沫皂的組合。",
+  "ソープの大きさ（130ml／200ml）をお選びいただけます。":"泡沫皂的容量（130ml／200ml）可自由選擇。",
+  "50ml":"50ml"
+};
+
+/* 日本語の文を、中国語版なら中国語にして返す（対応表に無ければそのまま） */
+function Z(t){
+  if (!isZH()) return t;
+  var v = ZH[String(t).trim()];
+  return (v === undefined) ? t : v;
+}
+/* 「◯◯ を購入する」だけは語順が変わるので、ここで作る */
+function buyLabel(nm){ return isZH() ? ('購買 ' + Z(nm)) : (Z(nm) + ' を購入する'); }
+/* 本数の言い方 */
+/* 数え方。ふつうは「本」、セット商品は「セット」（2026-09-06 まるちゃん） */
+function honLabel(n, w){ w = w || '本'; return isZH() ? (n + Z(w)) : (n + w); }
+function cntOf(it){ return (it && it.cnt) ? it.cnt : '本'; }
+
+/* ★画面に出た文字を見張って、対応表にある文をその場で中国語にする。
+   こうすると、あとから作られる画面（商品・カート・ご注文の確認）も自動でそろう。 */
+(function(){
+  if (!isZH()) return;
+  function swapIn(node){
+    if (node.nodeType === 3){
+      var k = node.data.trim();
+      if (k && ZH[k] !== undefined && ZH[k] !== node.data) node.data = node.data.replace(k, ZH[k]);
+      return;
+    }
+    if (node.nodeType !== 1) return;
+    if (node.tagName === 'SCRIPT' || node.tagName === 'STYLE') return;
+    for (var i = 0; i < node.childNodes.length; i++) swapIn(node.childNodes[i]);
+  }
+  window.__swapZH = swapIn;
+  /* ★まず、はじめから画面に書いてある分をぜんぶ置き換える（見張りは"あとから増えた分"しか見ないため） */
+  function first(){ try{ swapIn(document.body); }catch(e){} }
+  if (document.body) first();
+  else document.addEventListener('DOMContentLoaded', first);
+  try{
+    new MutationObserver(function(ms){
+      for (var i = 0; i < ms.length; i++){
+        var m = ms[i];
+        for (var j = 0; j < m.addedNodes.length; j++) swapIn(m.addedNodes[j]);
+        if (m.type === 'characterData') swapIn(m.target);
+      }
+    }).observe(document.documentElement, {childList:true, subtree:true, characterData:true});
+  }catch(e){}
+})();
+
+/* ───── 仮の写真（まるちゃんのクジラの絵。本物の写真が来たら入れ替える） ───── */
+/* 表紙＝順番に切り替わる絵。1枚ごとにスマホ用（正方形1600×1600）とパソコン用（横長2000×900）を持つ。
+   絵を足したい時は、この並びに1組足すだけでよい（点の数も自動で増える）。 */
+/* 字は絵に焼き込まず、ここに書いた文をページが写真の上に書く
+   （直したい時はこの2行を書き換えるだけ。絵は作り直さなくてよい） */
+/* ★日本語は「かたまり」で書く。狭い画面ではこのかたまりの切れ目でだけ改行する
+   （かたまりの途中では絶対に切れない）。広い画面では1行につながる。 */
+/* ═══════ お店で受け取る時のお支払い（★ここだけ直せば画面が変わる） ═══════
+   ① LINE_ID … お店の公式LINEの宛先（@から始まる名前）。ここが空だと注文ボタンが押せない
+   ② QRの写真 … 画像フォルダに「LINEPay_QR.jpg」「街口_QR.jpg」の名前で置けば自動で入る
+   ③ BANK … 銀行振込のご案内。空の欄は画面に出ない
+   並び順は PAYWAYS のとおりに出る。要らない物は行を消すだけでよい。         */
+
+/* お店の公式LINEの宛先。TaiwanTomato 日式美容＆除毛（友だち約3,331）。
+   ★プロセル専用の @924ifrtv、お知らせ用の @207oyuts とは別物なので取り違えない
+   （出どころ＝共通\line_audience.py の MANAGER_ACC ／LINE送り先グループ作成の引き継ぎ） */
+var LINE_ID = "@hci2793z";
+var QR = { linepay:"", jkopay:"" };
+
+/* ★郵送でのお受け取り＝蝦皮（Shopee）のお店のページ（2026-09-06 まるちゃん）。
+   ここが空の間は、ボタンは出るが押せない（「ご用意でき次第…」と小さく出る）。
+   商品ごとに別のページへ飛ばしたい時は、その商品の並びに shopee:"住所" を1行足せば、そちらが優先される。 */
+var SHOPEE = "https://shopee.tw/%E8%8D%B7%E8%8D%B7%E8%8A%AD%E7%B2%BE%E8%8F%AF+No.31-i.135867224.55217718557";
+
+/* ★蝦皮で使う割引コード（2026-09-13 まるちゃん）。
+   お客様がこのコードを蝦皮に入れると、当店のLINE会員価格で買えるようにしてある。
+   ・SHOPEE_CODE＝コードそのもの。空にすれば、この案内はまるごと出なくなる。
+   ・SHOPEE_OFF ＝いくら引かれるか（元）。案内の文に出る。
+   ★蝦皮の割引券そのものは、蝦皮の賣家中心（行銷活動＞我的優惠券）で作る。
+     ここを直しても券は作られないので、コードを変えた時は蝦皮側も必ず作り直すこと。 */
+var SHOPEE_CODE = "TAKY0105";
+var SHOPEE_OFF  = 150;
+/* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
+var IMG_SHOPEE_GUIDE = "img/spguide-cca7dd200e.jpg";
+
+/* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
+   押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
+   （スマホ1台でこのページを見ているお客様も、そのままお支払いできる）。
+   ★中身は1文字も変えずにそのまま貼ること。空にすると、その方法はQRの絵だけになる。 */
+var PAYLINK = {
+  /* ★短いリンクにした（2026-09-06 まるちゃん指定）。飛び先はx.gdの管理画面から後で変えられる
+     ＝お店のお支払い口が変わっても、このページを作り直さずに済む。中身＝上の長い住所と同じ。 */
+  linepay:"https://x.gd/TTLINEPAY",
+  /* ★街口は「収款コードが2つある」のが肝（2026-09-02）。
+     ・共通のQR（中身が TWQRP:// で始まる物）＝カメラで読み取る専用。押しても何も起きない（実機で確認済み）
+     ・街口だけのQR（中身が http://www.jkos.com/index.html?j=S%23…%3AP%23）＝ふつうの住所なので押せる ←こちら
+     押すと街口の受け渡しページへ回され、そこから街口のアプリが開く作り
+     （お店の番号を取り出して「お客様が金額を入れて払う」画面を出す）。LINE Payと同じ形。
+     ★中身は1文字も変えずにそのまま貼ること。 */
+  jkopay:"https://x.gd/TTJKOPAY"   /* ★短いリンク（2026-09-06 まるちゃん指定）。中身＝上の住所と同じ */
+};
+/* ★お振込み先（2026-09-02 まるちゃんから）。台湾の振込は「銀行の番号＋口座番号」だけで足りるので、
+   日本のような支店名は入れない。名義（口座の持ち主の名前）は分かり次第 holder に入れる＝
+   空のままなら、その行は画面に出ない。 */
+var BANK = { bank:"中國信託銀行", code:"822", number:"347540289303", holder:"" };
+
+var PAYWAYS = [
+  { key:"linepay", name:"LINE Pay" },
+  { key:"jkopay",  name:"街口支付" },
+  { key:"bank",    name:"銀行振込" }
+];
+
+var HEROS = [
+  { sp:"img/h1sp-a30d150f2c.jpg", pc:"img/h1pc-3c266e907e.jpg",     /* 1枚目＝マッコウクジラ */
+    ja:["それは、1970年代、", "マッコウクジラを", "救うために始まった…"],
+    jaSteps:[1, 2],          /* 1行目→（2行いっきに）→英語 の順に出す */
+    en:["It all began in the 1970s,", "to save sperm whales"] },
+  { sp:"img/h2sp-9a16089992.jpg", pc:"img/h2pc-7d539d012e.jpg",     /* 2枚目＝米国農務省 */
+    ja:["当時、産業に欠かせなかった", "クジラ油の代わりを探すため、",
+        "USDA／米国農務省が", "研究を開始した。", "それがホホバだった…"],
+    jaSteps:[2, 2, 1],       /* 2行いっきに→2行いっきに→最後の1行→英語 */
+    /* ★「それがホホバだった…」の前に、ひと呼吸おく（2026-09-04 まるちゃん） */
+    jaPause:[0, 0, 1500],
+    /* ★英語は日本語と同じ中身にそろえる（2026-09-05 まるちゃん） */
+    en:["Whale oil was vital to industry then, so the USDA",
+        "began the search for a substitute — and it was jojoba…"],
+    enAlways2:true },
+  { sp:"img/h3sp-17d85abb55.jpg", pc:"img/h3pc-6cd764a495.jpg",     /* 3枚目＝150万のホホバの木（日本語は3行） */
+    /* 数字は全角（３０・１５０）で、明朝の縦組みらしい見た目にそろえる */
+    /* ★1行目と2行目を分けた（2026-09-04 まるちゃん） */
+    ja:["そして、研究チームが、", "３０年もの歳月をかけ、",
+        "１５０万ものホホバの木の中から", "選びに選び抜き…"],
+    /* ★2行ずつ出す＝「そして…／３０年…」→「１５０万…／選びに…」（2026-09-04 まるちゃん） */
+    jaSteps:[2, 2],
+    /* ★「１５０万…／選びに…」が画面に出ている時間を1.5倍に（2026-09-05 まるちゃん） */
+    jaAfter:[0, 1600],
+    /* ★「選びに選び抜き…」のあと、英語が出るまでの間を半分に（3.0秒→1.5秒・2026-09-05 まるちゃん） */
+    enAfter:1500,
+    en:["Then the research team spent thirty years",
+        "selecting from 1.5 million jojoba plants…"],
+    enAlways2:true },  /* 英語は画面の広さにかかわらず必ず2行にする */
+  { sp:"img/h4sp-4e6dfab7a6.jpg", pc:"img/h4pc-cf689568c4.jpg",     /* 4枚目＝アリゾナのサボテン */
+    ja:["ついにたどり着いた", "最高の品質をもつ", "至高のホホバ…"],
+    jaSteps:[1, 1, 1],       /* 3行とも1行ずつ、時間をあけて出す */
+    en:["At last they arrived at the ultimate jojoba,",
+        "of the very highest quality…"] },
+  /* 5枚目＝No.31の瓶。白黒 → 緑 → 青 と、ゆっくり色がついていく */
+  /* ★スマホ用もパソコン用も 2026-08-31 に「位置が完全に一致した版」に差し替えたので、
+     瓶の位置をずらす補正はもう要らない（写真をそのまま重ねるだけで瓶が動かない）。 */
+  { seq:[ { sp:"img/h5asp-351f98238e.jpg", pc:"img/h5apc-0ec6bde175.jpg" },              /* 白黒 */
+          { sp:"img/h5bsp-282caa64d4.jpg", pc:"img/h5bpc-8916f097c3.jpg", at:1200 },    /* 緑＝「それが」の直後から
+                                                                   ゆっくり2.6秒かけて色がつく */
+          { sp:"img/h5csp-75e720874e.jpg", pc:"img/h5cpc-8f767f390a.jpg",               /* 青（空の瓶） */
+            at:5900, drain:true } ],   /* 「１５０万の…」が出た瞬間から中身が減り始める */
+    ms:16500, stepMs:3600,
+    /* 字の出る時刻（ミリ秒）。最後の3行は同じ間合い(tGap)でそろえる */
+    tP1:700, tP2:4200, tP3:5100, tP4:5900, tGap:1850,
+    /* 白黒のうちに「それが」だけ出て、色がついた瞬間に商品名がその右へ劇的に現れる */
+    /* ★かぎかっこは付けない（2026-09-10 まるちゃん） */
+    jaA:"それが", jaB:"ホホバエッセンス No.31",
+    /* 青くなり始めた時に、2行目・3行目として続けて出る。
+       ★2026-09-10 まるちゃん：「１５０万の中」と「から選ばれし」の2行に分けて、
+         この2行は同時に出す（どちらも同じ組の字として扱う） */
+    jaC:"１５０万の中", jaC2:"から選ばれし",
+    /* この2行は、上の組から1行ぶん空けてから出す */
+    jaD:"真の最高峰を", jaE:"あなたの肌に" }
+];
+/* 一番はじめの画面に出す「白い背景の瓶だけ」の写真。まだ無い時は空になり、この画面は出ない */
+var IMG_BOTTLE_WHITE = "img/binw-9de5b69389.jpg";      /* 緑＝ホホバが入っている */
+var IMG_BOTTLE_BLUE  = "img/binb-232f84d6c1.jpg";       /* 青＝中身が無い状態の瓶 */
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。「奇跡の美容成分」のあと、物語の題名の前にはさむ。
+   画像フォルダに `ラベル_No31.jpg` を置くだけで出るようになる（無ければ今までどおり出ない）。
+   元のデザインはそのままに、クリーム色の地だけを左右に足して画面の形にそろえてある。 */
+var IMG_LABEL_SP = "img/labelsp-cd60a480aa.jpg";   /* スマホ用（正方形） */
+var IMG_LABEL_PC = "img/labelpc-5f5c431570.jpg";   /* パソコン用（横長） */
+function labelPic(){
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false : window.matchMedia('(min-width:780px)').matches;
+  var p = wide ? IMG_LABEL_PC : IMG_LABEL_SP;
+  return hasPic(p) ? p : (hasPic(IMG_LABEL_SP) ? IMG_LABEL_SP : '');
+}
+var IMG_ITEM  = "img/sample-14544d11a5.jpg";     /* 商品の仮の写真 */
+var IMG_NO31  = "img/no31-54c2a15477.jpg";   /* ホホバエッセンス No.31＝青の瓶の写真 */
+
+/* ★商品ごとの写真（2026-09-02）。画像フォルダに決まった名前で置くだけで入る。
+   まだ無い商品は仮の写真のまま出る。 */
+var ITEM_PICS = {
+  jojoba_no31: IMG_NO31,
+  vio_oil:   "img/vio_oil-28eb939c8e.jpg",     /* 画像\商品_VIOオイル.jpg */
+  vio_soap:  "img/vio_soap-146ec514cb.jpg",    /* 画像\商品_VIOソープ.jpg */
+  vio_set:   "img/vio_set-5bd497ce14.jpg",     /* 画像\商品_VIOセット.jpg（★2枚を並べた仮の写真） */
+  tsukimuro: "img/tsukimuro-56726fd713.jpg",  /* 画像\商品_月室.jpg */
+  /* 2枚目＝詳しい画面だけに出す（一覧のマスには出さない・2026-09-07 まるちゃん） */
+  tsukimuro2: "img/tsukimuro2-719cd879ae.jpg",
+  muladhara: "img/muladhara-eba6c66702.jpg",  /* 画像\商品_Muladhara.jpg */
+  oil_mula:  "img/oil_mula-d2c6d1f9f3.jpg"     /* 画像\商品_オイルMuladharaセット.jpg */
+};
+/* ★写真が「本物として使える形」かを見るための共通の判定（2026-09-07）。
+   写真の入れ方が2通りあるため、ここ1か所で見分ける：
+     ・下書き … 差し込み口の文字のまま（@で始まる）／空
+     ・本物  … ページの中に埋め込んだ絵（data: で始まる）か、別ファイルの絵（img/… ）
+   ★以前は「data: で始まるか」だけを見ていたので、別ファイルの絵にすると
+     写真が全部「まだ無い」扱いになってしまう。ここを通すことでその事故を防ぐ。 */
+function hasPic(p){
+  return !!(p && typeof p === 'string' && p.charAt(0) !== '@');
+}
+function itemPic(it){
+  var p = it && ITEM_PICS[it.id];
+  return hasPic(p) ? p : IMG_ITEM;
+}
+
+/* ───── 商品の中身（まるちゃんの料金表・2026-08-12 提供分そのまま） ───── */
+var DATA = {
+  select: {
+    en:"", jp:"T&T SELECT", zh:"嚴選",
+    items:[
+      { id:"vio_soap",
+        nm:"VIO専用泡ソープ", nm_zh:"【中文名 未定】VIO専用泡ソープ",
+        sub:"AIMER LE SOI",
+        one:"毎日のデリケートゾーン洗浄に。",
+        /* ★大きさが2つある商品（2026-09-03 まるちゃんの料金表）。
+           一覧では2つとも値段を出し、詳しい画面では選んでもらう
+           ★200mlの日本価格は2,000元（2026-09-06 まるちゃん。1,760元から直した） */
+        sizes:[ { nm:"130ml", now:1000, was:1200 },
+                { nm:"200ml", now:1590, was:2000 } ],
+        now:1000, was:1200,
+        lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
+        /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真は白っぽいので leadLight の形＝
+           濃い字を写真の上の帯に置く（白い字はこの写真では読めない） */
+        lead:["のせて洗う、そして潤う。","私を愛でる、100%の泡。"],
+        leadLight:true,
+        body:"独自開発技術で汚れを浮かせすみずみまで洗浄\n天然・植物由来成分100%\nデリケートゾーンに優しい弱酸性",
+        note:"" },
+
+      { id:"vio_oil",
+        nm:"VIO保湿美容オイル", nm_zh:"【中文名 未定】VIO保湿美容オイル",
+        sub:"SKIN HAPTICS PRESTIGE OIL",
+        one:"デリケートゾーンをやさしくうるおす専用オイル。",
+        now:1600, was:1800,          /* ★日本価格1,800元（2026-09-06 まるちゃん。1,782元から直した） */
+        lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
+        /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真も白っぽいので leadLight の形。
+           切る場所は「短い→中くらい→長い」の順にして、読んだ時の調子がよくなるようにした。
+           瓶は写真の3割から8割の高さにいるので（実際に測った）、3行なら上の空きに収まる。 */
+        lead:["フランスでは、","母から娘へ伝えている","デリケートゾーンのお手入れを。"],
+        leadLight:true,
+        /* 説明の欄＝4つのこだわり成分（2026-09-06 まるちゃん） */
+        spec:{ ttl:"4つのこだわり成分", list:[
+          { n:"①", nm:"ひまし油",        d:"皮膚の抗菌作用や老廃物の排出促進、免疫アップ" },
+          { n:"②", nm:"シロバナワタ種子油", d:"オメガ6や9が豊富で、保湿作用に優れている" },
+          { n:"③", nm:"プルーン種子油",   d:"ビタミンEを多く含み、抗酸化作用、抗菌作用" },
+          { n:"④", nm:"ひまわり種子油",   d:"皮膚や粘膜を柔らかく滑らかに保つ" }
+        ]},
+        body:"デリケートゾーン専用のプレステージオイル。\nお風呂上がりの清潔な肌に、やさしくなじませてお使いください。",
+        note:"" },
+
+      { id:"vio_set", wide:true,
+        nm:"VIO専用泡ソープ ＋ VIO保湿美容オイル", nm_zh:"【中文名 未定】VIO専用泡ソープ＋VIO保湿美容オイル",
+        sub:"まとめてお得なセット",
+        one:"オイルとソープを、まとめてお得に。",
+        sizes:[ { nm:"Aセット（ソープ130ml + オイル）", now:2400, was:2600 },
+                { nm:"Bセット（ソープ200ml + オイル）", now:3100, was:3190 } ],
+        now:2400, was:2600,
+        /* ★セットの消してある値段は「日本価格」ではなく、単品で買った時の合計（2026-09-06）。
+           棒の中に見出しを出すようになったので、ここを間違えると嘘の表示になる。 */
+        lb_now:"セット価格",      /* ★セットだけ「当店価格」でなく「セット価格」（2026-09-06 まるちゃん） */
+        lb_was:"単品で買うと",
+        nm_btn:"VIOソープ＋VIOオイル",   /* 購入ボタンだけ短い名前（長いと字が切れる・2026-09-06） */
+        cnt:"セット",                   /* 数え方（2026-09-06 まるちゃん「本数じゃなくてセット数」） */
+        /* ★セットの説明＝2つの商品の説明をぜんぶ載せる（2026-09-06 まるちゃん）。
+           hd を書いた行は小見出しになる。 */
+        spec:{ list:[
+          { hd:"VIO専用泡ソープ" },
+          { n:"・", d:"独自開発技術で汚れを浮かせすみずみまで洗浄" },
+          { n:"・", d:"天然・植物由来成分100%" },
+          { n:"・", d:"デリケートゾーンに優しい弱酸性" },
+          { hd:"VIO保湿美容オイル　4つのこだわり成分" },
+          { n:"①", nm:"ひまし油",        d:"皮膚の抗菌作用や老廃物の排出促進、免疫アップ" },
+          { n:"②", nm:"シロバナワタ種子油", d:"オメガ6や9が豊富で、保湿作用に優れている" },
+          { n:"③", nm:"プルーン種子油",   d:"ビタミンEを多く含み、抗酸化作用、抗菌作用" },
+          { n:"④", nm:"ひまわり種子油",   d:"皮膚や粘膜を柔らかく滑らかに保つ" }
+        ]},
+        body:"",
+        note:"" },
+
+      { id:"tsukimuro",
+        nm:"お宮まいり 月室美容液", nm_zh:"【中文名 未定】お宮まいり 月室",
+        sub:"全身を若返らせる膣用美容液",   /* 量の代わりに一言（2026-09-07 まるちゃん） */
+        one:"日本から取り寄せている、膣用の美容液。",
+        now:2500, was:null,
+        /* 日本円の値段は「元」を付けずそのまま出す＝文字のまま入れる欄を使う（2026-09-07 まるちゃん） */
+        was_txt:"¥11,000", lb_was:"日本価格",
+        bodyLeft:true,   /* 説明が長いので左そろえ（2026-09-07 まるちゃん） */
+        pic2:"tsukimuro2",   /* 詳しい画面だけ、1枚目の右にもう1枚（2026-09-07 まるちゃん） */
+        /* 読みもののリンク（2026-09-07 まるちゃん）。飛び先はあとで教わる＝
+           url が空の間はリンクを出さない（壊れない） */
+        secret:{ t:"月室美容液の秘密",
+                 url:"https://x.gd/omiyabiyouekiJP",
+                 url_zh:"https://x.gd/omiyabiyouekiCH" },   /* 2026-09-07 まるちゃんが名前を指定 */
+        tags:[],
+        body:"膣内を健康に保つ常在菌である、ラクトバチルス乳酸菌1,000億個相当を配合。\n\nさらに、NMN、プラセンタエキスなどの若返り美容成分を、皮膚の約42倍の吸収率を持つ膣へと届ける全身美容です。",
+        note:"" },
+
+      { id:"muladhara",
+        nm:"Muladhara（ムーラダーラ）", nm_zh:"【中文名 未定】Muladhara",
+        nm_list:"ムーラダーラ",   /* 一覧だけカタカナ（長いと字が小さくなる・2026-09-07 まるちゃん） */
+        sub:"骨盤底筋・膣ケアツール",
+        one:"骨盤底筋をととのえるケアツール。",
+        now:2900, was:null,
+        /* 日本円の値段は当店価格の左に出す（月室と同じ形・2026-09-07 まるちゃん） */
+        was_txt:"¥16,280", lb_was:"日本価格",
+        tags:[],
+        /* 読みもの（2026-09-07 まるちゃんから飛び先をもらった） */
+        secret:{ t:"ムーラダーラとは？",
+                 url:"https://www.getsuun.net/no-1-vishuddha", url_zh:"" },
+        body:"骨盤底筋をほぐしながら血行を促進する女性のマッサージツールです。",
+        note:"" },
+
+      /* ★「まとめてお得」の文字の行をやめて、ふつうの商品のマスにした（2026-09-07 まるちゃん）。
+         並びはいちばん最後＝月室・ムーラダーラの下。 */
+      { id:"oil_mula", wide:true,
+        nm:"VIO保湿美容オイル ＋ Muladhara",
+        nm_zh:"【中文名 未定】VIO保湿美容オイル＋Muladhara",
+        nm_btn:"VIOオイル＋ムーラダーラ",
+        sub:"まとめてお得なセット",
+        one:"オイルとムーラダーラを、まとめてお得に。",
+        now:4300, was:4500,          /* 単品で買うと 1,600＋2,900＝4,500元 */
+        lb_now:"セット価格", lb_was:"単品で買うと",
+        cnt:"セット",
+        /* ★2つの商品の情報を全部載せる（2026-09-07 まるちゃん「情報全部入れてよ」） */
+        spec:{ list:[
+          { hd:"VIO保湿美容オイル　4つのこだわり成分" },
+          { n:"①", nm:"ひまし油",        d:"皮膚の抗菌作用や老廃物の排出促進、免疫アップ" },
+          { n:"②", nm:"シロバナワタ種子油", d:"オメガ6や9が豊富で、保湿作用に優れている" },
+          { n:"③", nm:"プルーン種子油",   d:"ビタミンEを多く含み、抗酸化作用、抗菌作用" },
+          { n:"④", nm:"ひまわり種子油",   d:"皮膚や粘膜を柔らかく滑らかに保つ" },
+          { hd:"Muladhara（ムーラダーラ）" },
+          { n:"・", d:"骨盤底筋をほぐしながら血行を促進する女性のマッサージツールです。" }
+        ]},
+        /* ムーラダーラの読みものは、セットの画面からも開けるようにする */
+        secret:{ t:"ムーラダーラとは？",
+                 url:"https://www.getsuun.net/no-1-vishuddha", url_zh:"" },
+        body:"",
+        note:"" }
+    ],
+    /* ★オイル＋ソープは「セット」という品として一覧に並べたので、ここからは外した（2026-09-03） */
+    /* ★「まとめてお得」の文字の行は、商品のマスにしたのでやめた（2026-09-07 まるちゃん） */
+    sets:[]
+  },
+
+  original: {
+    en:"", jp:"T&T ORIGINAL", zh:"自有品牌",
+    items:[
+      { id:"jojoba_no31", img:"NO31",
+        nm:"ホホバエッセンス No.31", nm_zh:"荷荷芭精華 No.31",
+        sub:"50ml",
+        /* 詳しい画面では商品名の右に（50ml）と小さく添える（2026-09-03 まるちゃん） */
+        unit:"50ml",
+        one:"TaiwanTomato のオリジナル。ホホバの美容エッセンス。",
+        /* 写真の中に白い字で重ねる一言（映像の最後の言葉・4行・2026-09-03 まるちゃん）*/
+        lead:["１５０万の中から", "選ばれし", "真の最高峰を", "あなたの肌に"],
+        /* 説明と購入ボタンの間に出す読みものリンク（2026-09-05 まるちゃんから飛び先をもらった） */
+        secret:{ t:"ホホバエッセンスの秘密", url:"https://x.gd/4mSe0",
+                 /* 中国語版は中国語の記事へ（出どころ＝問合せ回答集の「ズコLINK」表・2026-09-06） */
+                 url_zh:"https://x.gd/ELbRM" },
+        now:990, was:1500,   /* 2026-09-02 まるちゃん決定＝1,090元から990元へ */
+        lb_now:"当店LINE会員価格",   /* lb_was:"通常価格" ＝出さない。まるちゃんが整えた今の形のまま（2026-09-06） */
+        tags:[],
+        body:"米国アリゾナ産100%ピュアゴールデンホホバ\nUSDA（米国農務省）オーガニック認証" },
+      /* ★まだ発売前の商品（2026-09-02 まるちゃん）。写真のかわりに「COMING SOON」の面を出し、
+         値段も「詳細を見る」も出さない。押しても何も起きない（詳しい画面はまだ無いので）。
+         写真が用意できたら soon を消して、ふつうの商品と同じように書けばよい。 */
+      { id:"gumi_tea", soon:true,
+        nm:"ぐみ茶", nm_zh:"gumi茶",   /* 名前はひらがな（2026-09-05 まるちゃん） */
+        sub:"",                      /* 「近日登場」は出さない（2026-09-02 まるちゃん） */
+        one:"", now:null, was:null, tags:[], body:"" }
+    ],
+    sets:[]
+  }
+};
+
+/* 使い方の案内（すでに作ってあるリンク） */
+var JOJOBA_USE_JA = "https://x.gd/JojobaUsageJ";
+var JOJOBA_USE_ZH = "https://x.gd/JojobaUsageC";
+
+/* ───── 表紙の絵をゆっくり入れ替える ───── */
+var heroEl = document.getElementById('hero');
+var dotsEl = document.getElementById('dots');
+var slides = [], dots = [];
+
+function esc(t){
+  return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+/* かたまりを、切れ目でだけ改行できる形に組む（かたまりの中では切れない） */
+function chunks(t, always, spaced, stepped){
+  var parts = (t instanceof Array) ? t : [t];
+  /* always＝どの画面でも必ず改行／spaced＝英語なので、1行に並ぶ時は間に空白を入れる
+     stepped＝1行ずつ順番に出す（空の""は"1行ぶんの空白"なので、順番には数えない） */
+  var glue = always ? '<br>' : (spaced ? ' ' : '<wbr>');
+  return parts.map(function(p){
+    var cls = 'nb' + (stepped && p !== '' ? ' line' : '');
+    return '<span class="' + cls + '">' + esc(p) + '</span>';
+  }).join(glue);
+}
+
+HEROS.forEach(function(h, i){
+  var s = document.createElement('div');
+  s.className = 'slide' + (i === 0 ? ' on' : '');
+  var inner = '';
+  /* 色がついていく絵は、同じ場所に重ねて置いて、順に浮かび上がらせる */
+  if (h.seq) {
+    inner += h.seq.map(function(_, k){
+      return '<div class="layer' + (k === 0 ? ' on' : '') + '"></div>';
+    }).join('');
+  }
+  if (h.jaA) {
+    /* 2段階で出す字幕（「それが」→ 商品名） */
+    inner += '<div class="cap"><div class="in">' +
+               '<div class="ja ja4">' +
+                 '<span class="nb p1">' + esc(h.jaA) + '</span>' +
+                 '<span class="nb p2">' + esc(h.jaB) + '</span>' +
+               (h.jaC ? '<span class="nb p4">' + esc(h.jaC) + '</span>' : '') +
+               (h.jaC2 ? '<span class="nb p4">' + esc(h.jaC2) + '</span>' : '') +
+               (h.jaD ? '<span class="side">' +
+                          '<span class="nb p5">' + esc(h.jaD) + '</span>' +
+                          (h.jaE ? '<span class="nb p6">' + esc(h.jaE) + '</span>' : '') +
+                        '</span>' : '') +
+               '</div>' +
+               (h.en ? '<div class="en p3"><span class="nb">' + esc(h.en) + '</span></div>' : '') +
+             '</div></div>';
+  } else if (h.ja) {
+    inner += '<div class="cap"><div class="in stepped">' +
+               /* 日本語は、まるちゃんが決めた所で必ず改行する（画面の広さで勝手につながない）。
+                  さらに1行ずつ順番に浮かび上がらせる */
+               '<div class="ja">' + chunks(h.ja, true, false, true) + '</div>' +
+               '<div class="en">' + chunks(h.en, h.enAlways2, true) + '</div>' +
+             '</div></div>';
+  }
+  s.innerHTML = inner;
+  heroEl.insertBefore(s, dotsEl);
+  slides.push(s);
+
+  var d = document.createElement('span');
+  d.className = 'dot' + (i === 0 ? ' on' : '');
+  dotsEl.appendChild(d);
+  dots.push(d);
+});
+
+/* 表紙の写真＝画面の広さで、スマホ用（正方形）とパソコン用（横長）を出し分ける */
+/* ★映像の絵を「もう取り終わった物」だけ覚えておく（2026-09-07）。
+   絵を別ファイルにすると、7枚ぶんを一度に貼った瞬間にスマホが7枚を同時に取りに行き、
+   回線を7等分してしまう＝1枚目がいつまでも出ない。そこで下の「順番に取る係」が
+   1枚取り終わるたびにここへ印を付け、その絵だけを貼る。＝いつも使う順に届く。
+   ページの中に埋め込んだ絵（data:）と、下書きの差し込み口はこの仕組みを通らない。 */
+var HERO_READY = {};
+function paint(el, img){
+  if (!hasPic(img)) return;
+  if (img.indexOf('data:') !== 0 && !HERO_READY[img]) return;
+  el.style.backgroundImage = 'url("'+img+'")';
+  el.style.backgroundSize = 'cover';
+  el.style.backgroundRepeat = 'no-repeat';
+  el.style.backgroundPosition = '50% 50%';
+}
+
+function applyHero(){
+  /* ★「映像だけ」の版は、画面が広くても必ず正方形（スマホ用）の写真を使う。
+     大きな四角で見せるための版なので、横長の写真に切り替わってはいけない（2026-09-02 まるちゃん）。 */
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false
+           : window.matchMedia('(min-width:780px)').matches;
+  HEROS.forEach(function(h, i){
+    if (h.seq) {
+      var ls = slides[i].querySelectorAll('.layer');
+      h.seq.forEach(function(g, k){
+        if (!ls[k]) return;
+        paint(ls[k], wide ? g.pc : g.sp);
+        var pos = wide ? g.posPc : g.posSp;
+        if (pos) {
+          ls[k].style.backgroundSize = '108% auto';   /* ずらす余裕をつくる */
+          ls[k].style.backgroundPosition = pos;
+        }
+      });
+    } else {
+      paint(slides[i], wide ? h.pc : h.sp);
+    }
+  });
+}
+/* かたまりが画面からはみ出しそうな時だけ、字をほんの少し小さくして必ず収める
+   （切れ目を守ったまま、その画面で出せる一番大きい字にする） */
+/* ★★スマホの「文字を大きくする」設定への対応（2026-09-02・これが字が欠けた真の原因）★★
+   まるちゃんの端末（横411）は、こちらが 16px と書いても実際には 20.8px で描かれる＝1.3倍。
+   前の作りは「今の大きさ×(入る幅÷実際の幅)」をそのまま書いていたので、書いた値がまた1.3倍され、
+   詰めたつもりが逆に大きくなっていた（何度やり直しても直らない）。
+   → 倍率を先に測り、書く時は倍率で割る。さらに実際に測り直して、収まるまでくり返す。 */
+var _boost = null, _boostFor = -1;
+function fontBoost(){
+  if (_boost !== null && _boostFor === window.innerWidth) return _boost;
+  var k = 1;
+  try{
+    var p = document.createElement('span');
+    p.style.cssText = 'position:absolute;left:-9999px;top:0;font-size:16px;line-height:1;white-space:nowrap';
+    p.textContent = 'あいうえお';
+    document.body.appendChild(p);
+    var got = parseFloat(getComputedStyle(p).fontSize);
+    p.parentNode.removeChild(p);
+    if (got > 0) k = got / 16;
+  }catch(e){}
+  if (!(k > 0.5 && k < 4)) k = 1;
+  _boost = k; _boostFor = window.innerWidth;
+  return k;
+}
+/* 「描かれる大きさ」を指定して書く（端末の倍率で割ってから書く） */
+function setFontPx(el, shown){
+  el.style.fontSize = (Math.floor((shown / fontBoost()) * 100) / 100) + 'px';
+}
+/* 「字そのものの幅」を測る。
+   ★入れ物いっぱいに広がる書き方（block）の物は、入れ物の幅を返してしまうので、
+     中の字だけを測る（そうしないと、短い字なのに小さくされてしまう）。 */
+function textWidth(el){
+  var w = 0;
+  try{
+    var rg = document.createRange();
+    rg.selectNodeContents(el);
+    w = rg.getBoundingClientRect().width;
+  }catch(e){}
+  /* 本当にはみ出している時は、はみ出した分の幅も見る */
+  if (el.scrollWidth > el.clientWidth + 1) w = Math.max(w, el.scrollWidth);
+  if (!(w > 0)) w = el.getBoundingClientRect().width;
+  return w;
+}
+
+/* 決めた幅に収まるまで、実際に測りながら字を詰める */
+function shrinkToFit(el, room){
+  if (!el || !(room > 0)) return;
+  el.style.fontSize = '';
+  for (var i = 0; i < 3; i++){
+    var w = textWidth(el);
+    if (!(w > room)) return;
+    var now = parseFloat(getComputedStyle(el).fontSize);
+    if (!(now > 0)) return;
+    setFontPx(el, Math.max(6, now * (room / w) * 0.98));
+  }
+}
+
+function fitCaps(){
+  slides.forEach(function(s){
+    var cap = s.querySelector('.cap');
+    var box = s.querySelector('.in');
+    if (!cap || !box) return;
+    /* 入る幅は帯そのものから計算する（文字の入れ物の幅を当てにしない）。
+       9%の余裕を持たせて、機種による字の太さの違いでもはみ出さないようにする。 */
+    var room = Math.min(cap.clientWidth - 20, 760) * 0.93;
+    if (!(room > 0)) return;
+    ['.ja', '.en'].forEach(function(sel){
+      var el = s.querySelector(sel);
+      if (!el) return;
+      el.style.fontSize = '';                     /* いったん元の大きさに戻す */
+      /* 動きの拡大を含めない実際の幅で測る（含めると必要以上に小さくなる）。
+         収まるまでくり返す＝端末が字を大きくする設定でも必ず収まる。 */
+      for (var i = 0; i < 3; i++){
+        var widest = 0;
+        el.querySelectorAll('.nb').forEach(function(n){
+          var w = Math.max(n.scrollWidth, n.offsetWidth, n.getBoundingClientRect().width);
+          if (w > widest) widest = w;
+        });
+        if (!(widest > room)) break;
+        var now = parseFloat(getComputedStyle(el).fontSize);
+        if (!(now > 0)) break;
+        /* 2%だけ余裕を持たせて、ぎりぎりで欠けないようにする */
+        setFontPx(el, Math.max(6, now * (room / widest) * 0.98));
+      }
+    });
+  });
+
+  /* ★写真4枚（クジラ〜サボテン）の日本語は、全部同じ大きさにそろえる
+     （行の長さで大きさが変わると読みにくい＝2026-09-02 まるちゃん）。
+     いちばん詰まった1枚に合わせる。そうしないと、どれかが画面からはみ出す。
+     ふつうは「そして、３０年にもわたり…」の1枚が一番長いので、その大きさになる。 */
+  var jas = [];
+  for (var i = 0; i < 4 && i < slides.length; i++){
+    var one = slides[i] && slides[i].querySelector('.ja');
+    if (one) jas.push(one);
+  }
+  if (jas.length > 1){
+    var small = Math.min.apply(null, jas.map(function(e){
+      return parseFloat(getComputedStyle(e).fontSize);
+    }));
+    if (small > 0) jas.forEach(function(e){ setFontPx(e, small); });
+  }
+}
+
+/* 冒頭の白い画面の言葉も、はみ出しそうなら同じように詰める */
+function fitIntro(){
+  var intro = document.getElementById('intro');
+  if (!intro) return;
+  var box = intro.querySelector('.grp');
+  if (!box) return;
+  var room = (box.clientWidth - 44) * 0.96;
+  if (room <= 0) return;
+  intro.querySelectorAll('.ln').forEach(function(el){ shrinkToFit(el, room); });
+
+  /* ★はじめの3行（お手持ちの…／最大限に引き出し／あなたのお肌を…）は同じ大きさにそろえる
+     （2026-09-02 まるちゃん）。いちばん詰まった行に合わせる。 */
+  var three = ['.l1', '.l2', '.l2b'].map(function(s){ return intro.querySelector(s); })
+                                    .filter(function(e){ return !!e; });
+  if (three.length > 1){
+    var small = Math.min.apply(null, three.map(function(e){
+      return parseFloat(getComputedStyle(e).fontSize);
+    }));
+    if (small > 0) three.forEach(function(e){ setFontPx(e, small); });
+  }
+}
+
+/* 2つの大きなボタンの文字も、はみ出しそうなら詰めて必ず収める */
+function fitCards(){
+  document.querySelectorAll('.gcard').forEach(function(g){
+    var box = g.querySelector('.in');
+    if (!box) return;
+    var room = (box.clientWidth - 24) * 0.95;   /* 左右の余白ぶん＋機種差の余裕 */
+    if (room <= 0) return;
+    /* ★はみ出して切られている時は、見えている幅ではなく中身の幅で測る */
+    ['.jp', '.en', '.ds'].forEach(function(sel){ shrinkToFit(g.querySelector(sel), room); });
+  });
+
+  /* 2つのボタンで字の大きさをそろえる（片方だけ詰まって見えないように） */
+  ['.jp', '.en', '.ds'].forEach(function(sel){
+    var els = [].slice.call(document.querySelectorAll('.gcard ' + sel));
+    if (els.length < 2) return;
+    var min = Math.min.apply(null, els.map(function(e){
+      return parseFloat(getComputedStyle(e).fontSize);
+    }));
+    els.forEach(function(e){ setFontPx(e, min); });
+  });
+}
+
+/* 字の書き出しの高さをそろえる。
+   基準は「それは、1970年代」の画面（1枚目）。もともとの まん中ぞろえ だった時に
+   その1行目があった高さ＝(帯の高さ − 1枚目の字のかたまりの高さ)÷2 を計算して、
+   5枚とも・冒頭の白い光の画面とも、その高さから書き始める。
+   ※画面の広さで帯の高さも字の大きさも変わるので、決め打ちの割合ではなく毎回測って出す。 */
+function alignTextTop(){
+  var base = slides[0] && slides[0].querySelector('.cap .in');
+  if (!heroEl || !base) return;
+  var hh = heroEl.getBoundingClientRect().height;
+  if (!hh) return;
+  /* まず全部を等倍に戻してから、素の高さを測る */
+  var ins = [];
+  document.querySelectorAll('.cap .in').forEach(function(el){
+    el.style.setProperty('--cap-scale', '1');
+    ins.push(el);
+  });
+  var bh = base.getBoundingClientRect().height;
+  if (!bh) return;
+  var top = Math.max(0, Math.round((hh - bh) / 2));
+  document.querySelectorAll('.slide, .intro').forEach(function(el){
+    el.style.setProperty('--text-top', top + 'px');
+  });
+  /* 行数の多い画面が帯の下からはみ出す時だけ、その画面の字を少しだけ小さくする
+     （書き出しの高さは動かさない＝5枚とも同じ高さのまま） */
+  var room = hh - top - 6;
+  ins.forEach(function(el){
+    var h = el.getBoundingClientRect().height;
+    var k = (room > 0 && h > room) ? Math.max(0.6, room / h) : 1;
+    el.style.setProperty('--cap-scale', k.toFixed(3));
+  });
+
+  /* ★最後の1枚（No.31の瓶）だけ、字のかたまりを上と左へ寄せる（2026-09-10 まるちゃん）。
+     瓶の金色は「上が細く・下が太い」形。「１５０万の中から選ばれし」の行が、
+     金の細い所の高さで収まる位置まで下げ、かつ金に触れないところまで左へ寄せる。
+     ★上げすぎると前の4枚の字幕と高さのバランスが崩れるので、これ以上は上げない。
+     ★数字は帯の大きさに対する割合。実測（帯375のとき 上へ68・左へ72）から出した。
+     パソコンは横長の写真で瓶の位置が違うので、今までどおり動かさない。 */
+  var last = slides[slides.length - 1];
+  if (last){
+    var li = last.querySelector('.cap .in');
+    var lja = last.querySelector('.ja');
+    var lbox = last.querySelector('.ja4');
+    /* ★「映像だけ」の版は、画面が広くても正方形（スマホ用）の写真を使うので、
+       字の置き方もスマホと同じにする（2026-09-10） */
+    var sema = (window.__FILM_ONLY__ === true)
+             ? true : !window.matchMedia('(min-width:780px)').matches;
+    var lp2 = last.querySelector('.p2');
+    if (sema && li && lja && lbox){
+      /* ★測る前に、前回つけたずらしを全部いったん外す。
+         外さずに測ると「ずらしたぶん」まで幅に数えてしまい、測り直すたびに
+         字がどんどん小さくなる（2026-09-10 に実際に起きた）。 */
+      li.style.transform = '';
+      /* ★測っている間は登場の演出を止める（止めないと拡大された大きさで場所が決まる） */
+      var lcap = last.querySelector('.cap');
+      if (lcap) lcap.classList.add('hakaru');
+      /* ★この1枚は自分で置き場所を決めるので、全体を縮める指定は使わない
+         （縮む指定が入ると、測って出したずらし幅がずれる） */
+      li.style.setProperty('--cap-scale', '1');
+      if (lp2) lp2.style.left = '';
+      var lp1b = last.querySelector('.p1');
+      if (lp1b) lp1b.style.left = '';
+      var hb2 = heroEl.getBoundingClientRect();
+      /* 瓶の「太い金の部分」の左ふち＝帯の幅の58.9%（実測：帯375のとき221） */
+      var kin = hb2.width * 0.589;
+      /* ★字の大きさは「帯の幅の4.032%」に決め打ちする（帯375のとき約15.1）。
+         ★2026-09-11 まるちゃん「字の大きさを4/5に」＝それまでの5.04%を0.8倍した値。
+         ★なぜ決め打ちか（2026-09-11 まるちゃん「中国語版と日本語版、最後の画面がちがう」）＝
+           行の長さから自動で決めていたため、言葉が短い中国語だけ字が大きくなり、
+           日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           決め打ちにすれば、どちらの言葉でも同じ大きさ・同じ場所になる。
+         そのうえで、機種の字の太さの違いではみ出す時だけ、念のため詰める。 */
+      setFontPx(lja, hb2.width * 0.04032);
+      /* ★はみ出す時だけ、今の大きさから詰める。
+         ★ここで shrinkToFit や textWidth を使ってはいけない（2026-09-11 に両方で事故った）：
+           ①shrinkToFit は先頭で大きさを元に戻すので、上で決め打ちした値が消える。
+           ②textWidth は「見た目の幅」を測るので、商品名の登場の演出（一瞬1.45倍に拡大）まで
+             数えてしまい、字が必要以上に小さくなる。しかも演出が終わる前か後かで答えが変わるため、
+             日本語版と中国語版で最後の1枚の見え方がそろわなかった。
+           → 演出に左右されない「並びの上の幅」で測る。 */
+      var room2 = hb2.width * 0.62;
+      for (var t = 0; t < 3; t++){
+        var w2 = 0;
+        lja.querySelectorAll('.nb').forEach(function(n){ if (n.offsetWidth > w2) w2 = n.offsetWidth; });
+        if (!(w2 > room2)) break;
+        var now2 = parseFloat(getComputedStyle(lja).fontSize);
+        if (!(now2 > 0)) break;
+        setFontPx(lja, Math.max(6, now2 * (room2 / w2) * 0.98));
+      }
+      /* ★商品名の行だけ、他の行より右へ出す（2026-09-10 まるちゃん）。
+         その高さは瓶がいちばん細いので、いちばん右まで置ける。
+         動きの指定（ぱっと現れる演出）を壊さないよう、右の余白を減らす形でずらす。 */
+      if (lp2) lp2.style.left = Math.round(hb2.width * (0.645 - 0.568)) + 'px';
+      /* ★「それが」は「１５０万の中」の行の中央にそろえる（2026-09-10 まるちゃん） */
+      var lp1 = last.querySelector('.p1'), lp4 = last.querySelector('.p4');
+      if (lp1 && lp4){
+        var c1 = lp1.getBoundingClientRect(), c4 = lp4.getBoundingClientRect();
+        lp1.style.left = Math.round(((c4.left + c4.right) - (c1.left + c1.right)) / 2) + 'px';
+      }
+      /* ★商品名の行が、いつも同じ高さ（帯の15.5%＝瓶のいちばん細い白い首の所）に
+         来るように上下を決める。ここを基準にすると、下の行の空きを変えても
+         商品名と「それが」の高さは動かない。 */
+      last.style.setProperty('--text-top', '0px');
+      var pt = last.querySelector('.p2') || last.querySelector('.p4');
+      var cur = pt ? (pt.getBoundingClientRect().top - hb2.top) : 0;
+      last.style.setProperty('--text-top',
+        Math.max(0, Math.round(hb2.height * 0.144 - cur)) + 'px');
+      /* ★最後の2行（真の最高峰を／あなたの肌に）は、ホホバの実と葉に字がかからない
+         高さに置く（2026-09-11 まるちゃん）。
+         ★実と葉の明るい所は、実測で帯の高さの69.2%から始まる
+           （画像\帯5c_スマホ.jpg を、字が来る横30〜58%の帯で明るさを測って出した。
+            68.5%＝いちばん明るい22／69.5%＝232 と、ここではっきり変わる）。
+           少し余裕を見て、2行の下はしが帯の高さの66%より下へ出ないようにする。
+         ★上の行（から選ばれし）に近づきすぎないよう、半行ぶんの空きは必ず残す。
+         ★並びの高さは変えずに見た目だけ上げるので、商品名と「それが」の高さは動かない。 */
+      var lside = last.querySelector('.side');
+      if (lside){
+        lside.style.top = '';
+        var sb = lside.getBoundingClientRect();
+        var kagiri = hb2.top + hb2.height * 0.66;      /* ここより下へ出さない */
+        var ue = Math.min(0, Math.round(kagiri - sb.bottom));
+        var p4s = last.querySelectorAll('.p4');
+        if (p4s.length){
+          var lastp4 = p4s[p4s.length - 1].getBoundingClientRect();
+          var aki = parseFloat(getComputedStyle(lja).fontSize) * 0.5;
+          ue = Math.max(ue, Math.round(lastp4.bottom + aki - sb.top));
+        }
+        lside.style.top = ue + 'px';
+      }
+      /* 右そろえの右はしを、太い金のふちのぎりぎり手前に置く */
+      var dx = (kin - hb2.width * 0.02)
+             - (lbox.getBoundingClientRect().right - hb2.left);
+      li.style.transform = 'translateX(' + Math.round(dx) + 'px)';
+      if (lcap) lcap.classList.remove('hakaru');   /* 測り終わり＝演出をもとに戻す */
+    } else {
+      if (li) li.style.transform = '';        /* パソコンは指定を外して元のまま */
+      if (lp2) lp2.style.left = '';
+      var xp1 = last.querySelector('.p1'); if (xp1) xp1.style.left = '';
+      var xsd = last.querySelector('.side'); if (xsd) xsd.style.top = '';
+    }
+  }
+}
+
+/* 映画の題名の2行を、それぞれ必ず1行に収める（はみ出しそうなら少しだけ小さくする） */
+function fitTitle(){
+  if (!titleEl) return;
+  /* ★ここは1行がとても長いので、余裕を一番きつくしていた（1.5%）のが原因で
+     実機（字が少し太い）だと端が欠けた。他と同じ「9%の余裕」にそろえる。 */
+  var room = (titleEl.clientWidth - 16) * 0.95;
+  if (room <= 0) return;
+  ['.ten', '.tja'].forEach(function(sel){ shrinkToFit(titleEl.querySelector(sel), room); });
+}
+
+/* 押すボタンの字も、はみ出しそうなら詰めて必ず1行に収める
+   （帯の字幕・入口の2枚と同じやり方。スマホの字は機種で太さが違うので、ここでも余裕を持たせる） */
+function fitBuys(){
+  document.querySelectorAll('.buy').forEach(function(b){
+    var room = (b.clientWidth - 36) * 0.93;   /* 左右の余白ぶん＋機種差の余裕 */
+    if (!(room > 0)) return;                  /* 隠れている時は測れないので何もしない */
+    ['.t', '.s'].forEach(function(sel){ shrinkToFit(b.querySelector(sel), room); });
+  });
+}
+
+/* ★本数をえらぶ画面も1画面に収める（2026-09-06 まるちゃん）。
+   はみ出している時だけ、詰めた見た目に切り替える（2段階）。機種や文字の大きさを問わず効く。 */
+function fitQty(){
+  var v = document.getElementById('viewItem');
+  if (!v || payStep !== 2) { if (v) v.classList.remove('qtight', 'qtighter'); return; }
+  v.classList.remove('qtight', 'qtighter');
+  function over(){
+    return document.documentElement.scrollHeight - window.innerHeight;
+  }
+  if (over() > 0) v.classList.add('qtight');
+  if (over() > 0) v.classList.add('qtighter');
+}
+
+/* ★ご注文内容のご確認も同じやり方で1画面に収める（2026-09-06 まるちゃん）。
+   ここは上の商品の写真と名前を出さないぶん背が低いが、機種によっては
+   まだはみ出すので、はみ出した時だけ2段階で詰める。 */
+function fitConfirm(){
+  var v = document.getElementById('viewItem');
+  var box = document.getElementById('oLines');
+  if (!v || payStep !== 4) { if (v) v.classList.remove('ctight', 'ctighter'); return; }
+  v.classList.remove('ctight', 'ctighter');
+  if (box) box.style.maxHeight = '';
+  function over(){
+    return document.documentElement.scrollHeight - window.innerHeight;
+  }
+  if (over() > 0) v.classList.add('ctight');
+  if (over() > 0) v.classList.add('ctighter');
+  /* それでも入りきらない＝たくさん買われた時。商品の行の枠だけを縮めて、
+     合計・①②③・注文ボタンは必ず画面に残す（枠の中は指でずらして見られる） */
+  var n = over();
+  if (n > 0 && box){
+    var h = box.offsetHeight - n - 2;         /* -2＝端数の切り上げで1つぶんはみ出すのを防ぐ */
+    if (h < 64) h = 64;                       /* 2行ぶんくらいは必ず見えるようにする */
+    box.style.maxHeight = h + 'px';
+  }
+}
+
+/* ★成分の並びは「1行につき必ず1行」（2026-09-06 まるちゃん）。
+   4本とも同じ大きさのまま、いちばん長い行が横幅に収まるところまで字を詰める。
+   幅を測って決めるので、機種や文字の大きさの設定を問わず折り返さない。 */
+/* ★大きさの棒＝右の値段は折り返さない。名前が長い時は名前の字だけ詰めて1行に収める
+   （2026-09-06 まるちゃん。「Aセット（ソープ130ml + オイル）」で値段が2行になった） */
+/* ★一覧の商品名は必ず1行（2026-09-06 まるちゃん）。入らない時はその場で字を詰める。 */
+function fitTiles(){
+  [].slice.call(document.querySelectorAll('#viewList .item')).forEach(function(b){
+    var n = b.querySelector('.nm');
+    if (!n || b.offsetParent === null) return;
+    n.style.fontSize = '';
+    var room = (b.clientWidth - 20) * 0.98;
+    if (!(room > 0)) return;
+    shrinkToFit(n, room);
+    /* ★名前は小さくしすぎない（2026-09-07 まるちゃん「上は商品名だから大きい字」） */
+    var np = parseFloat(getComputedStyle(n).fontSize);
+    if (!(np > 0)) np = 15;
+    if (np < 13.5){ np = 13.5; setFontPx(n, np); }
+    /* ★副題は必ず名前の4分の3の大きさにする（2026-09-07 まるちゃん「副題本当に小さい？」）。
+       名前が詰められた時も、決まった割合で一緒に小さくなるので、必ず差が付く。 */
+    var sub = b.querySelector('.sub');
+    if (sub) setFontPx(sub, Math.max(9.5, np * 0.75));
+  });
+}
+
+function fitSizes(){
+  var box = document.getElementById('dsizes');
+  if (!box || box.style.display === 'none' || box.offsetParent === null) return;
+  [].slice.call(box.querySelectorAll('button')).forEach(function(b){
+    var n = b.querySelector('.n'), pp = b.querySelector('.pp');
+    if (!n || !pp) return;
+    n.style.fontSize = '';
+    var pad = 30;                                  /* 棒の左右の余白ぶん */
+    for (var k = 0; k < 4; k++){
+      var room = b.clientWidth - pp.getBoundingClientRect().width - pad;
+      var w = textWidth(n);
+      if (!(w > room) || !(room > 0)) break;
+      var now = parseFloat(getComputedStyle(n).fontSize);
+      if (!(now > 0)) break;
+      setFontPx(n, Math.max(9, now * (room / w) * 0.97));
+    }
+  });
+}
+
+function fitSpec(){
+  var db = document.getElementById('dbody');
+  if (!db || !db.classList.contains('haslist') || db.offsetParent === null) return;
+  var rows = [].slice.call(db.querySelectorAll('.srow'));
+  var hds  = [].slice.call(db.querySelectorAll('.shd'));
+  var room = db.clientWidth - 2;
+  if (!rows.length || !(room > 0)) return;
+  function put(px){
+    rows.forEach(function(r){
+      setFontPx(r.querySelector('.sno'), px);
+      setFontPx(r.querySelector('.stx'), px);
+    });
+    hds.forEach(function(h){ setFontPx(h, Math.max(9, px * 0.94)); });
+  }
+  function widest(){
+    var w = 0;
+    rows.forEach(function(r){
+      var no = r.querySelector('.sno'), tx = r.querySelector('.stx');
+      w = Math.max(w, no.getBoundingClientRect().width + textWidth(tx) + 7);
+    });
+    hds.forEach(function(h){ w = Math.max(w, textWidth(h) + 7);
+    });
+    return w;
+  }
+  var f = 13.5;
+  put(f);
+  for (var k = 0; k < 5; k++){
+    var w = widest();
+    if (!(w > room)) break;
+    f = Math.max(7, f * (room / w) * 0.985);
+    put(f);
+  }
+}
+
+/* ★商品の詳しい画面は「◯◯を購入する」までが1画面に収まるようにする（2026-09-02 まるちゃん）。
+   写真の高さを、残りの場所に合わせて決める＝測って決めるので機種や文字の大きさを問わない。 */
+function fitItem(){
+  var pane = document.getElementById('stepItem');
+  var hero = document.getElementById('dhero');
+  if (!pane || !hero) return;
+  if (pane.offsetParent === null) return;          /* 出ていない時は何もしない */
+  /* 成分の並びを先に1行ずつに収める＝この高さが決まらないと写真の大きさを決められない */
+  try { fitSpec(); } catch(e){}
+  try { fitSizes(); } catch(e){}
+  hero.style.height = '';
+  hero.style.width  = '';
+  pane.classList.remove('tight');
+  function room(){
+    var paneTop = pane.getBoundingClientRect().top + (window.scrollY || 0);
+    var others  = pane.getBoundingClientRect().height - hero.getBoundingClientRect().height;
+    return window.innerHeight - paneTop - others - 22;   /* 下の余白ぶん（少し多めに残す） */
+  }
+  var r = room();
+  /* 場所が足りない画面では、文字まわりの間をさらに詰めてから写真の高さを決める */
+  if (r < 175){ pane.classList.add('tight'); r = room(); }
+  /* 写真は正方形。1辺は「残りの高さ」と「横幅の3分の2」の小さい方 */
+  var paneW = (pane.getBoundingClientRect().width || window.innerWidth);
+  /* ★2枚並びの時は横長（2枚ぶん）＝高さは幅の半分（2026-09-07 まるちゃん） */
+  if (hero.classList.contains('two')){
+    var w2 = Math.min(paneW, r * 2);
+    if (w2 < 160) w2 = 160;
+    w2 = Math.floor(w2);
+    hero.style.width  = w2 + 'px';
+    hero.style.height = Math.floor(w2 / 2) + 'px';
+  } else {
+    var maxW = paneW * 0.667;
+    var side = Math.min(r, maxW);
+    if (side < 96) side = 96;                      /* これ以下には小さくしない */
+    side = Math.floor(side);
+    hero.style.height = side + 'px';
+    hero.style.width  = side + 'px';
+  }
+
+  /* 商品名（＋その右の量）も、1行のまま画面に収める */
+  var dn = document.getElementById('dname');
+  if (dn && dn.offsetParent !== null) shrinkToFit(dn, (dn.clientWidth - 6) * 0.95);
+
+  /* 写真の中に重ねた一言。写真の大きさに合わせて字を決め、
+     瓶に掛からないよう左半分に収める（4行そろって同じ大きさ） */
+  var lead = document.getElementById('dlead');
+  if (lead && lead.offsetParent !== null){
+    var ls = [].slice.call(lead.querySelectorAll('span'));
+    if (ls.length){
+      /* 白っぽい写真の形（上の帯に横いっぱい）は、持ち場が広いので少し大きめにできる */
+      var akaru = document.getElementById('dhero').classList.contains('leadLight');
+      var base = Math.max(8, side * (akaru ? 0.078 : 0.049));
+      ls.forEach(function(s){ setFontPx(s, base); });
+      var lroom = side * (akaru ? 0.90 : 0.50);
+      for (var k = 0; k < 3; k++){
+        var widest = 0;
+        ls.forEach(function(s){ widest = Math.max(widest, textWidth(s)); });
+        if (!(widest > lroom)) break;
+        var now = parseFloat(getComputedStyle(ls[0]).fontSize);
+        if (!(now > 0)) break;
+        var next = Math.max(8, now * (lroom / widest) * 0.98);
+        ls.forEach(function(s){ setFontPx(s, next); });
+      }
+    }
+  }
+}
+
+function fitAll(){
+  try { fitQty(); } catch(e){} try { fitConfirm(); } catch(e){} try { fitTiles(); } catch(e){} fitCaps(); fitIntro(); fitCards(); fitTitle(); fitBuys(); fitItem(); alignTextTop(); }
+
+applyHero();
+fitAll();
+
+/* ═══ 絵を「使う順」に1枚ずつ取りに行く係（2026-09-07 まるちゃん「4Gで重くないか」） ═══
+   ★なぜ要るか
+     絵をページの中に埋め込むのをやめて別ファイルにした（＝スマホはスマホ用の絵だけ、
+     商品の写真は見る時だけ取る）。ただし別ファイルにすると、貼った瞬間に全部を
+     いっせいに取りに行き、細い回線を全員で分け合って「どれも遅い」状態になる。
+     そこで、この係が1枚ずつ順番に取り、取れた物からその場に貼っていく。
+     ＝1枚目がいちばん早く届く＝映像が黒いまま始まらない。
+   ★取る順番
+     ①瓶の写真（開いて0.3秒で要る）→ 上の startShow が直に取りに行く
+     ②映像の絵を出る順に7枚（スマホならスマホ用だけ・パソコンならパソコン用だけ）
+     ③商品の写真（映像が終わってお店に入ってから要る＝いちばん最後） */
+function loadInOrder(list, done){
+  var i = 0;
+  (function next(){
+    if (i >= list.length){ if (done) { try{ done(); }catch(e){} } return; }
+    var one = list[i++];
+    var url = one && one.url;
+    if (!hasPic(url) || url.indexOf('data:') === 0){    /* 埋め込みの絵は取りに行く必要が無い */
+      if (one && one.after) { try{ one.after(); }catch(e){} }
+      next(); return;
+    }
+    if (HERO_READY[url]) { if (one.after) { try{ one.after(); }catch(e){} } next(); return; }
+    var im = new Image();
+    im.onload = im.onerror = function(){
+      HERO_READY[url] = true;
+      if (one.after) { try{ one.after(); }catch(e){} }
+      next();
+    };
+    im.src = url;
+  })();
+}
+
+function preloadAll(){
+  var wide = (window.__FILM_ONLY__ === true)
+           ? false
+           : window.matchMedia('(min-width:780px)').matches;
+  var list = [];
+  /* ラベルの一枚は、映像の写真より先に要る（言葉のすぐあとに出るので）*/
+  list.push({ url: labelPic() });
+  HEROS.forEach(function(h, i){
+    if (h.seq) {
+      h.seq.forEach(function(g, k){
+        list.push({ url: wide ? g.pc : g.sp, after: function(){ applyHero(); } });
+      });
+    } else {
+      list.push({ url: wide ? h.pc : h.sp, after: function(){ applyHero(); } });
+    }
+  });
+  /* 商品の写真は映像のあと。ここまで来ればもう急がない */
+  loadInOrder(list, function(){
+    var later = [];
+    for (var k in ITEM_PICS) { if (ITEM_PICS.hasOwnProperty(k)) later.push({ url: ITEM_PICS[k] }); }
+    loadInOrder(later);
+  });
+}
+preloadAll();
+
+/* ★一度取った絵は、スマホの中に置いておく（2026-09-07 まるちゃん「次に軽くなりそう」）。
+   置いておくのは絵だけ＝ページの中身は毎回きちんと取り直すので、直した内容はすぐ反映される。
+   絵の名前は中身から作ってあるので、差し替えれば名前が変わる＝古い絵が出ることは起きない。 */
+(function(){
+  try{
+    if (!('serviceWorker' in navigator)) return;
+    if (location.protocol !== 'https:') return;      /* 手元で見ている時は何もしない */
+    navigator.serviceWorker.register('sw.js').then(function(){
+      /* 今つかう絵の一覧を伝える＝それ以外の古い絵はスマホの中から捨ててもらう */
+      var use = [];
+      HEROS.forEach(function(h){
+        if (h.seq) { h.seq.forEach(function(g){ use.push(g.sp); use.push(g.pc); }); }
+        else { use.push(h.sp); use.push(h.pc); }
+      });
+      for (var k in ITEM_PICS) { if (ITEM_PICS.hasOwnProperty(k)) use.push(ITEM_PICS[k]); }
+      use.push(IMG_BOTTLE_WHITE); use.push(IMG_BOTTLE_BLUE); use.push(IMG_ITEM);
+      use.push(IMG_LABEL_SP); use.push(IMG_LABEL_PC);
+      use = use.filter(function(u){ return hasPic(u) && u.indexOf('data:') !== 0; });
+      function tell(){
+        var c = navigator.serviceWorker.controller;
+        if (c) { c.postMessage({ yo:'tsukau', list:use }); }
+        else { setTimeout(tell, 1500); }
+      }
+      tell();
+    }).catch(function(){});
+  }catch(e){}
+})();
+
+/* パソコンとスマホの境目をまたいで画面の大きさが変わったら、その側の絵を取り直す */
+window.addEventListener('resize', function(){
+  clearTimeout(window.__reloadHero);
+  window.__reloadHero = setTimeout(preloadAll, 400);
+});
+
+/* ★字は「大きさを合わせ終えてから」出す（2026-09-02 まるちゃん指摘）。
+   合わせる前に見せると、大きい字が一瞬出てからスッと縮む動きがお客様に見えてしまう。
+   字の形が届くまでは幅が変わるので、届いてから1回合わせて、それから出す。
+   （場所は取ったまま隠すので、隠れている間もちゃんと測れる） */
+function showText(){
+  if (document.body.classList.contains('ready')) return;
+  fitAll();
+  document.body.classList.add('ready');
+}
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(function(){ showText(); });
+  setTimeout(showText, 1800);   /* 字の形が届かない時の保険 */
+} else {
+  setTimeout(showText, 300);
+}
+
+window.addEventListener('resize', function(){ applyHero(); fitAll(); });
+window.addEventListener('orientationchange', fitAll);
+window.addEventListener('load', fitAll);
+document.addEventListener('visibilitychange', fitAll);
+[200, 600, 1200, 2500].forEach(function(ms){ setTimeout(fitAll, ms); });
+if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitAll);
+/* 帯の大きさが少しでも変わったら測り直す（機種ごとの表示の癖に一番強い） */
+if (window.ResizeObserver) {
+  var ro = new ResizeObserver(function(){ fitAll(); });
+  ro.observe(heroEl);
+  document.querySelectorAll('.gcard').forEach(function(g){ ro.observe(g); });
+}
+/* 白い光のオープニング → 写真を順に → またオープニング、をずっと繰り返す */
+var INTRO_MS = 9360;   /* 最後の言葉が出そろって、灰色に包まれきるまで */
+var FLARE_MS = 900;    /* まん中から灰色が広がり、画面全体が写真と同じ色になるまで */
+var flareTimer = null;
+/* 題名は「打ち終わり → 英語が出そろう → すぐ次の画面」（2026-09-04 まるちゃん）。
+   英語が浮かび上がるのに1秒、そのあとほんの一呼吸だけ置いて引く */
+var TITLE_EN_MS   = 1000;   /* 英語が出そろうまで */
+var TITLE_HOLD_MS = 250;    /* 出そろってからの一呼吸 */
+var TITLE_OUT_MS = 800;    /* 題名がそっと消えるまで */
+var PHOTO_MS = 4200;   /* 写真1枚あたり（行数で決まらない時の予備） */
+var FIRST_MS = 450;    /* 写真が出てから最初のかたまりが浮かぶまで */
+var HOLD_MS  = 600;    /* かたまりを出してからの一呼吸 */
+var READ_MS  = 550;    /* その1行を読むのにかかるぶん（かたまりの行数ぶん足す） */
+var LINGER_MS = 1500;  /* 全部出そろってから次の写真へ移るまでの余韻 */
+var PHOTO_MS_MIN = 3000;
+
+/* その写真の字幕を「何秒後に・どのかたまりを出すか」の予定表を作る。
+   jaSteps＝いっきに出す行数の並び（例 [1,2]＝1行目→残り2行いっきに→英語） */
+function capPlan(k){
+  var s = slides[k];
+  var box = s && s.querySelector('.cap .in.stepped');
+  if (!box) return null;
+  var lines = [].slice.call(box.querySelectorAll('.ja .line'));
+  if (!lines.length) return null;
+  var steps = (HEROS[k] && HEROS[k].jaSteps) || null;
+  /* jaPause＝その組を出す「前」に置く、追加の間（ミリ秒）。ためを作りたい行に使う
+     jaAfter＝その組を出した「あと」に足す時間＝その組が画面に出ている時間が延びる */
+  var pause = (HEROS[k] && HEROS[k].jaPause) || null;
+  var after = (HEROS[k] && HEROS[k].jaAfter) || null;
+  var plan = [], t = FIRST_MS, i = 0, g = 0;
+  while (i < lines.length){
+    var n = steps ? (steps[g] || 1) : 1;
+    var group = lines.slice(i, i + n);
+    if (pause && pause[g]) t += pause[g];
+    plan.push({ at: t, els: group });
+    /* ★1つ目の字幕から2つ目までの間だけ、1.5倍ゆっくりにする（2026-09-04 まるちゃん） */
+    t += (HOLD_MS + group.length * READ_MS) * (g === 0 ? 1.5 : 1);
+    if (after && after[g]) t += after[g];
+    i += group.length; g++;
+  }
+  /* 英語が出る時刻。ふだんは日本語が出そろった直後だが、
+     enAfter を書いた場面は「最後の日本語が出てから◯ミリ秒後」にする（2026-09-05 まるちゃん） */
+  var lastAt = plan.length ? plan[plan.length - 1].at : FIRST_MS;
+  var enAt = (HEROS[k] && HEROS[k].enAfter) ? (lastAt + HEROS[k].enAfter) : (t - 300);
+  return { plan: plan, enAt: enAt, box: box, en: box.querySelector('.en'),
+           total: t + LINGER_MS };
+}
+var introEl  = document.getElementById('intro');
+var titleEl  = document.getElementById('introTitle');
+/* ★ラベルの一枚（2026-09-07 まるちゃん）。言葉のあと・物語の題名の前にはさむ。
+   出ている時間は下の数字で決まる（画面に出る→2.8秒そのまま→そっと消える） */
+var labelEl     = document.getElementById('introLabel');
+var LABEL_MS    = 4000;   /* ラベルが画面に出ている時間（2026-09-07 まるちゃん「4秒にして」） */
+var LABEL_OUT_MS = 1100;  /* そっと消えきるまで（上の見た目の指定と同じ長さ） */
+
+/* ★題名を1文字ずつ打ち出す（映画の題名のように・2026-09-04 まるちゃん）。
+   ・字は最初から全部置いておき、見え方だけを順に変える（行が動かない・幅も変わらない
+     ので、字の大きさを測って合わせる仕組みもそのまま効く）
+   ・打ち終わってから英語がそっと出る */
+var TYPE_MS   = 105;   /* 1文字ぶんの間 */
+var typeTimers = [];
+var tjaEl = titleEl && titleEl.querySelector('.tja');
+function splitTitle(){
+  if (!tjaEl || tjaEl.getAttribute('data-split')) return;
+  var txt = tjaEl.textContent;
+  tjaEl.innerHTML = txt.split('').map(function(c){
+    return '<span class="ch">' + (c === ' ' ? '&nbsp;' : esc(c)) + '</span>';
+  }).join('');
+  tjaEl.setAttribute('data-split', '1');
+}
+function resetTitleType(){
+  typeTimers.forEach(clearTimeout); typeTimers = [];
+  titleEl.classList.remove('typed');
+  if (tjaEl) [].forEach.call(tjaEl.querySelectorAll('.ch'), function(c){ c.classList.remove('on'); });
+}
+function typeTitle(){
+  splitTitle(); resetTitleType();
+  titleEl.classList.add('typing');
+  var chs = tjaEl ? [].slice.call(tjaEl.querySelectorAll('.ch')) : [];
+  chs.forEach(function(c, i){
+    typeTimers.push(setTimeout(function(){ c.classList.add('on'); }, 260 + i * TYPE_MS));
+  });
+  typeTimers.push(setTimeout(function(){
+    titleEl.classList.add('typed');
+  }, 260 + chs.length * TYPE_MS + 220));
+  return 260 + chs.length * TYPE_MS + 220;
+}
+var timer    = null;   /* 次の合図はいつも1つだけ（二重に回らないようにする） */
+
+function later(fn, ms){ clearTimeout(timer); timer = setTimeout(fn, ms); }
+
+var seqTimers = [];
+
+/* prep＝「絵を用意するだけ」。冒頭の白い画面の裏で1枚目を先に出す時に使う。
+   字幕を出す予定は組まない（組むと、白い画面が引いた時に字がすでに出ていて、
+   そのあと本番で組み直すために一度消えてまた出る＝ちらつく） */
+function setPhoto(i, prep){
+  slides.forEach(function(s, k){ s.classList.toggle('on', k === i); });
+  dots.forEach(function(d, k){ d.classList.toggle('on', k === i); });
+
+  /* 色がついていく絵と、2段階の字幕を、いったん最初に戻してから順に出す */
+  seqTimers.forEach(clearTimeout);
+  seqTimers = [];
+
+  /* 写真の字幕を、決めたかたまりごとに順番に浮かび上がらせる
+     （最後の瓶の画面はこれとは別の出し方） */
+  slides.forEach(function(s, k){
+    var p = capPlan(k);
+    if (!p) return;
+    p.plan.forEach(function(g){ g.els.forEach(function(x){ x.classList.remove('lit'); }); });
+    if (p.en) p.en.classList.remove('lit');
+    if (prep || k !== i) return;
+    p.plan.forEach(function(g){
+      seqTimers.push(setTimeout(function(){
+        g.els.forEach(function(x){ x.classList.add('lit'); });
+      }, g.at));
+    });
+    if (p.en) seqTimers.push(setTimeout(function(){ p.en.classList.add('lit'); }, p.enAt));
+  });
+  slides.forEach(function(s, k){
+    var ls = s.querySelectorAll('.layer');
+    var parts = s.querySelectorAll('.p1,.p2,.p3,.p4,.p5,.p6');
+    if (!ls.length && !parts.length) return;
+
+    var sq = (HEROS[k] && HEROS[k].seq) || [];
+    ls.forEach(function(l, n){
+      l.classList.toggle('on', n === 0);
+      l.classList.remove('drained');            /* 削れた状態も元に戻す */
+      l.classList.remove('drain-start');
+      /* 中身が減って現れる絵は、じわっと出さず最初から置く（上の絵に隠れている） */
+      l.classList.toggle('instant', !!(sq[n] && sq[n].drain));
+      /* 重ねる順：中身が減って現れる絵は、そのひとつ上の絵の下に敷く */
+      l.style.zIndex = (n === 0) ? 0 : (sq[n] && sq[n].drain ? n - 1 : n + 1);
+    });
+    parts.forEach(function(p){ p.classList.remove('lit'); });
+    if (prep || k !== i) return;
+
+    var step = HEROS[k].stepMs || 3600;
+    var seq  = HEROS[k].seq || [];
+    for (var n = 1; n < ls.length; n++){
+      (function(layer, n){
+        var at = (seq[n] && seq[n].at) || step * n;   /* 絵が変わり始める時刻 */
+        if (seq[n] && seq[n].drain) {
+          /* この1枚は「上から中身が減って現れる」＝自分は先に置いておき、
+             ひとつ上に重なっている絵を上のふちから削って見せる */
+          var above = ls[n-1];
+          seqTimers.push(setTimeout(function(){
+            layer.classList.add('on');          /* 下に敷く（まだ上の絵に隠れている） */
+            /* まず、削り始めの位置（瓶の口のあたり）へ音もなく置く。
+               ここは2枚の写真がまったく同じ絵なので、見た目は1ミリも変わらない */
+            above.classList.add('drain-start');
+            void above.offsetWidth;
+            above.classList.remove('drain-start');
+            above.classList.add('drained');     /* ここから液面がゆっくり下りていく */
+          }, at));
+        } else {
+          seqTimers.push(setTimeout(function(){ layer.classList.add('on'); }, at));
+        }
+      })(ls[n], n);
+    }
+    var H = HEROS[k];
+    var tP1 = H.tP1 || 700, tP2 = H.tP2 || step, tP3 = H.tP3 || (step + 900);
+    var tP4 = H.tP4 || (step * 2), gap = H.tGap || 1850;
+    var p1 = s.querySelector('.p1'), p2 = s.querySelector('.p2'), p3 = s.querySelector('.p3');
+    if (p1) seqTimers.push(setTimeout(function(){ p1.classList.add('lit'); }, tP1));
+    if (p2) seqTimers.push(setTimeout(function(){ p2.classList.add('lit'); }, tP2));
+    if (p3) seqTimers.push(setTimeout(function(){ p3.classList.add('lit'); }, tP3));
+    /* 最後の3行は、まったく同じ間合いで1行ずつ出す */
+    /* ★「１５０万の中」「から選ばれし」は2行あるが、同時に出す（2026-09-10 まるちゃん） */
+    var p4s = s.querySelectorAll('.p4');
+    var p5 = s.querySelector('.p5'), p6 = s.querySelector('.p6');
+    if (p4s.length) seqTimers.push(setTimeout(function(){
+      p4s.forEach(function(e){ e.classList.add('lit'); });
+    }, tP4));
+    if (p5) seqTimers.push(setTimeout(function(){ p5.classList.add('lit'); }, tP4 + gap));
+    if (p6) seqTimers.push(setTimeout(function(){ p6.classList.add('lit'); }, tP4 + gap * 2));
+  });
+}
+
+/* その写真にいる時間＝字が全部出そろうまで＋少しの余韻（予定表から自動で決まる） */
+function dwellOf(i){
+  if (HEROS[i].ms) return HEROS[i].ms;
+  var p = capPlan(i);
+  return p ? Math.max(PHOTO_MS_MIN, p.total) : PHOTO_MS;
+}
+
+function runPhotos(i){
+  setPhoto(i);
+  later(function(){
+    if (i + 1 < slides.length) runPhotos(i + 1);
+    else startShow(false);            /* 「あなたの肌へ」のあとは、また瓶だけの画面へ戻る */
+  }, dwellOf(i));
+}
+
+function playIntro(instant){
+  /* 言葉の出方を最初からやり直す */
+  introEl.querySelectorAll('.ln').forEach(function(e){
+    e.style.animation = 'none';
+    void e.offsetWidth;               /* いったん止めてから、かけ直すための一手間 */
+    e.style.animation = '';
+  });
+  if (instant) introEl.style.transition = 'none';   /* じわっとではなく即座に出す */
+  introEl.classList.remove('gone');
+  introEl.classList.remove('flare');
+  labelEl.classList.remove('on');       /* ラベルの一枚も、毎回はじめに戻す */
+  titleEl.classList.remove('on', 'out');
+  resetTitleType();
+  if (instant) { void introEl.offsetWidth; introEl.style.transition = ''; }
+  dotsEl.classList.remove('show');
+  setPhoto(0, true);                  /* 絵だけ先に用意（字幕はまだ組まない） */
+  /* 消える少し前から、光がふわっと広がって言葉を包む */
+  clearTimeout(flareTimer);
+  flareTimer = setTimeout(function(){ introEl.classList.add('flare'); }, INTRO_MS - FLARE_MS);
+  later(function(){
+    /* ★言葉が光に包まれて消えたあと、ラベルの一枚をはさんでから題名へ進む
+       （2026-09-07 まるちゃん）。写真がまだ無いときは、今までどおりすぐ題名へ進む。 */
+    var lb = labelPic();
+    if (hasPic(lb)) {
+      labelEl.style.backgroundImage = 'url("' + lb + '")';
+      labelEl.classList.add('on');
+      later(function(){
+        labelEl.classList.remove('on');
+        later(showTitle, LABEL_OUT_MS);
+      }, LABEL_MS);
+    } else {
+      showTitle();
+    }
+  }, INTRO_MS);
+
+  function showTitle(){
+    /* 灰色になりきったところで、映画の題名のような一枚を出す */
+    titleEl.classList.add('on');
+    /* 1文字ずつ打ち出す。打ち終わりの時刻が返るので、
+       ★英語が出そろったらすぐ次の画面へ移る（2026-09-04 まるちゃん） */
+    var typedAt = typeTitle();
+    later(function(){
+      titleEl.classList.add('out');   /* 読み終わるころに、そっと引く */
+      later(function(){
+        introEl.classList.add('gone');
+        dotsEl.classList.add('show');
+        runPhotos(0);                 /* ここから写真が順に進む */
+      }, TITLE_OUT_MS);
+    }, typedAt + TITLE_EN_MS + TITLE_HOLD_MS);
+  }
+}
+
+/* ★一番はじめ：まっ白な画面に瓶だけを出してから、いつもの言葉の画面へ入る
+   （白い背景の瓶の写真がまだ無い時は、この画面を飛ばして今までどおり始まる） */
+var OPEN_MS    = 6600;  /* 瓶だけの画面：出る→4秒かけて減る→少し余韻 */
+var DRAIN_AT   = 1200;  /* 減り始めるまで */
+var openingEl  = document.getElementById('opening');
+var openingIm  = document.getElementById('openingImg');
+var openingImB = document.getElementById('openingImgB');
+
+var openTimers = [];
+
+/* first＝ページを開いた一番最初。2回目からは、最後の「あなたの肌へ」のあとに
+   またこの瓶の画面へ戻ってくるので、白い画面をふわっと重ねてから出す */
+function startShow(first){
+  if (!IMG_BOTTLE_WHITE || IMG_BOTTLE_WHITE.charAt(0) === '@') { playIntro(); return; }
+  openTimers.forEach(clearTimeout); openTimers = [];
+  openingIm.src = IMG_BOTTLE_WHITE;
+  if (IMG_BOTTLE_BLUE && IMG_BOTTLE_BLUE.charAt(0) !== '@') openingImB.src = IMG_BOTTLE_BLUE;
+  openingEl.classList.remove('off', 'lit', 'drain');
+  if (first) {
+    openingEl.classList.remove('gone');
+  } else {
+    openingEl.classList.add('gone');
+    void openingEl.offsetWidth;          /* いったん透明にしてから */
+    openingEl.classList.remove('gone');  /* ふわっと白い画面に戻る */
+  }
+  var lead = first ? 250 : 800;
+  openTimers.push(setTimeout(function(){ openingEl.classList.add('lit'); }, lead));
+  /* 少し見せてから、4秒かけて上からホホバが減っていく */
+  openTimers.push(setTimeout(function(){ openingEl.classList.add('drain'); }, lead + DRAIN_AT));
+  openTimers.push(setTimeout(function(){
+    /* ★順番が大事：先に下の白い画面を「じわっとではなく即座に」出しておく。
+       そのうえで瓶の画面だけをゆっくり消すので、瓶はふわっと消えるのに、
+       あいだに写真が透けて見える（変な絵が混ざる）ことは起きない。 */
+    playIntro(true);
+    openingEl.classList.add('gone');
+    openTimers.push(setTimeout(function(){ openingEl.classList.add('off'); }, 1100));
+  }, first ? OPEN_MS : OPEN_MS + 700));
+}
+
+startShow(true);
+
+/* ───── 画面の切り替え ───── */
+var vHome = document.getElementById('viewHome');
+var vList = document.getElementById('viewList');
+var vItem = document.getElementById('viewItem');
+var vCart = document.getElementById('viewCart');
+var back  = document.getElementById('backTop');
+var curCat = null;
+var curView = 'home';
+
+function show(which){
+  /* 切り替えボタンは一覧の時だけ（2026-09-06 まるちゃん） */
+  var _sw = document.getElementById('listSwitch');
+  if (_sw && which !== 'list') _sw.style.display = 'none';
+  vHome.style.display = which==='home' ? 'flex':'none';   /* flexで縦に伸ばす（blockだと下に空白が残る） */
+  vList.style.display = which==='list' ? 'block':'none';
+  /* 詳しい画面は flex＝「購入する」までが1画面に収まるよう、写真が余った高さを吸い上げる */
+  vItem.style.display = which==='item' ? 'flex':'none';
+  vCart.style.display = which==='cart' ? 'block':'none';
+  back.classList.toggle('show', which!=='home');
+  /* 一覧と詳しい画面は、上の映像の続きに見えるよう暗い世界にする */
+  document.body.classList.toggle('dark', which!=='home');
+  curView = which;
+  drawCartBtn();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function yen(n){ return n==null ? '' : n.toLocaleString('ja-JP') + '元'; }
+
+function openList(cat){
+  curCat = cat;
+  var d = DATA[cat];
+  document.getElementById('listEn').textContent = d.en;
+  document.getElementById('listTitle').textContent = d.jp;
+
+  var box = document.getElementById('items');
+  box.innerHTML = '';
+  /* 商品が1つだけの時は、半分の場所に1枚だけ置くと右がぽっかり空くので、
+     まん中に少し大きめで置く（2026-09-02） */
+  box.className = 'items' + (d.items.length === 1 ? ' one' : '');
+  d.items.forEach(function(it){
+    /* ★まだ発売前の商品＝写真のかわりに「COMING SOON」の面。押せないようにする */
+    if (it.soon){
+      var s = document.createElement('div');
+      s.className = 'item soon';
+      s.innerHTML =
+        '<div class="thumb comingsoon">'+
+          '<span class="frame"></span>'+
+          '<span class="cs">COMING<br>SOON</span>'+
+          '<span class="rule"></span>'+
+        '</div>'+
+        '<div class="itxt">'+
+          '<div class="nm">'+it.nm+'</div>'+
+          (it.sub?'<div class="sub">'+it.sub+'</div>':'')+
+        '</div>';
+      box.appendChild(s);
+      return;
+    }
+    var b = document.createElement('button');
+    /* ★セットは1マスまるごと使って、まん中に大きく置く（2026-09-03 まるちゃん） */
+    b.className = 'item' + (it.wide ? ' wide' : '');
+    /* 一覧に出すのは「写真・商品名・量・金額」だけ。その下に「詳細を見る」
+       （説明文と札は詳しい画面だけに出す・まるちゃん指示 2026-08-31） */
+    var pic = itemPic(it);
+    var thumbHtml = hasPic(pic)
+      ? '<div class="thumb"><img src="'+pic+'" alt=""></div>'
+      : '<div class="thumb">写真を<br>ここに<br>入れます</div>';
+    b.innerHTML =
+      thumbHtml+
+      '<div class="itxt">'+
+        /* 一覧だけ短い名前を使える（長いと詰められて小さくなるため・2026-09-07 まるちゃん） */
+        '<div class="nm">'+(it.nm_list||it.nm)+'</div>'+
+        (it.sub?'<div class="sub">'+it.sub+'</div>':'')+
+        /* 大きさが2つある品は「130ml 1,000元」「200ml 1,590元」と2行で出す。
+           それ以外は 通常価格（線で消す方）を左、当店の値段を右（詳しい画面と同じ並び） */
+        (it.sizes
+          ? '<div class="price sz">' + it.sizes.map(function(v){
+              return '<div class="szrow"><span class="szn">'+esc(v.nm)+'</span>'
+                   + '<span class="now">'+yen(v.now)+'</span></div>';
+            }).join('') + '</div>'
+          : '<div class="price">'+
+              (it.was_txt?'<span class="was">'+esc(it.was_txt)+'</span>':
+               (it.was!=null?'<span class="was">'+yen(it.was)+'</span>':''))+
+              (it.now!=null?'<span class="now">'+yen(it.now)+'</span>':'<span class="now" style="font-size:12px;color:#b4544f">値段 未定</span>')+
+            '</div>')+
+        '<div class="detail">詳細を見る</div>'+
+      '</div>';
+    b.onclick = function(){ openItem(cat, it.id); };
+    box.appendChild(b);
+  });
+
+  var sw = document.getElementById('setWrap');
+  sw.innerHTML = '';
+  if (d.sets && d.sets.length){
+    var h = '<div class="setbox"><h3>まとめてお得</h3>';
+    d.sets.forEach(function(s){
+      h += '<div class="setrow"><span>'+s.nm+'</span><b>'+yen(s.price)+'</b></div>';
+    });
+    h += '</div>';
+    sw.innerHTML = h;
+  }
+  /* 見出しの右のボタン＝もう一方の並びへ切り替える（2026-09-06 まるちゃん） */
+  var sw = document.getElementById('listSwitch');
+  if (sw){
+    var other = (cat === 'original') ? 'select' : 'original';
+    var nmA = (other === 'original') ? 'ORIGINAL' : 'SELECT';
+    var nmB = (other === 'original')
+      ? (isZH() ? '切換至自有品牌' : 'オリジナル商品に切替')
+      : (isZH() ? '切換至嚴選商品' : 'セレクト商品に切替');
+    sw.innerHTML = '<span class="a">' + nmA + '</span><span class="b">' + nmB + '</span>';
+    sw.className = 'lswbtn ' + (other === 'original' ? 'to-original' : 'to-select');
+    sw.onclick = function(){ openList(other); };
+    sw.style.display = '';
+  }
+  show('list');
+  try { fitTiles(); } catch(e){}
+  [80, 300].forEach(function(ms){ setTimeout(function(){ try{ fitTiles(); }catch(e){} }, ms); });
+}
+
+/* ★大きさ（130ml／200ml・Aセット／Bセット）が選べる商品のための小さな部品（2026-09-03）
+   ・curSize＝いま選んでいる大きさ ・curPrice()／curWas()／curSizeName()＝その値段と名前 */
+var curSize = 0;
+function sizeOf(it){ return (it && it.sizes) ? it.sizes[Math.min(curSize, it.sizes.length-1)] : null; }
+function curPrice(){ var v = sizeOf(curItem); return v ? v.now : (curItem ? curItem.now : null); }
+function curWas(){   var v = sizeOf(curItem); return v ? v.was : (curItem ? curItem.was : null); }
+function curSizeName(){ var v = sizeOf(curItem); return v ? v.nm : ''; }
+/* カートの中では「同じ商品でも大きさが違えば別の行」にする */
+function lineId(it, si){ return it.id + ((it && it.sizes) ? ('#' + si) : ''); }
+function lineName(it, si){
+  if (!it || !it.sizes) return it ? Z(it.nm) : '';
+  var v = Z(it.sizes[si].nm);
+  /* 大きさの名前にすでにカッコが入っている時は、カッコを二重にしない */
+  return Z(it.nm) + (v.indexOf('（') >= 0 ? ('　' + v) : ('（' + v + '）'));
+}
+
+function drawPrice(){
+  var it = curItem; if (!it) return;
+  var was = curWas(), now = curPrice();
+  var pbox = document.getElementById('dprice');
+  /* ★大きさが選べる商品は、値段を全部「大きさの棒」の中に入れる（2026-09-06 まるちゃん）。
+     こうすると130mlと200ml、両方の日本価格と当店価格が一目で見比べられる。
+     上の大きな値段は同じことの二度書きになるので出さない。 */
+  if (it.sizes){ pbox.innerHTML = ''; pbox.style.display = 'none'; return; }
+  pbox.style.display = '';
+  /* ★消してある値段の上にも一言を出せるようにした（2026-09-06 まるちゃん）。
+     その商品に lb_was が書いてあれば出す（例＝「日本価格」「単品で買うと」）。無ければ今までどおり値段だけ。 */
+  /* was_txt が書いてあれば、その文字をそのまま出す（日本円など「元」を付けない値段用） */
+  var wasTxt = it.was_txt ? esc(it.was_txt) : (was!=null ? yen(was) : '');
+  pbox.innerHTML =
+    (wasTxt
+      ? (it.lb_was
+          ? '<div class="pc wasbox"><div class="lb">' + esc(it.lb_was) + '</div>'
+            + '<div class="was">' + wasTxt + '</div></div>'
+          : '<div class="was">' + wasTxt + '</div>')
+      : '')
+    +
+    (now!=null
+      ? '<div class="pc"><div class="lb">' + (it.lb_now || '当店価格') + '</div>'
+        + '<div class="now">' + yen(now) + '</div></div>'
+      : '<div class="pc"><div class="now" style="color:#b4544f;font-size:22px">値段 未定</div></div>');
+}
+
+function drawSizes(){
+  var it = curItem, box = document.getElementById('dsizes');
+  if (!it || !it.sizes){ box.innerHTML = ''; box.style.display = 'none'; return; }
+  box.style.display = '';
+  /* 棒1本の中身＝［大きさ］［日本価格（線を引いた小さい字）］［当店価格（大きい字）］
+     （2026-09-06 まるちゃん「棒の中に全部入れる」）。ここに全部あるので上の値段は出さない。 */
+  var lbW = it.lb_was || '日本価格';
+  var lbN = it.lb_now || '当店価格';
+  box.innerHTML = it.sizes.map(function(v, i){
+    return '<button type="button" class="' + (i===curSize?'on':'') + '" data-i="' + i + '">'
+         + '<span class="n">' + esc(v.nm) + '</span>'
+         + '<span class="pp">'
+         + (v.was!=null
+             ? '<span class="w"><span class="lb">' + esc(lbW) + '</span>'
+               + '<span class="was">' + yen(v.was) + '</span></span>'
+             : '')
+         + '<span class="c"><span class="lb">' + esc(lbN) + '</span>'
+         + '<span class="p">' + yen(v.now) + '</span></span>'
+         + '</span></button>';
+  }).join('');
+  [].slice.call(box.querySelectorAll('button')).forEach(function(b){
+    b.onclick = function(){
+      curSize = parseInt(b.getAttribute('data-i'), 10) || 0;
+      var ci = cartFind(lineId(curItem, curSize));
+      qty = (ci >= 0) ? cart[ci].qty : 1;
+      drawPrice(); drawSizes(); drawQty(); fitItem();
+    };
+  });
+}
+
+function openItem(cat, id){
+  var it = DATA[cat].items.filter(function(x){return x.id===id})[0];
+  if(!it) return;
+
+  var dpic = itemPic(it);
+  /* ★写真の中に、白い字で一言を重ねる（2026-09-03 まるちゃん）。
+     瓶は写真の右寄りにいるので、字は左側に置いて邪魔をしない。 */
+  var leadHtml = (it.lead && it.lead.length)
+    ? '<div class="dlead" id="dlead">'
+      + it.lead.map(function(s){ return '<span>' + esc(s) + '</span>'; }).join('')
+      + '</div>'
+    : '';
+  var dh = document.getElementById('dhero');
+  /* ★2枚目の写真がある商品は、詳しい画面だけ横に2枚並べる（2026-09-07 まるちゃん）。
+     一覧のマスは今までどおり1枚目だけ。 */
+  var dpic2 = (it.pic2 && ITEM_PICS[it.pic2]) ? ITEM_PICS[it.pic2] : '';
+  var two = hasPic(dpic) && hasPic(dpic2);
+  dh.classList.toggle('two', two);
+  dh.innerHTML = (two
+    ? '<img src="'+dpic+'" alt=""><img src="'+dpic2+'" alt="">'
+    : (hasPic(dpic)
+        ? '<img src="'+dpic+'" alt="">'
+        : '商品の写真をここに入れます')) + leadHtml;
+  dh.classList.toggle('hasLead', !!leadHtml);
+  /* 白っぽい写真の商品は、濃い字を写真の上の帯に置く形にする（2026-09-06 まるちゃん） */
+  dh.classList.toggle('leadLight', !!(leadHtml && it.leadLight));
+  /* 説明と購入ボタンの間の読みものリンク（ある商品だけ出す） */
+  var ds = document.getElementById('dsecret');
+  /* ★飛び先がまだ決まっていない読みものも、同じ見た目で出す（2026-09-07 まるちゃん）。
+     押しても動かず、小さく「準備中」と添える。飛び先を入れた瞬間にふつうのリンクになる。 */
+  var sec = it.secret;
+  var secUrl = sec ? ((isZH() && sec.url_zh) ? sec.url_zh : sec.url) : '';
+  ds.innerHTML = !sec ? ''
+    : (secUrl
+        ? '<a href="' + secUrl + '" target="_blank" rel="noopener">'
+          + esc(Z(sec.t)) + '<span class="ar">\u203a</span></a>'
+        : '<a href="#" class="soon" onclick="return false">'
+          + esc(Z(sec.t)) + '<span class="soonmk">' + esc(Z('準備中')) + '</span></a>');
+  ds.style.display = sec ? '' : 'none';
+  /* 商品名。量（50ml）がある商品は、その右に小さく添える */
+  document.getElementById('dname').innerHTML =
+      '<span class="nm">' + esc(it.nm) + '</span>'
+    + (it.unit ? '<span class="u">（' + esc(it.unit) + '）</span>' : '');
+  /* 量を商品名の右に出した商品は、下の行には出さない（同じことを二度書かない） */
+  var dsub = document.getElementById('dsub');
+  dsub.textContent  = it.unit ? '' : (it.sub || '');
+  dsub.style.display = it.unit ? 'none' : '';
+
+
+  document.getElementById('dtags').innerHTML = (it.tags||[]).map(function(t){
+    var cls = /未定/.test(t) ? 'tag warn' : (/元/.test(t) ? 'tag' : 'tag gold');
+    return '<span class="'+cls+'">'+t+'</span>';
+  }).join('');
+
+  /* ★成分などの箇条書きがある商品は、見出し＋番号つきの並びで出す（2026-09-06 まるちゃん）。
+     番号は左に立て、折り返した2行目は成分名の頭にそろう（番号の下にもぐらない）。 */
+  var db = document.getElementById('dbody');
+  if (it.spec && it.spec.list && it.spec.list.length){
+    db.classList.add('haslist');
+    db.innerHTML =
+        (it.spec.ttl ? '<div class="sttl">' + esc(it.spec.ttl) + '</div>' : '')
+      /* ★4行をひとかたまりにして、そのかたまりごと真ん中に置く（2026-09-06 まるちゃん）。
+         行ごとに真ん中ぞろえにすると①〜④の位置がバラつくので、かたまりで寄せる。 */
+      + '<div class="slist">'
+      + it.spec.list.map(function(v, i){
+          /* hd を書いた行は「小見出し」。ふつうの行は［番号］［成分名］［説明］ */
+          if (v.hd) return '<div class="shd">' + esc(Z(v.hd)) + '</div>';
+          return '<div class="srow"><span class="sno">' + esc(v.n || ('①②③④⑤⑥'.charAt(i) || '・')) + '</span>'
+               + '<span class="stx">'
+               + (v.nm ? ('<b>' + esc(Z(v.nm)) + '</b>') : '')
+               + (v.d ? ('<span class="sd' + (v.nm ? '' : ' plain') + '">' + esc(Z(v.d)) + '</span>') : '')
+               + '</span></div>';
+        }).join('')
+      + '</div>';
+  } else {
+    db.classList.remove('haslist');
+    /* 長い説明の商品だけ左そろえにする（2026-09-07 まるちゃん） */
+    db.classList.toggle('bodyleft', !!it.bodyLeft);
+    /* 説明は行ごとに入れ替える（まとめて1つの文だと対応表と合わないため・2026-09-06） */
+    db.textContent = String(it.body || '').split('\n').map(Z).join('\n');
+  }
+
+  document.getElementById('dnote').innerHTML = it.note ? '<div class="note">'+it.note+'</div>' : '';
+
+  /* 商品を開き直すたびに、画面1（商品の説明）に戻す。
+     本数は、すでにカートに入っている商品ならその本数、初めてなら1本 */
+  curItem = it;
+  curCat  = cat;   /* 「買い物を続ける」で、この並びの一覧へ戻れるように覚えておく */
+  /* すでにカートに入っている大きさがあれば、それを選んだ状態で開く */
+  curSize = 0;
+  if (it.sizes){
+    for (var si = 0; si < it.sizes.length; si++){
+      if (cartFind(lineId(it, si)) >= 0){ curSize = si; break; }
+    }
+  }
+  var ci = cartFind(lineId(it, curSize));
+  qty = (ci >= 0) ? cart[ci].qty : 1;
+  /* 値段と「大きさを選ぶ」欄は、選んでいる大きさに合わせて描く */
+  drawPrice();
+  drawSizes();
+  document.getElementById('buyStart').innerHTML =
+    '<span class="t">' + esc(buyLabel(it.nm_btn || it.nm)) + '</span>';
+  setStep(0);
+
+  show('item');
+  fitItem();
+  /* 写真が読み込まれてから大きさが決まることがあるので、少し置いてもう一度合わせる */
+  [80, 300, 900].forEach(function(ms){ setTimeout(fitItem, ms); });
+}
+
+/* ───── お店で受け取る（お支払い方法を選ぶ） ───────────────────── */
+var curItem = null;
+
+/* 今の日時（お客様のスマホの時計）を「2026/08/31 13:05」の形にする */
+function nowText(){
+  var d = new Date(), p = function(n){ return (n<10?'0':'') + n; };
+  return d.getFullYear() + '/' + p(d.getMonth()+1) + '/' + p(d.getDate())
+       + ' ' + p(d.getHours()) + ':' + p(d.getMinutes());
+}
+
+/* 注文の文をあらかじめ書いた状態で、お店のLINEを開くための行き先
+   ★日時は「ご注文をお送りするを押した瞬間」を自動で入れる（お客様は何も打たない）。
+     押すのはお支払いの直後なので、入金の時刻とほぼ同じになる＝お店で突き合わせやすい。 */
+/* ★注文ボタンを押した合図を、お店の窓口へ1つ飛ばす（2026-09-05 まるちゃん決定）。
+   事務所のパソコンはこの合図を受け取ると、そこから15分だけLINEを1秒ごとに見て、
+   注文が届いた瞬間にお支払いのご案内を返す。
+   ・鍵は要らない軽い記録（action=hit）だけを使う＝この住所は既にアプリ側で公開されている物。
+   ・失敗しても注文は止めない（合図が飛ばなくても、ふだんの見張りが5秒で気づく）。 */
+var SHOP_PIPE = "https://script.google.com/macros/s/"
+  + "AKfycbzSxho3e4CHyAuoymGlzcVwGnLshGoCg53zY18laLrHMq5Cun_pBv8XgRsNxKMDxlKwUA/exec";
+function orderPing(){
+  try{
+    var u = SHOP_PIPE + "?action=hit&who=shop&role=customer&view=order&device=page";
+    if (navigator.sendBeacon) { navigator.sendBeacon(u); return; }
+    fetch(u, { mode:"no-cors", cache:"no-store" }).catch(function(){});
+  }catch(e){}
+}
+
+function orderLink(payName, payKey){
+  if (!LINE_ID || !cart.length) return '';
+  var tot = cartTotal();
+  var amt = tot!=null ? yen(tot) : 'お値段は追ってご案内します';
+  /* ★お客様ご自身のLINEでお店のトークが開くので、どなたかは送られた時点で分かる。
+     だからお名前などの記入欄は置かない（そのまま送るだけで済む・2026-08-31まるちゃん）
+     ★2026-09-06 まるちゃん決定の書き方＝見出しに合計を入れ、日時とお支払いリンクは入れない。
+     お支払いのご案内は、お店から自動で返す文の方で届く（注文の自動返信）。 */
+  /* ★中国語版から注文された時は、お店へ届く文も中国語にする（2026-09-06 まるちゃん）。
+     ★見出しの書き出し（【ご注文内容 ／ 【訂單內容）で、返す係がどちらの言葉かを見分ける。
+       ここを変える時は 注文の自動返信.py も必ず一緒に直すこと。 */
+  var zh = isZH();
+  var msg = (zh ? '【訂單內容:合計' : '【ご注文内容:合計') + amt + '】\n';
+  /* ★1行の書き方＝「商品名　1本のお値段×本数」（2026-09-06 まるちゃん）。
+     合計は見出しに出ているので、行ごとの合計は出さない。 */
+  cart.forEach(function(l){
+    msg += '・' + l.nm + '　'
+         + (l.price!=null ? (yen(l.price) + '×' + honLabel(l.qty, l.cw)) : honLabel(l.qty, l.cw))
+         + '\n';
+  });
+  msg += zh
+    ? ('付款方式：' + Z(payName) + '\n' + '取貨方式：到店取貨')
+    : ('お支払い：' + payName + '\n' + '受け取り：お店で受け取り');
+  return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+}
+
+/* お支払い方法を押したら、ご注文内容のご確認の画面へ進む（2026-09-02 まるちゃん） */
+var curPay = null;
+function choosePay(key){
+  var btns = document.querySelectorAll('#payRow .pay');
+  for (var i=0;i<btns.length;i++) btns[i].classList.toggle('on', btns[i].getAttribute('data-pay')===key);
+  curPay = key;
+  setStep(4);
+}
+
+/* 郵送でのお受け取り＝蝦皮（Shopee）のお店のページへご案内する（2026-09-06 まるちゃん）。
+   飛び先は、その商品に書いてあればそれ、無ければお店のページ。まだ空なら押せない形で出す。 */
+function drawNet(){
+  var url = (curItem && curItem.shopee) || SHOPEE || '';
+
+  /* ★割引コードのご案内（2026-09-13 まるちゃん）。
+     蝦皮のページがあって、コードも決まっている時だけ出す。
+     並びは「説明の文 → コードとコピー → 入れ方の絵 → 蝦皮で購入するボタン」。 */
+  var box = document.getElementById('netCoupon');
+  var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
+  if (url && SHOPEE_CODE){
+    var h = '<div class="spnote">'
+          + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
+          + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。') + '<br>'
+          + Z('割引コード')
+          + (isZH() ? ('（折抵' + yen(SHOPEE_OFF) + '）') : ('（' + yen(SHOPEE_OFF) + '割引）'))
+          + Z('の入力方法はこちらになります。')
+          + '</div>'
+          + '<div class="spcode">'
+          + '<span class="v" id="spCodeV">' + SHOPEE_CODE + '</span>'
+          + '<button class="cp" id="spCodeCp" type="button">' + Z('コピー') + '</button>'
+          + '</div>';
+    if (IMG_SHOPEE_GUIDE){
+      h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
+         + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
+         + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
+    }
+    box.innerHTML = h;
+    document.getElementById('spCodeCp').onclick = function(){ copyCode(this); };
+  } else {
+    box.innerHTML = '';
+  }
+
+  document.getElementById('netBtn').innerHTML = url
+     ? '<a class="buy line order" href="' + url + '" target="_blank" rel="noopener">'
+       + '<span class="t">蝦皮で購入する</span></a>'
+     : '<a class="buy line order" href="#" onclick="return false">'
+       + '<span class="t">蝦皮で購入する</span>'
+       + '<span class="s">蝦皮のページをご用意でき次第、こちらから開けるようになります</span></a>';
+  fitBuys();
+}
+
+/* 割引コードを写し取る。LINEの中のブラウザなど、新しいやり方が使えない所でも
+   動くように、うまくいかない時は昔ながらのやり方に落とす（2026-09-13） */
+function copyCode(btn){
+  var txt = SHOPEE_CODE;
+  function ok(){
+    btn.classList.add('done');
+    btn.textContent = Z('コピーしました');
+    setTimeout(function(){ btn.classList.remove('done'); btn.textContent = Z('コピー'); }, 1800);
+  }
+  /* うまくいかなかった時＝コードの文字をこちらで選んだ状態にして、
+     「長押しでコピーしてください」と出す（黙って何も起きないのを防ぐ） */
+  function nadame(){
+    try{
+      var el = document.getElementById('spCodeV');
+      var rg = document.createRange(); rg.selectNodeContents(el);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(rg);
+    }catch(e){}
+    btn.textContent = Z('長押しでコピー');
+    setTimeout(function(){ btn.textContent = Z('コピー'); }, 3000);
+  }
+  function old(){
+    var done = false;
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.setAttribute('readonly','');
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.left='0'; ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, txt.length);
+      done = document.execCommand('copy');
+      document.body.removeChild(ta);
+    }catch(e){}
+    if (done) ok(); else nadame();
+  }
+  try{
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(ok, old);
+    } else { old(); }
+  }catch(e){ old(); }
+}
+
+/* ご注文内容のご確認の中身を組み立てる */
+function drawConfirm(){
+  var key = curPay;
+  var way = PAYWAYS.filter(function(p){ return p.key===key; })[0];
+  if (!way || !curItem) return;
+  var tot = cartTotal();
+  var amt = tot!=null ? yen(tot) : 'お値段は追ってご案内します';
+
+  /* ★商品は「・」で1行ずつ並べ、書き方はお店へ送る注文の文とそろえる（2026-09-06 まるちゃん）。
+     長い商品名で折り返しても、2行目が「・」の下にもぐらないようにする。 */
+  var rows = '';
+  cart.forEach(function(l){
+    /* 印は「bl」という名前にする。「dot」は表紙の絵の丸い印がすでに使っていて、
+       同じ名前にすると灰色の丸に化ける（2026-09-06に実際に起きた） */
+    rows += '<div class="row2 li"><span class="bl">・</span><span class="v2">'
+          + l.nm + '　<span class="qp">'
+          + (l.price!=null ? (yen(l.price) + '×' + honLabel(l.qty, l.cw)) : honLabel(l.qty, l.cw))
+          + '</span></span></div>';
+  });
+  /* ★商品の行だけを1つの枠にまとめる。たくさん買われた時は、この枠の中だけを
+     指でずらして見ていただく形にして、合計・手順・注文ボタンは必ず画面に残す（2026-09-06） */
+  document.getElementById('orderBox').innerHTML =
+      '<div class="olines" id="oLines">' + rows + '</div>'
+    + '<div class="row2"><span class="k">お支払い</span><span class="v">' + way.name + '</span></div>'
+    + '<div class="row2"><span class="k">受け取り</span><span class="v">お店で受け取り</span></div>'
+    + '<div class="row2 sum"><span class="k">お支払い金額</span><span class="v">' + amt + '</span></div>';
+
+  /* ★ここの文はまるちゃんの指定（2026-09-06）。押してほしい2か所だけ、太い大きな字で目立たせる。
+     ③の言い方は、選ばれたお支払い方法に合わせて変える（銀行振込はリンクではなくお振込先が届く）。 */
+  /* ★①②③は、つなぎの言葉（「、」など）が言葉ごとに変わるので、日本語と中国語で別に組む */
+  var s1, s2, s3;
+  if (isZH()){
+    s1 = '<em>請按下方的「以此內容下單」</em>';
+    s2 = '接著<em>本店的LINE會自動開啟</em>，<em>請直接按下傳送鍵</em>'
+       + '（訂單內容已自動填入LINE的輸入欄）';
+    s3 = (key === 'bank')
+       ? '稍後<em>匯款帳號就會送達</em>'
+       : ('稍後<em>' + esc(Z(way.name)) + '的付款連結就會送達</em>');
+  } else {
+    s1 = '<em>下の「この内容で注文する」を押してください</em>';
+    s2 = 'すると<em>当店のLINEが開きますので</em>、<em>そのまま送信ボタンを押してください</em>'
+       + '（LINEの入力欄に自動で注文内容が入っています）';
+    s3 = (key === 'bank')
+       ? 'すぐに<em>お振込先が届きます</em>'
+       : ('すぐに' + esc(way.name) + 'の<em>お支払いリンクが届きます</em>');
+  }
+  document.getElementById('confirmNote').innerHTML =
+      '<div class="ost"><span class="no">①</span><span class="tx">' + s1 + '</span></div>'
+    + '<div class="ost"><span class="no">②</span><span class="tx">' + s2 + '</span></div>'
+    + '<div class="ost"><span class="no">③</span><span class="tx">' + s3 + '</span></div>';
+
+  var href = orderLink(way.name, key);
+  document.getElementById('confirmBtn').innerHTML = href
+     ? '<a class="buy line order" href="' + href + '" target="_blank" rel="noopener"'
+       + ' onclick="orderPing();this.href=orderLink(\'' + way.name + '\',\'' + key + '\')">'   /* 合図を飛ばし、押した瞬間の日時を入れ直す */
+       + '<span class="t">この内容で注文する</span></a>'
+     : '<a class="buy line order" href="#" onclick="return false">'
+       + '<span class="t">この内容で注文する</span>'
+       + '<span class="s">お店のLINEの宛先を入れると押せるようになります</span></a>';
+  fitBuys();
+}
+
+
+/* ───── 画面1（商品）→ 画面2（受け取り方）→ 画面3（お支払い）と進む ─────
+   押すたびに画面がまるごと入れ替わる。「← 前に戻る」で1つずつ戻れる。 */
+var payStep = 0;   /* 0＝商品／1＝受け取り方／2＝本数／3＝お支払い／4＝ご確認 */
+var qty = 1;       /* いま選んでいる商品の本数（2026-09-02 まるちゃん） */
+
+/* ── カート（2026-09-02 まるちゃん）＝買う物の控え。1商品につき1行 ── */
+var cart = [];
+function cartFind(id){
+  for (var i=0;i<cart.length;i++) if (cart[i].id === id) return i;
+  return -1;
+}
+/* いま見ている商品と本数をカートへ入れる（すでに入っていれば本数を置き換える） */
+function cartPut(){
+  if (!curItem) return;
+  var line = { id:lineId(curItem, curSize), nm:lineName(curItem, curSize),
+               price:curPrice(), qty:qty, cw:cntOf(curItem) };
+  var i = cartFind(line.id);
+  if (i >= 0) cart[i] = line; else cart.push(line);
+}
+function cartTotal(){
+  var t = 0, ok = true;
+  cart.forEach(function(l){ if (l.price == null) ok = false; else t += l.price * l.qty; });
+  return ok ? t : null;
+}
+function cartPieces(){
+  var n = 0; cart.forEach(function(l){ n += l.qty; }); return n;
+}
+/* 商品の番号から、その商品と並び（オリジナル／セレクト）を探す */
+function findItem(id){
+  /* カートの行の名札は「商品の名前#大きさの番号」なので、頭の商品の名前だけで探す */
+  var base = String(id).split('#')[0];
+  var size = parseInt(String(id).split('#')[1], 10);
+  var hit = null;
+  ['original','select'].forEach(function(cat){
+    (DATA[cat] && DATA[cat].items || []).forEach(function(it){
+      if (it.id === base) hit = { cat:cat, it:it, size:(size >= 0 ? size : 0) };
+    });
+  });
+  return hit;
+}
+/* 右上のカートの印を出し入れする */
+function drawCartBtn(){
+  var b = document.getElementById('cartBtn');
+  if (!b) return;
+  var n = cartPieces();
+  document.getElementById('cartCnt').textContent = n;
+  var onHome = !document.body.classList.contains('dark');
+  var showIt = (n > 0 && !onHome);
+  b.style.display = showIt ? 'flex' : 'none';
+  document.body.classList.toggle('cartshow', showIt);
+}
+/* カートの中身の画面を組み立てる */
+function drawCart(){
+  var box = document.getElementById('cartList');
+  if (!cart.length){
+    box.innerHTML = '<div class="cartempty">カートは空です</div>';
+    document.getElementById('cartSum').style.display = 'none';
+    document.getElementById('cartBtns').innerHTML =
+      '<button class="buy line" type="button" onclick="openList(curCat||\'original\')">'
+      + '<span class="t">買い物を続ける</span></button>';
+    fitBuys();
+    return;
+  }
+  var h = '';
+  cart.forEach(function(l, i){
+    h += '<div class="cartrow">'
+       +   '<div class="nm">' + l.nm + '</div>'
+       +   '<div class="qb">'
+       +     '<button type="button" onclick="cartStep(' + i + ',-1)">−</button>'
+       +     '<span class="n">' + l.qty + '</span>'
+       +     '<button type="button" onclick="cartStep(' + i + ',1)">＋</button>'
+       +   '</div>'
+       +   '<div class="pr">' + (l.price!=null ? yen(l.price * l.qty) : '') + '</div>'
+       + '</div>';
+  });
+  box.innerHTML = h;
+  document.getElementById('cartSum').style.display = '';
+  document.getElementById('cartTotal').textContent =
+    cartTotal()!=null ? yen(cartTotal()) : 'お値段は追ってご案内します';
+  document.getElementById('cartBtns').innerHTML =
+      '<button class="buy line" type="button" onclick="openList(curCat||\'original\')">'
+    + '<span class="t">買い物を続ける</span></button>'
+    + '<button class="buy line" type="button" onclick="cartToPay()">'
+    + '<span class="t">お支払いへ進む</span></button>'
+    /* ★3つめ＝中身を全部消す（2026-09-06 まるちゃん）。押し間違い防止に一度たずねる */
+    + '<button class="buy line empty" id="cartEmpty" type="button" onclick="cartClear()">'
+    + '<span class="t">カートを空にする</span></button>';
+  fitBuys();
+}
+/* カートの中身を全部消す（2026-09-06 まるちゃん）。押し間違いが怖いので一度たずねる */
+var clearArmed = false, clearTimer = null;
+function cartClear(){
+  if (!cart.length) return;
+  var b = document.getElementById('cartEmpty');
+  /* ★1回目は聞き返し、2回目で消す（2026-09-06）。
+     ブラウザの「よろしいですか」の小窓は、スマホやアプリの中の画面では
+     出ないまま「いいえ」扱いになることがあり、押しても何も起きなかった。 */
+  if (!clearArmed){
+    clearArmed = true;
+    if (b) b.innerHTML = '<span class="t">' + esc(Z('本当に空にしますか？')) + '</span>'
+                       + '<span class="s">' + esc(Z('もう一度押すと消えます')) + '</span>';
+    if (b) b.classList.add('armed');
+    clearTimeoutReset();
+    return;
+  }
+  clearArmed = false;
+  cart = [];
+  drawCart(); drawCartBtn();
+}
+/* 5秒さわらなければ、聞き返しをやめて元のボタンに戻す */
+function clearTimeoutReset(){
+  if (clearTimer) clearTimeout(clearTimer);
+  clearTimer = setTimeout(function(){
+    clearArmed = false;
+    try { drawCart(); } catch(e){}
+  }, 5000);
+}
+/* カートの中で本数を増やす・減らす（0本になったら消す） */
+function cartStep(i, d){
+  if (!cart[i]) return;
+  cart[i].qty += d;
+  if (cart[i].qty <= 0) cart.splice(i, 1);
+  drawCart(); drawCartBtn();
+}
+/* カートからお支払いへ */
+function cartToPay(){
+  if (!cart.length) return;
+  var f = findItem(cart[0].id);
+  if (f){ curItem = f.it; curCat = f.cat; curSize = f.size || 0; qty = cart[0].qty; }
+  show('item');
+  setStep(3);
+}
+
+/* 本数の表示と、合計金額を書き直す */
+function drawQty(){
+  var n = document.getElementById('qNum');
+  if (n) n.textContent = qty;
+  /* 数え方＝ふつうは「本」、セット商品は「セット」（2026-09-06 まるちゃん） */
+  var cw = cntOf(curItem);
+  var qt = document.getElementById('qTtl'), qu = document.getElementById('qUnit');
+  if (qt) qt.textContent = Z(cw + '数をお選びください');
+  if (qu) qu.textContent = Z(cw);
+  var m = document.getElementById('qMinus');
+  if (m) m.disabled = (qty <= 1);
+  var t = document.getElementById('qTotal');
+  if (t && curItem) t.textContent =
+    curPrice()!=null ? yen(curPrice() * qty) : 'お値段は追ってご案内します';
+  /* ★上の見出しの金額は「1本のお値段」で固定（本数で変えない・2026-09-02 まるちゃん）。
+     合計は下の「お支払い金額」だけに出す。 */
+}
+
+function setStep(n){
+  payStep = n;
+  document.getElementById('stepItem').style.display = (n===0) ? 'block' : 'none';
+  /* flex＝左に写真・右に名前と金額を横に並べる（block だと写真が上に乗ってしまう）
+     ★ご確認の画面（4）では出さない。下のご注文内容の枠に同じことが全部書いてあるので、
+       写真と名前をもう一度出すと同じ話が二度になり、1画面に収まらない（2026-09-06 まるちゃん） */
+  document.getElementById('stepHead').style.display = (n===0 || n===4) ? 'none'  : 'flex';
+  document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
+  document.getElementById('stepNet').style.display  = (n===5) ? 'block' : 'none';   /* 郵送＝蝦皮 */
+  document.getElementById('stepQty').style.display  = (n===2) ? 'block' : 'none';
+  /* 本数の画面は、出したあとに詰め具合を決める（下の fitQty・2026-09-06） */
+  if (n === 2) setTimeout(fitQty, 0);
+  document.getElementById('payPane').style.display  = (n===3) ? 'block' : 'none';
+  document.getElementById('stepConfirm').style.display = (n===4) ? 'block' : 'none';
+
+  if (n>0 && curItem){
+    /* 上の見出し＝ふだんは今の商品名と「1本のお値段」（本数で変わらない）。
+       カートに2つ以上入っている時だけ、まとめて「ご注文 ◯点」と合計にする */
+    var many = (n >= 3) && cart.length > 1;
+    document.getElementById('stepName').textContent =
+      many ? (isZH() ? ('訂單 ' + cartPieces() + '項') : ('ご注文 ' + cartPieces() + '点')) : lineName(curItem, curSize);
+    document.getElementById('stepPrice').textContent =
+      many ? (cartTotal()!=null ? yen(cartTotal()) : 'お値段は追ってご案内します')
+           : (curPrice()!=null ? yen(curPrice()) : 'お値段は追ってご案内します');
+    drawQty();
+    /* 左の小さな写真（商品の写真と同じ1枚） */
+    var sp = document.getElementById('stepPic');
+    var spic = itemPic(curItem);
+    if (hasPic(spic)){ sp.src = spic; sp.style.display = ''; }
+    else { sp.removeAttribute('src'); sp.style.display = 'none'; }
+  }
+  if (n===3){
+    document.getElementById('payRow').innerHTML = PAYWAYS.map(function(p){
+      return '<button type="button" class="pay" data-pay="' + p.key + '">' + p.name + '</button>';
+    }).join('');
+    var btns = document.querySelectorAll('#payRow .pay');
+    for (var i=0;i<btns.length;i++){
+      btns[i].onclick = (function(k){ return function(){ choosePay(k); }; })(btns[i].getAttribute('data-pay'));
+    }
+  }
+  if (n===5) drawNet();       /* 郵送でのお受け取り＝蝦皮で購入する */
+  if (n===4){ drawConfirm(); setTimeout(fitConfirm, 0); }   /* ご注文内容のご確認 */
+  fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
+  fitItem();   /* 商品の画面は、写真の高さを残りの場所に合わせる */
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+/* ★2つめからは、お受け取り方法をたずねない（2026-09-07 まるちゃん）。
+   すでにカートに入っている＝お店で受け取るを選んだあと、ということなので、
+   いきなり本数の画面へ進む。カートを空にすると、また最初からたずねる。
+   （郵送を選んだ場合は蝦皮へ行くだけでカートに入らないので、ここには当てはまらない） */
+var wayAsked = false;   /* お受け取り方法の画面を通ってきたか（戻る先を決めるのに使う） */
+document.getElementById('buyStart').onclick = function(){
+  if (cart.length){ wayAsked = false; setStep(2); }
+  else { wayAsked = true; setStep(1); }
+};
+document.getElementById('buyShop').onclick  = function(){ setStep(2); };   /* お店で受け取る → 本数 */
+document.getElementById('buyNet').onclick   = function(){ setStep(5); };   /* 郵送で受け取る → 蝦皮 */
+/* カートに入れて、商品の一覧へ戻る（買い物を続ける） */
+document.getElementById('qKeep').onclick    = function(){ cartPut(); drawCartBtn(); openList(curCat); };
+/* カートに入れて、お支払いへ進む */
+document.getElementById('qNext').onclick    = function(){ cartPut(); drawCartBtn(); setStep(3); };
+/* 右上のカートの印を押したら、中身の画面へ */
+document.getElementById('cartBtn').onclick  = function(){ drawCart(); show('cart'); };
+document.getElementById('qMinus').onclick   = function(){ if (qty > 1)  { qty--; drawQty(); } };
+document.getElementById('qPlus').onclick    = function(){ if (qty < 20) { qty++; drawQty(); } };
+
+document.querySelectorAll('[data-go]').forEach(function(el){
+  el.onclick = function(){ openList(el.getAttribute('data-go')); };
+});
+
+back.onclick = function(){
+  /* カートの中身からは、元の一覧へ戻る */
+  if (vCart.style.display !== 'none'){ openList(curCat || 'original'); return; }
+  /* お支払い→受け取り方→商品→一覧→ホーム、と1つずつ戻る */
+  if (vItem.style.display !== 'none'){
+    /* 郵送（5）からは、お受け取り方法をえらぶ画面（1）へ戻す */
+    if (payStep === 5) { setStep(1); }
+    /* お受け取り方法をたずねずに来た時は、本数の画面から商品の画面へ戻す */
+    else if (payStep === 2 && !wayAsked) { setStep(0); }
+    else if (payStep > 0) { setStep(payStep - 1); }
+    else { openList(curCat); }
+  }
+  else { show('home'); }
+};
+
+show('home');
+
+/* ★これは「写真を入れる前の下書き」を開いた時だけ出る帯（2026-09-06）。
+   直すたびにこの下書きがまるちゃんのブラウザに勝手に開いてしまい、写真の場所が
+   黒いままなので「写真が出ていない」と何度も混乱させた。開いてしまうこと自体は
+   こちらでは止められないので、開いた時にひと目で分かるようにする。本物では出ない。 */
+(function(){
+  /* 下書きでは差し込み口の文字のまま（@で始まる）。本物では絵の場所が入っている。
+     ★ここに差し込み口の文字をそのまま書くと、写真を差し込む係の見張りに引っかかるので書かない。 */
+  if (hasPic(ITEM_PICS && ITEM_PICS.vio_oil)) return;
+  var bar = document.createElement('div');
+  bar.style.cssText =
+    'position:fixed;left:0;right:0;top:0;z-index:99999;background:#b4544f;color:#fff;'
+    + 'font:700 13px/1.5 system-ui,sans-serif;text-align:center;padding:9px 12px;letter-spacing:.03em';
+  bar.textContent = 'これは作業中の下書きです（写真はまだ入っていません）。本物のページは x.gd/TnTSIGNATURE';
+  document.body.appendChild(bar);
+})();
+</script>
+
+<script>
+(function(){
+  function tomeru(){
+    var b = document.querySelectorAll("[data-go]");
+    for (var i = 0; i < b.length; i++){
+      b[i].onclick = function(e){ if (e && e.preventDefault) e.preventDefault(); };
+    }
+  }
+  tomeru();
+  setTimeout(tomeru, 1500);
+})();
+</script>
+</body></html>
