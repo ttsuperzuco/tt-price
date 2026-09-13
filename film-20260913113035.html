@@ -1060,6 +1060,52 @@ body.dark .buy .s{
   color:#26454e;opacity:.92;font-weight:600;
   letter-spacing:.02em;font-size:11.5px;margin-top:5px;
 }
+/* ── 蝦皮の割引コードのご案内（2026-09-13 まるちゃん） ─────────
+   郵送でのお受け取りの画面に出す。上から「説明の文」→「コードとコピー」→
+   「入れ方の絵」→「蝦皮で購入するボタン」の順。 */
+body.dark .spnote{
+  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px */
+  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
+  text-align:left;margin:2px 0 16px;
+}
+body.dark .spnote b{color:#e8d3a6;font-weight:700}
+body.dark .spcode{
+  display:flex;align-items:stretch;gap:10px;margin:0 0 18px;
+}
+body.dark .spcode .v{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(201,171,115,.55);border-radius:2px;
+  background:rgba(255,255,255,.05);color:#f3e7cd;
+  font-size:22px;font-weight:700;letter-spacing:.22em;padding:14px 8px;
+  user-select:all;-webkit-user-select:all;
+}
+body.dark .spcode .cp{
+  flex:0 0 auto;border:1px solid rgba(201,171,115,.55);border-radius:2px;cursor:pointer;
+  background:none;color:#e8d3a6;font-family:inherit;font-size:13px;font-weight:700;
+  letter-spacing:.1em;padding:0 16px;white-space:nowrap;
+}
+body.dark .spcode .cp:active{background:rgba(201,171,115,.18)}
+body.dark .spcode .cp.done{background:rgba(201,171,115,.9);color:#0f333d}
+body.dark .spgttl{
+  /* ★2026-09-13 まるちゃん：字は上の説明と同じだけ大きく（12.5→14px）。
+     上の「蝦皮の購入ページへ」のボタンにくっつきすぎていたので、上に十分な空きを入れる。 */
+  /* ★2026-09-13 まるちゃん「割引コードのいれかたの文字おおきく」14→18px */
+  color:#c9ab73;font-size:18px;letter-spacing:.2em;text-align:center;margin:36px 0 12px;
+}
+/* 「割引コードの入れ方」の下の説明（2026-09-13 まるちゃん） */
+body.dark .spglead{
+  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
+  text-align:left;margin:0 0 14px;
+}
+/* 値段は「990」と「元」の間で改行させない */
+body.dark .spglead b{color:#e8d3a6;font-weight:700;white-space:nowrap}
+body.dark .spguide{
+  display:block;width:100%;height:auto;border-radius:2px;
+  border:1px solid rgba(201,171,115,.35);
+}
+body.dark .spfrom{
+  color:#9fb0b5;font-size:11px;letter-spacing:.04em;text-align:center;margin:8px 0 0;
+}
 /* 「お支払い方法をお選びください」も、受け取り方法の見出しと同じ大きさにそろえる（2026-09-02 まるちゃん） */
 body.dark .pays .ttl{color:#c9ab73;font-size:15px;letter-spacing:.22em}
 body.dark .pays .row{margin-top:14px}
@@ -1438,6 +1484,13 @@ html,body{background:#000}
       <div class="buys" id="netBtn"></div>
     </div>
 
+    <!-- ═ 画面2-3＝蝦皮の割引コード（2026-09-13 まるちゃん）
+         「蝦皮で購入する」を押すと、まずこの画面でコードをお渡しする ═ -->
+    <div id="stepCode" style="display:none">
+      <div class="stepttl">蝦皮でのご購入</div>
+      <div id="netCoupon"></div>
+    </div>
+
     <!-- ═ 画面3＝本数をえらぶ（増やすと合計が自動で変わる・2026-09-02 まるちゃん） ═ -->
     <div id="stepQty" style="display:none">
       <div class="stepttl" id="qTtl">本数をお選びください</div>
@@ -1565,6 +1618,18 @@ var ZH = {
 
   /* ── 蝦皮・ご注文の手順 ── */
   "蝦皮で購入する":"前往蝦皮購買",
+  /* 割引コードのご案内（2026-09-13 まるちゃん） */
+  "蝦皮でのご購入":"在蝦皮購買",
+  "蝦皮の購入ページへ":"前往蝦皮商品頁",
+  "蝦皮で、下記の割引コードを入力すると":"在蝦皮輸入以下優惠代碼，即可以",
+  "で購入できます。":"購買。",
+  "割引コード":"優惠代碼",
+  "の入力方法はこちらになります。":"的輸入方式如下。",
+  "割引コードの入れ方":"優惠代碼的輸入方式",
+  "コピー":"複製",
+  "コピーしました":"已複製",
+  "長押しでコピー":"請長按複製",
+  "蝦皮公式の案内より":"引用自蝦皮官方說明",
   "蝦皮のページをご用意でき次第、こちらから開けるようになります":"蝦皮賣場準備完成後，即可由此開啟",
   "この内容で注文する":"以此內容下單",
   "お店のLINEの宛先を入れると押せるようになります":"設定本店LINE帳號後即可點選",
@@ -1719,7 +1784,18 @@ var QR = { linepay:"", jkopay:"" };
 /* ★郵送でのお受け取り＝蝦皮（Shopee）のお店のページ（2026-09-06 まるちゃん）。
    ここが空の間は、ボタンは出るが押せない（「ご用意でき次第…」と小さく出る）。
    商品ごとに別のページへ飛ばしたい時は、その商品の並びに shopee:"住所" を1行足せば、そちらが優先される。 */
-var SHOPEE = "";
+var SHOPEE = "https://shopee.tw/%E8%8D%B7%E8%8D%B7%E8%8A%AD%E7%B2%BE%E8%8F%AF+No.31-i.135867224.55217718557";
+
+/* ★蝦皮で使う割引コード（2026-09-13 まるちゃん）。
+   お客様がこのコードを蝦皮に入れると、当店のLINE会員価格で買えるようにしてある。
+   ・SHOPEE_CODE＝コードそのもの。空にすれば、この案内はまるごと出なくなる。
+   ・SHOPEE_OFF ＝いくら引かれるか（元）。案内の文に出る。
+   ★蝦皮の割引券そのものは、蝦皮の賣家中心（行銷活動＞我的優惠券）で作る。
+     ここを直しても券は作られないので、コードを変えた時は蝦皮側も必ず作り直すこと。 */
+var SHOPEE_CODE = "TAKY0105";
+var SHOPEE_OFF  = 150;
+/* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
+var IMG_SHOPEE_GUIDE = "img/spguide-cca7dd200e.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -3393,15 +3469,108 @@ function choosePay(key){
 
 /* 郵送でのお受け取り＝蝦皮（Shopee）のお店のページへご案内する（2026-09-06 まるちゃん）。
    飛び先は、その商品に書いてあればそれ、無ければお店のページ。まだ空なら押せない形で出す。 */
+function shopeeUrl(){ return (curItem && curItem.shopee) || SHOPEE || ''; }
+
+/* 郵送でのお受け取り＝「蝦皮で購入する」の1つだけを出す。
+   ★割引コードがある時は、押すと先に割引コードの画面（6）へ進む（2026-09-13 まるちゃん）。
+   コードが無い時は、今までどおりそのまま蝦皮のページへ飛ぶ。 */
 function drawNet(){
-  var url = (curItem && curItem.shopee) || SHOPEE || '';
-  document.getElementById('netBtn').innerHTML = url
+  var url = shopeeUrl();
+  document.getElementById('netBtn').innerHTML =
+      (url && SHOPEE_CODE)
+     ? '<button class="buy line order" id="netGo" type="button">'
+       + '<span class="t">蝦皮で購入する</span></button>'
+     : url
      ? '<a class="buy line order" href="' + url + '" target="_blank" rel="noopener">'
        + '<span class="t">蝦皮で購入する</span></a>'
      : '<a class="buy line order" href="#" onclick="return false">'
        + '<span class="t">蝦皮で購入する</span>'
        + '<span class="s">蝦皮のページをご用意でき次第、こちらから開けるようになります</span></a>';
+  var g = document.getElementById('netGo');
+  if (g) g.onclick = function(){ setStep(6); };
   fitBuys();
+}
+
+/* ★割引コードの画面（2026-09-13 まるちゃん）。
+   並びは「説明の文 → コードとコピー → 蝦皮の購入ページへ進むボタン → 入れ方の絵」。 */
+function drawCode(){
+  var url = shopeeUrl();
+  var box = document.getElementById('netCoupon');
+  var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
+  var h = '<div class="spnote">'
+        + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
+        + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。')
+        /* ★2026-09-13 まるちゃん：「割引コード（150元割引）の入力方法はこちらになります。」の行は削除。
+           割引額は下の「割引コードの入れ方」の説明の文に入れた。 */
+        + '</div>'
+        + '<div class="spcode">'
+        + '<span class="v" id="spCodeV">' + SHOPEE_CODE + '</span>'
+        + '<button class="cp" id="spCodeCp" type="button">' + Z('コピー') + '</button>'
+        + '</div>'
+        + '<div class="buys"><a class="buy line order" href="' + url + '" target="_blank" rel="noopener">'
+        + '<span class="t">蝦皮の購入ページへ</span></a></div>';
+  if (IMG_SHOPEE_GUIDE){
+    /* ★入れ方の説明（2026-09-13 まるちゃん）。値段は書き写さず、商品の値段（now）と
+       割引額（SHOPEE_OFF）から出す＝蝦皮の値段＝会員価格＋割引額（990＋150＝1140元）。 */
+    var spNm  = (curItem && curItem.nm) ? Z(curItem.nm) : '';
+    var spNow = (curItem && curItem.now != null) ? yen(curItem.now) : '';
+    var spShp = (curItem && curItem.now != null) ? yen(curItem.now + SHOPEE_OFF) : '';
+    /* ★2026-09-13 まるちゃん：「〜を990元で」→「〜が150元割引され、990元で」 */
+    var lead = isZH()
+      ? ('在蝦皮APP依照以下步驟輸入優惠代碼，' + spNm + '即可折抵' + yen(SHOPEE_OFF)
+         + '，以<b>' + spNow + '</b>購買（蝦皮售價' + spShp + '）')
+      : ('蝦皮のAPPにて、以下の手順で割引コードを入力すると、' + spNm + 'が'
+         + yen(SHOPEE_OFF) + '割引され、<b>' + spNow
+         + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
+    h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
+       + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
+       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
+       + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
+  }
+  box.innerHTML = h;
+  document.getElementById('spCodeCp').onclick = function(){ copyCode(this); };
+  fitBuys();
+}
+
+/* 割引コードを写し取る。LINEの中のブラウザなど、新しいやり方が使えない所でも
+   動くように、うまくいかない時は昔ながらのやり方に落とす（2026-09-13） */
+function copyCode(btn){
+  var txt = SHOPEE_CODE;
+  function ok(){
+    btn.classList.add('done');
+    btn.textContent = Z('コピーしました');
+    setTimeout(function(){ btn.classList.remove('done'); btn.textContent = Z('コピー'); }, 1800);
+  }
+  /* うまくいかなかった時＝コードの文字をこちらで選んだ状態にして、
+     「長押しでコピーしてください」と出す（黙って何も起きないのを防ぐ） */
+  function nadame(){
+    try{
+      var el = document.getElementById('spCodeV');
+      var rg = document.createRange(); rg.selectNodeContents(el);
+      var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(rg);
+    }catch(e){}
+    btn.textContent = Z('長押しでコピー');
+    setTimeout(function(){ btn.textContent = Z('コピー'); }, 3000);
+  }
+  function old(){
+    var done = false;
+    try{
+      var ta = document.createElement('textarea');
+      ta.value = txt;
+      ta.setAttribute('readonly','');
+      ta.style.position='fixed'; ta.style.top='0'; ta.style.left='0'; ta.style.opacity='0';
+      document.body.appendChild(ta);
+      ta.select(); ta.setSelectionRange(0, txt.length);
+      done = document.execCommand('copy');
+      document.body.removeChild(ta);
+    }catch(e){}
+    if (done) ok(); else nadame();
+  }
+  try{
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(ok, old);
+    } else { old(); }
+  }catch(e){ old(); }
 }
 
 /* ご注文内容のご確認の中身を組み立てる */
@@ -3627,6 +3796,7 @@ function setStep(n){
   document.getElementById('stepHead').style.display = (n===0 || n===4) ? 'none'  : 'flex';
   document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
   document.getElementById('stepNet').style.display  = (n===5) ? 'block' : 'none';   /* 郵送＝蝦皮 */
+  document.getElementById('stepCode').style.display = (n===6) ? 'block' : 'none';   /* 蝦皮の割引コード */
   document.getElementById('stepQty').style.display  = (n===2) ? 'block' : 'none';
   /* 本数の画面は、出したあとに詰め具合を決める（下の fitQty・2026-09-06） */
   if (n === 2) setTimeout(fitQty, 0);
@@ -3659,6 +3829,7 @@ function setStep(n){
     }
   }
   if (n===5) drawNet();       /* 郵送でのお受け取り＝蝦皮で購入する */
+  if (n===6) drawCode();      /* 蝦皮の割引コード（2026-09-13 まるちゃん） */
   if (n===4){ drawConfirm(); setTimeout(fitConfirm, 0); }   /* ご注文内容のご確認 */
   fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
   fitItem();   /* 商品の画面は、写真の高さを残りの場所に合わせる */
@@ -3694,8 +3865,10 @@ back.onclick = function(){
   if (vCart.style.display !== 'none'){ openList(curCat || 'original'); return; }
   /* お支払い→受け取り方→商品→一覧→ホーム、と1つずつ戻る */
   if (vItem.style.display !== 'none'){
+    /* 割引コード（6）からは、郵送でのお受け取り（5）へ戻す（2026-09-13 まるちゃん） */
+    if (payStep === 6) { setStep(5); }
     /* 郵送（5）からは、お受け取り方法をえらぶ画面（1）へ戻す */
-    if (payStep === 5) { setStep(1); }
+    else if (payStep === 5) { setStep(1); }
     /* お受け取り方法をたずねずに来た時は、本数の画面から商品の画面へ戻す */
     else if (payStep === 2 && !wayAsked) { setStep(0); }
     else if (payStep > 0) { setStep(payStep - 1); }
