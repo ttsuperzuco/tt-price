@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-TW">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1064,7 +1070,8 @@ body.dark .buy .s{
    郵送でのお受け取りの画面に出す。上から「説明の文」→「コードとコピー」→
    「入れ方の絵」→「蝦皮で購入するボタン」の順。 */
 body.dark .spnote{
-  color:#dcd2c0;font-size:13.5px;line-height:1.9;letter-spacing:.03em;
+  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px */
+  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
   text-align:left;margin:2px 0 16px;
 }
 body.dark .spnote b{color:#e8d3a6;font-weight:700}
@@ -1086,8 +1093,18 @@ body.dark .spcode .cp{
 body.dark .spcode .cp:active{background:rgba(201,171,115,.18)}
 body.dark .spcode .cp.done{background:rgba(201,171,115,.9);color:#0f333d}
 body.dark .spgttl{
-  color:#c9ab73;font-size:12.5px;letter-spacing:.2em;text-align:center;margin:0 0 10px;
+  /* ★2026-09-13 まるちゃん：字は上の説明と同じだけ大きく（12.5→14px）。
+     上の「蝦皮の購入ページへ」のボタンにくっつきすぎていたので、上に十分な空きを入れる。 */
+  /* ★2026-09-13 まるちゃん「割引コードのいれかたの文字おおきく」14→18px */
+  color:#c9ab73;font-size:18px;letter-spacing:.2em;text-align:center;margin:36px 0 12px;
 }
+/* 「割引コードの入れ方」の下の説明（2026-09-13 まるちゃん） */
+body.dark .spglead{
+  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
+  text-align:left;margin:0 0 14px;
+}
+/* 値段は「990」と「元」の間で改行させない */
+body.dark .spglead b{color:#e8d3a6;font-weight:700;white-space:nowrap}
 body.dark .spguide{
   display:block;width:100%;height:auto;border-radius:2px;
   border:1px solid rgba(201,171,115,.35);
@@ -1304,22 +1321,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
-/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
-.cap .ja4{align-items:flex-end}
-.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1470,9 +1471,14 @@ html,body{background:#000}
     <!-- ═ 画面2-2＝郵送でのお受け取り（蝦皮で購入する・2026-09-06 まるちゃん） ═ -->
     <div id="stepNet" style="display:none">
       <div class="stepttl">郵送でのお受け取り</div>
-      <!-- 割引コードのご案内（中身は drawNet が入れる。コードが無い時は空のまま） -->
-      <div id="netCoupon"></div>
       <div class="buys" id="netBtn"></div>
+    </div>
+
+    <!-- ═ 画面2-3＝蝦皮の割引コード（2026-09-13 まるちゃん）
+         「蝦皮で購入する」を押すと、まずこの画面でコードをお渡しする ═ -->
+    <div id="stepCode" style="display:none">
+      <div class="stepttl">蝦皮でのご購入</div>
+      <div id="netCoupon"></div>
     </div>
 
     <!-- ═ 画面3＝本数をえらぶ（増やすと合計が自動で変わる・2026-09-02 まるちゃん） ═ -->
@@ -1518,7 +1524,7 @@ html,body{background:#000}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "ja";
+var LANG = "zh";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1603,6 +1609,8 @@ var ZH = {
   /* ── 蝦皮・ご注文の手順 ── */
   "蝦皮で購入する":"前往蝦皮購買",
   /* 割引コードのご案内（2026-09-13 まるちゃん） */
+  "蝦皮でのご購入":"在蝦皮購買",
+  "蝦皮の購入ページへ":"前往蝦皮商品頁",
   "蝦皮で、下記の割引コードを入力すると":"在蝦皮輸入以下優惠代碼，即可以",
   "で購入できます。":"購買。",
   "割引コード":"優惠代碼",
@@ -3451,43 +3459,78 @@ function choosePay(key){
 
 /* 郵送でのお受け取り＝蝦皮（Shopee）のお店のページへご案内する（2026-09-06 まるちゃん）。
    飛び先は、その商品に書いてあればそれ、無ければお店のページ。まだ空なら押せない形で出す。 */
+function shopeeUrl(){ return (curItem && curItem.shopee) || SHOPEE || ''; }
+
+/* ★蝦皮へ飛ぶ時は「LINEの中のブラウザ」から出す（2026-09-14 まるちゃん）。
+   お客様はLINEからこのページを開くので、ふつうのリンクだとLINEの中で蝦皮のウェブページが開き、
+   アプリが開かない＝割引コードを入れられない。LINEの公式の決まりで、住所の後ろに
+   openExternalBrowser=1 を付けると、LINEの外（スマホのふつうの仕組み）へ渡される。
+   蝦皮は商品ページの住所を全部アプリにつなぐ設定にしてある（2026-09-14 蝦皮の設定ファイルで確認）ので、
+   アプリが入っていればアプリが開く。入っていなければ、ふつうのブラウザで蝦皮のページが開く。 */
+function shopeeOpenUrl(){
+  var u = shopeeUrl();
+  if (!u) return '';
+  return u + (u.indexOf('?') < 0 ? '?' : '&') + 'openExternalBrowser=1';
+}
+
+/* 郵送でのお受け取り＝「蝦皮で購入する」の1つだけを出す。
+   ★割引コードがある時は、押すと先に割引コードの画面（6）へ進む（2026-09-13 まるちゃん）。
+   コードが無い時は、今までどおりそのまま蝦皮のページへ飛ぶ。 */
 function drawNet(){
-  var url = (curItem && curItem.shopee) || SHOPEE || '';
-
-  /* ★割引コードのご案内（2026-09-13 まるちゃん）。
-     蝦皮のページがあって、コードも決まっている時だけ出す。
-     並びは「説明の文 → コードとコピー → 入れ方の絵 → 蝦皮で購入するボタン」。 */
-  var box = document.getElementById('netCoupon');
-  var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
-  if (url && SHOPEE_CODE){
-    var h = '<div class="spnote">'
-          + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
-          + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。') + '<br>'
-          + Z('割引コード')
-          + (isZH() ? ('（折抵' + yen(SHOPEE_OFF) + '）') : ('（' + yen(SHOPEE_OFF) + '割引）'))
-          + Z('の入力方法はこちらになります。')
-          + '</div>'
-          + '<div class="spcode">'
-          + '<span class="v" id="spCodeV">' + SHOPEE_CODE + '</span>'
-          + '<button class="cp" id="spCodeCp" type="button">' + Z('コピー') + '</button>'
-          + '</div>';
-    if (IMG_SHOPEE_GUIDE){
-      h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
-         + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
-         + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
-    }
-    box.innerHTML = h;
-    document.getElementById('spCodeCp').onclick = function(){ copyCode(this); };
-  } else {
-    box.innerHTML = '';
-  }
-
-  document.getElementById('netBtn').innerHTML = url
-     ? '<a class="buy line order" href="' + url + '" target="_blank" rel="noopener">'
+  var url = shopeeUrl();
+  document.getElementById('netBtn').innerHTML =
+      (url && SHOPEE_CODE)
+     ? '<button class="buy line order" id="netGo" type="button">'
+       + '<span class="t">蝦皮で購入する</span></button>'
+     : url
+     ? '<a class="buy line order" href="' + shopeeOpenUrl() + '" target="_blank" rel="noopener">'
        + '<span class="t">蝦皮で購入する</span></a>'
      : '<a class="buy line order" href="#" onclick="return false">'
        + '<span class="t">蝦皮で購入する</span>'
        + '<span class="s">蝦皮のページをご用意でき次第、こちらから開けるようになります</span></a>';
+  var g = document.getElementById('netGo');
+  if (g) g.onclick = function(){ setStep(6); };
+  fitBuys();
+}
+
+/* ★割引コードの画面（2026-09-13 まるちゃん）。
+   並びは「説明の文 → コードとコピー → 蝦皮の購入ページへ進むボタン → 入れ方の絵」。 */
+function drawCode(){
+  var url = shopeeUrl();
+  var box = document.getElementById('netCoupon');
+  var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
+  var h = '<div class="spnote">'
+        + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
+        + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。')
+        /* ★2026-09-13 まるちゃん：「割引コード（150元割引）の入力方法はこちらになります。」の行は削除。
+           割引額は下の「割引コードの入れ方」の説明の文に入れた。 */
+        + '</div>'
+        + '<div class="spcode">'
+        + '<span class="v" id="spCodeV">' + SHOPEE_CODE + '</span>'
+        + '<button class="cp" id="spCodeCp" type="button">' + Z('コピー') + '</button>'
+        + '</div>'
+        + '<div class="buys"><a class="buy line order" href="' + shopeeOpenUrl() + '" target="_blank" rel="noopener">'
+        + '<span class="t">蝦皮の購入ページへ</span></a></div>';
+  if (IMG_SHOPEE_GUIDE){
+    /* ★入れ方の説明（2026-09-13 まるちゃん）。値段は書き写さず、商品の値段（now）と
+       割引額（SHOPEE_OFF）から出す＝蝦皮の値段＝会員価格＋割引額（990＋150＝1140元）。 */
+    var spNm  = (curItem && curItem.nm) ? Z(curItem.nm) : '';
+    var spNow = (curItem && curItem.now != null) ? yen(curItem.now) : '';
+    var spShp = (curItem && curItem.now != null) ? yen(curItem.now + SHOPEE_OFF) : '';
+    /* ★2026-09-13 まるちゃん：「〜を990元で」→「〜が150元割引され、990元で」 */
+    var lead = isZH()
+      ? ('在蝦皮APP依照以下步驟輸入優惠代碼，' + spNm + '即可折抵' + yen(SHOPEE_OFF)
+         + '，以<b>' + spNow + '</b>購買（蝦皮售價' + spShp + '）')
+      : ('蝦皮のAPPにて、以下の手順で割引コードを入力すると、' + spNm + 'が'
+         + yen(SHOPEE_OFF) + '割引され、<b>' + spNow
+         + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
+    h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
+       + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
+       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
+       + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
+  }
+  box.innerHTML = h;
+  document.getElementById('spCodeCp').onclick = function(){ copyCode(this); };
   fitBuys();
 }
 
@@ -3755,6 +3798,7 @@ function setStep(n){
   document.getElementById('stepHead').style.display = (n===0 || n===4) ? 'none'  : 'flex';
   document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
   document.getElementById('stepNet').style.display  = (n===5) ? 'block' : 'none';   /* 郵送＝蝦皮 */
+  document.getElementById('stepCode').style.display = (n===6) ? 'block' : 'none';   /* 蝦皮の割引コード */
   document.getElementById('stepQty').style.display  = (n===2) ? 'block' : 'none';
   /* 本数の画面は、出したあとに詰め具合を決める（下の fitQty・2026-09-06） */
   if (n === 2) setTimeout(fitQty, 0);
@@ -3787,6 +3831,7 @@ function setStep(n){
     }
   }
   if (n===5) drawNet();       /* 郵送でのお受け取り＝蝦皮で購入する */
+  if (n===6) drawCode();      /* 蝦皮の割引コード（2026-09-13 まるちゃん） */
   if (n===4){ drawConfirm(); setTimeout(fitConfirm, 0); }   /* ご注文内容のご確認 */
   fitBuys();   /* 今出したボタンの字を、その場で幅に合わせて収める */
   fitItem();   /* 商品の画面は、写真の高さを残りの場所に合わせる */
@@ -3822,8 +3867,10 @@ back.onclick = function(){
   if (vCart.style.display !== 'none'){ openList(curCat || 'original'); return; }
   /* お支払い→受け取り方→商品→一覧→ホーム、と1つずつ戻る */
   if (vItem.style.display !== 'none'){
+    /* 割引コード（6）からは、郵送でのお受け取り（5）へ戻す（2026-09-13 まるちゃん） */
+    if (payStep === 6) { setStep(5); }
     /* 郵送（5）からは、お受け取り方法をえらぶ画面（1）へ戻す */
-    if (payStep === 5) { setStep(1); }
+    else if (payStep === 5) { setStep(1); }
     /* お受け取り方法をたずねずに来た時は、本数の画面から商品の画面へ戻す */
     else if (payStep === 2 && !wayAsked) { setStep(0); }
     else if (payStep > 0) { setStep(payStep - 1); }
@@ -3850,6 +3897,5 @@ show('home');
   document.body.appendChild(bar);
 })();
 </script>
-
 
 </body></html>
