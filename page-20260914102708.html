@@ -1105,6 +1105,10 @@ body.dark .spglead{
 }
 /* 値段は「990」と「元」の間で改行させない */
 body.dark .spglead b{color:#e8d3a6;font-weight:700;white-space:nowrap}
+body.dark .spsteps{
+  color:#dcd2c0;font-size:13px;line-height:1.8;text-align:left;margin:0 0 12px;padding-left:1.4em;
+}
+body.dark .spsteps li{margin:0 0 2px}
 body.dark .spguide{
   display:block;width:100%;height:auto;border-radius:2px;
   border:1px solid rgba(201,171,115,.35);
@@ -1616,6 +1620,9 @@ var ZH = {
   "割引コード":"優惠代碼",
   "の入力方法はこちらになります。":"的輸入方式如下。",
   "割引コードの入れ方":"優惠代碼的輸入方式",
+  "蝦皮でNo.31を買い物かごに入れ、「去買單」を押す":"在蝦皮將 No.31 加入購物車，點選「去買單」",
+  "お支払いの画面で「賣場優惠券」の行を押す":"在結帳頁面點選「賣場優惠券」",
+  "上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す":"在上方輸入欄輸入優惠代碼並點選「使用」，最後點選「OK」",
   "コピー":"複製",
   "コピーしました":"已複製",
   "長押しでコピー":"請長按複製",
@@ -1774,7 +1781,9 @@ var QR = { linepay:"", jkopay:"" };
 /* ★郵送でのお受け取り＝蝦皮（Shopee）のお店のページ（2026-09-06 まるちゃん）。
    ここが空の間は、ボタンは出るが押せない（「ご用意でき次第…」と小さく出る）。
    商品ごとに別のページへ飛ばしたい時は、その商品の並びに shopee:"住所" を1行足せば、そちらが優先される。 */
-var SHOPEE = "https://shopee.tw/%E8%8D%B7%E8%8D%B7%E8%8A%AD%E7%B2%BE%E8%8F%AF+No.31-i.135867224.55217718557";
+var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは今のところNo.31だけ。
+                      お店全体の住所は空にし、送れる商品にだけ shopee:"住所" を書く。
+                      shopee が無い商品は「郵送で受け取る」ボタン自体を出さない。 */
 
 /* ★蝦皮で使う割引コード（2026-09-13 まるちゃん）。
    お客様がこのコードを蝦皮に入れると、当店のLINE会員価格で買えるようにしてある。
@@ -1785,7 +1794,7 @@ var SHOPEE = "https://shopee.tw/%E8%8D%B7%E8%8D%B7%E8%8A%AD%E7%B2%BE%E8%8F%AF+No
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-cca7dd200e.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-a042084140.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -2055,6 +2064,7 @@ var DATA = {
     en:"", jp:"T&T ORIGINAL", zh:"自有品牌",
     items:[
       { id:"jojoba_no31", img:"NO31",
+        shopee:"https://shopee.tw/%E8%8D%B7%E8%8D%B7%E8%8A%AD%E7%B2%BE%E8%8F%AF+No.31-i.135867224.55217718557",   /* 郵送＝蝦皮で送れる商品（2026-09-14） */
         nm:"ホホバエッセンス No.31", nm_zh:"荷荷芭精華 No.31",
         sub:"50ml",
         /* 詳しい画面では商品名の右に（50ml）と小さく添える（2026-09-03 まるちゃん） */
@@ -3526,6 +3536,14 @@ function drawCode(){
          + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
     h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
        + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
+       /* ★2026-09-14 まるちゃん：割引コードは「お支払いの時」に入れてもらう（蝦皮の公式の手引きに
+          「先に券を受け取っていなくても、支払い画面で割引コードを手で入力できる」とある）。
+          絵も公式の「賣場優惠券の使い方（アプリ版）」の手順2〜5に差し替えた。 */
+       + '<ol class="spsteps">'
+       + '<li>' + Z('蝦皮でNo.31を買い物かごに入れ、「去買單」を押す') + '</li>'
+       + '<li>' + Z('お支払いの画面で「賣場優惠券」の行を押す') + '</li>'
+       + '<li>' + Z('上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す') + '</li>'
+       + '</ol>'
        + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
        + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
   }
@@ -3797,6 +3815,8 @@ function setStep(n){
        写真と名前をもう一度出すと同じ話が二度になり、1画面に収まらない（2026-09-06 まるちゃん） */
   document.getElementById('stepHead').style.display = (n===0 || n===4) ? 'none'  : 'flex';
   document.getElementById('stepWay').style.display  = (n===1) ? 'block' : 'none';
+  /* 郵送で送れない商品（蝦皮の住所が無い）は「郵送で受け取る」を出さない（2026-09-14 まるちゃん） */
+  document.getElementById('buyNet').style.display = shopeeUrl() ? '' : 'none';
   document.getElementById('stepNet').style.display  = (n===5) ? 'block' : 'none';   /* 郵送＝蝦皮 */
   document.getElementById('stepCode').style.display = (n===6) ? 'block' : 'none';   /* 蝦皮の割引コード */
   document.getElementById('stepQty').style.display  = (n===2) ? 'block' : 'none';
