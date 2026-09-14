@@ -1069,9 +1069,13 @@ body.dark .buy .s{
 /* ── 蝦皮の割引コードのご案内（2026-09-13 まるちゃん） ─────────
    郵送でのお受け取りの画面に出す。上から「説明の文」→「コードとコピー」→
    「入れ方の絵」→「蝦皮で購入するボタン」の順。 */
+/* ★2026-09-14 まるちゃん「蝦皮でのご購入は大きい文字で」 */
+body.dark .spagain{margin-top:34px;padding-top:26px;border-top:1px solid rgba(201,171,115,.35)}
+body.dark .stepttl.spbig{font-size:22px;letter-spacing:.16em;margin-bottom:16px}
 body.dark .spnote{
-  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px */
-  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
+  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px
+     ★2026-09-14 まるちゃん「その下の文字も少し大きめ」15→17px */
+  color:#dcd2c0;font-size:17px;line-height:1.9;letter-spacing:.03em;
   text-align:left;margin:2px 0 16px;
 }
 body.dark .spnote b{color:#e8d3a6;font-weight:700}
@@ -1481,7 +1485,7 @@ body.dark .todoline{color:#a2947f}
     <!-- ═ 画面2-3＝蝦皮の割引コード（2026-09-13 まるちゃん）
          「蝦皮で購入する」を押すと、まずこの画面でコードをお渡しする ═ -->
     <div id="stepCode" style="display:none">
-      <div class="stepttl">蝦皮でのご購入</div>
+      <div class="stepttl spbig">蝦皮でのご購入</div>
       <div id="netCoupon"></div>
     </div>
 
@@ -1619,7 +1623,7 @@ var ZH = {
   "で購入できます。":"購買。",
   "割引コード":"優惠代碼",
   "の入力方法はこちらになります。":"的輸入方式如下。",
-  "割引コードの入れ方":"優惠代碼的輸入方式",
+  "割引コードの入力方法":"優惠代碼的輸入方式",
   "蝦皮でNo.31を買い物かごに入れ、「去買單」を押す":"在蝦皮將 No.31 加入購物車，點選「去買單」",
   "お支払いの画面で「賣場優惠券」の行を押す":"在結帳頁面點選「賣場優惠券」",
   "上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す":"在上方輸入欄輸入優惠代碼並點選「使用」，最後點選「OK」",
@@ -1794,7 +1798,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-2557af9d03.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-927a071182.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -3509,18 +3513,19 @@ function drawCode(){
   var url = shopeeUrl();
   var box = document.getElementById('netCoupon');
   var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
-  var h = '<div class="spnote">'
+  var blk = '<div class="spnote">'
         + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
         + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。')
         /* ★2026-09-13 まるちゃん：「割引コード（150元割引）の入力方法はこちらになります。」の行は削除。
            割引額は下の「割引コードの入れ方」の説明の文に入れた。 */
         + '</div>'
         + '<div class="spcode">'
-        + '<span class="v" id="spCodeV">' + SHOPEE_CODE + '</span>'
-        + '<button class="cp" id="spCodeCp" type="button">' + Z('コピー') + '</button>'
+        + '<span class="v">' + SHOPEE_CODE + '</span>'
+        + '<button class="cp" type="button">' + Z('コピー') + '</button>'
         + '</div>'
         + '<div class="buys"><a class="buy line order" href="' + shopeeOpenUrl() + '" target="_blank" rel="noopener">'
         + '<span class="t">蝦皮の購入ページへ</span></a></div>';
+  var h = blk;
   if (IMG_SHOPEE_GUIDE){
     /* ★入れ方の説明（2026-09-13 まるちゃん）。値段は書き写さず、商品の値段（now）と
        割引額（SHOPEE_OFF）から出す＝蝦皮の値段＝会員価格＋割引額（990＋150＝1140元）。 */
@@ -3534,7 +3539,7 @@ function drawCode(){
       : ('蝦皮のAPPにて、以下の手順で割引コードを入力すると、' + spNm + 'が'
          + yen(SHOPEE_OFF) + '割引され、<b>' + spNow
          + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
-    h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
+    h += '<div class="spgttl">' + Z('割引コードの入力方法') + '</div>'
        + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
        /* ★2026-09-14 まるちゃん：割引コードは「お支払いの時」に入れてもらう（蝦皮の公式の手引きに
           「先に券を受け取っていなくても、支払い画面で割引コードを手で入力できる」とある）。
@@ -3544,11 +3549,15 @@ function drawCode(){
        + '<li>' + Z('お支払いの画面で「賣場優惠券」の行を押す') + '</li>'
        + '<li>' + Z('上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す') + '</li>'
        + '</ol>'
-       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
-       + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
+       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入力方法') + '">'
+       + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>'
+       /* ★2026-09-14 まるちゃん：一番下にも「蝦皮でのご購入・説明・コード・購入ページへ」をもう一度出す
+          （入力方法を読み終えた所から、上へ戻らずにそのままコピーして進めるように） */
+       + '<div class="spagain"><div class="stepttl spbig">' + Z('蝦皮でのご購入') + '</div>' + blk + '</div>';
   }
   box.innerHTML = h;
-  document.getElementById('spCodeCp').onclick = function(){ copyCode(this); };
+  var cps = box.querySelectorAll('.spcode .cp');
+  for (var ci = 0; ci < cps.length; ci++) cps[ci].onclick = function(){ copyCode(this); };
   fitBuys();
 }
 
@@ -3565,7 +3574,7 @@ function copyCode(btn){
      「長押しでコピーしてください」と出す（黙って何も起きないのを防ぐ） */
   function nadame(){
     try{
-      var el = document.getElementById('spCodeV');
+      var el = btn.parentNode.querySelector('.v');
       var rg = document.createRange(); rg.selectNodeContents(el);
       var sel = window.getSelection(); sel.removeAllRanges(); sel.addRange(rg);
     }catch(e){}
