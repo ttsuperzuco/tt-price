@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-TW">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1063,9 +1069,12 @@ body.dark .buy .s{
 /* ── 蝦皮の割引コードのご案内（2026-09-13 まるちゃん） ─────────
    郵送でのお受け取りの画面に出す。上から「説明の文」→「コードとコピー」→
    「入れ方の絵」→「蝦皮で購入するボタン」の順。 */
+/* ★2026-09-14 まるちゃん「蝦皮でのご購入は大きい文字で」 */
+body.dark .stepttl.spbig{font-size:22px;letter-spacing:.16em;margin-bottom:16px}
 body.dark .spnote{
-  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px */
-  color:#dcd2c0;font-size:15px;line-height:1.9;letter-spacing:.03em;
+  /* ★字を少し大きく（2026-09-13 まるちゃん「字をもう少し大きく」）13.5→15px
+     ★2026-09-14 まるちゃん「その下の文字も少し大きめ」15→17px */
+  color:#dcd2c0;font-size:17px;line-height:1.9;letter-spacing:.03em;
   text-align:left;margin:2px 0 16px;
 }
 body.dark .spnote b{color:#e8d3a6;font-weight:700}
@@ -1319,22 +1328,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
-/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
-.cap .ja4{align-items:flex-end}
-.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1491,7 +1484,7 @@ html,body{background:#000}
     <!-- ═ 画面2-3＝蝦皮の割引コード（2026-09-13 まるちゃん）
          「蝦皮で購入する」を押すと、まずこの画面でコードをお渡しする ═ -->
     <div id="stepCode" style="display:none">
-      <div class="stepttl">蝦皮でのご購入</div>
+      <div class="stepttl spbig">蝦皮でのご購入</div>
       <div id="netCoupon"></div>
     </div>
 
@@ -1538,7 +1531,7 @@ html,body{background:#000}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "ja";
+var LANG = "zh";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1629,7 +1622,7 @@ var ZH = {
   "で購入できます。":"購買。",
   "割引コード":"優惠代碼",
   "の入力方法はこちらになります。":"的輸入方式如下。",
-  "割引コードの入れ方":"優惠代碼的輸入方式",
+  "割引コードの入力方法":"優惠代碼的輸入方式",
   "蝦皮でNo.31を買い物かごに入れ、「去買單」を押す":"在蝦皮將 No.31 加入購物車，點選「去買單」",
   "お支払いの画面で「賣場優惠券」の行を押す":"在結帳頁面點選「賣場優惠券」",
   "上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す":"在上方輸入欄輸入優惠代碼並點選「使用」，最後點選「OK」",
@@ -1804,7 +1797,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-2557af9d03.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-020a716380.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -3544,7 +3537,7 @@ function drawCode(){
       : ('蝦皮のAPPにて、以下の手順で割引コードを入力すると、' + spNm + 'が'
          + yen(SHOPEE_OFF) + '割引され、<b>' + spNow
          + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
-    h += '<div class="spgttl">' + Z('割引コードの入れ方') + '</div>'
+    h += '<div class="spgttl">' + Z('割引コードの入力方法') + '</div>'
        + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
        /* ★2026-09-14 まるちゃん：割引コードは「お支払いの時」に入れてもらう（蝦皮の公式の手引きに
           「先に券を受け取っていなくても、支払い画面で割引コードを手で入力できる」とある）。
@@ -3554,7 +3547,7 @@ function drawCode(){
        + '<li>' + Z('お支払いの画面で「賣場優惠券」の行を押す') + '</li>'
        + '<li>' + Z('上の入力欄に割引コードを入れて「使用」、最後に「OK」を押す') + '</li>'
        + '</ol>'
-       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入れ方') + '">'
+       + '<img class="spguide" src="' + IMG_SHOPEE_GUIDE + '" alt="' + Z('割引コードの入力方法') + '">'
        + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>';
   }
   box.innerHTML = h;
@@ -3927,6 +3920,5 @@ show('home');
   document.body.appendChild(bar);
 })();
 </script>
-
 
 </body></html>
