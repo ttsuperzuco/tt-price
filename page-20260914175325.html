@@ -4,9 +4,15 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1104,7 +1110,8 @@ body.dark .spglead{
 /* 値段は「990」と「元」の間で改行させない */
 body.dark .spglead b{color:#e8d3a6;font-weight:700;white-space:nowrap}
 body.dark .spsteps{
-  color:#dcd2c0;font-size:13px;line-height:1.8;text-align:left;margin:0 0 12px;padding-left:1.4em;
+  /* ★2026-09-14 まるちゃん「三行の文字は少し大きめに」13→16px */
+  color:#dcd2c0;font-size:16px;line-height:1.8;text-align:left;margin:0 0 14px;padding-left:1.4em;
 }
 body.dark .spsteps li{margin:0 0 2px}
 body.dark .spguide{
@@ -1323,22 +1330,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
-/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
-.cap .ja4{align-items:flex-end}
-.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1628,6 +1619,7 @@ var ZH = {
   "蝦皮で購入する":"前往蝦皮購買",
   /* 割引コードのご案内（2026-09-13 まるちゃん） */
   "蝦皮でのご購入":"在蝦皮購買",
+  "下記の割引コードをコピーして、蝦皮のページに飛び、上記の手順でコードを入力すると":"複製下方優惠代碼後前往蝦皮頁面，依照上述步驟輸入代碼，即可以",
   "蝦皮の購入ページへ":"前往蝦皮商品頁",
   "蝦皮で、下記の割引コードを入力すると":"在蝦皮輸入以下優惠代碼，即可以",
   "で購入できます。":"購買。",
@@ -3523,18 +3515,26 @@ function drawCode(){
   var url = shopeeUrl();
   var box = document.getElementById('netCoupon');
   var nm  = (curItem && curItem.now != null) ? yen(curItem.now) : '';
-  var blk = '<div class="spnote">'
-        + Z('蝦皮で、下記の割引コードを入力すると') + Z('当店LINE会員価格')
-        + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。')
+  /* ★2026-09-14 まるちゃん：上の文を差し替え。値段は書き写さず商品の値段（now）と割引額から出す。 */
+  var shp = (curItem && curItem.now != null) ? yen(curItem.now + SHOPEE_OFF) : '';
+  var note1 = '<div class="spnote">'
+        + (isZH()
+           ? ('複製下方優惠代碼後前往蝦皮頁面，結帳時輸入，即可以本店LINE會員價'
+              + (nm ? '（<b>' + nm + '</b>）' : '') + '購買' + (shp ? '（蝦皮售價' + shp + '）' : '')
+              + '。')
+           : ('下記の割引コードをコピーして、蝦皮のページに飛び、決済の時に入力すると当店LINE会員価格'
+              + (nm ? '（<b>' + nm + '</b>）' : '') + 'で購入できます' + (shp ? '（蝦皮価格は' + shp + '）' : '')
+              + '。'))
         /* ★2026-09-13 まるちゃん：「割引コード（150元割引）の入力方法はこちらになります。」の行は削除。
            割引額は下の「割引コードの入れ方」の説明の文に入れた。 */
-        + '</div>'
-        + '<div class="spcode">'
+        + '</div>';
+  var codeBtn = '<div class="spcode">'
         + '<span class="v">' + SHOPEE_CODE + '</span>'
         + '<button class="cp" type="button">' + Z('コピー') + '</button>'
         + '</div>'
         + '<div class="buys"><a class="buy line order" href="' + shopeeOpenUrl() + '" target="_blank" rel="noopener">'
         + '<span class="t">蝦皮の購入ページへ</span></a></div>';
+  var blk = note1 + codeBtn;
   var h = blk;
   if (IMG_SHOPEE_GUIDE){
     /* ★入れ方の説明（2026-09-13 まるちゃん）。値段は書き写さず、商品の値段（now）と
@@ -3550,7 +3550,7 @@ function drawCode(){
          + yen(SHOPEE_OFF) + '割引され、<b>' + spNow
          + '</b>でご購入いただけます（蝦皮価格は' + spShp + '）');
     h += '<div class="spgttl">' + Z('割引コードの入力方法') + '</div>'
-       + (spNow ? '<div class="spglead">' + lead + '</div>' : '')
+       /* ★2026-09-14 まるちゃん：「蝦皮のAPPにて、以下の手順で…」の説明文は削除 */
        /* ★2026-09-14 まるちゃん：割引コードは「お支払いの時」に入れてもらう（蝦皮の公式の手引きに
           「先に券を受け取っていなくても、支払い画面で割引コードを手で入力できる」とある）。
           絵も公式の「賣場優惠券の使い方（アプリ版）」の手順2〜5に差し替えた。 */
@@ -3563,7 +3563,11 @@ function drawCode(){
        + '<div class="spfrom">' + Z('蝦皮公式の案内より') + '</div>'
        /* ★2026-09-14 まるちゃん：一番下にも「蝦皮でのご購入・説明・コード・購入ページへ」をもう一度出す
           （入力方法を読み終えた所から、上へ戻らずにそのままコピーして進めるように） */
-       + '<div class="spagain"><div class="stepttl spbig">' + Z('蝦皮でのご購入') + '</div>' + blk + '</div>';
+       /* ★2026-09-14 まるちゃん：下の方は見出しを出さず、文を「上記の手順で」の言い方に変える */
+       + '<div class="spagain"><div class="spnote">'
+       + Z('下記の割引コードをコピーして、蝦皮のページに飛び、上記の手順でコードを入力すると')
+       + Z('当店LINE会員価格') + (nm ? '（<b>' + nm + '</b>）' : '') + Z('で購入できます。')
+       + '</div>' + codeBtn + '</div>';
   }
   box.innerHTML = h;
   var cps = box.querySelectorAll('.spcode .cp');
@@ -3936,6 +3940,5 @@ show('home');
   document.body.appendChild(bar);
 })();
 </script>
-
 
 </body></html>
