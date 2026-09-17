@@ -3457,7 +3457,19 @@ function orderLink(payName, payKey){
   msg += zh
     ? ('付款方式：' + Z(payName) + '\n' + '取貨方式：到店取貨')
     : ('お支払い：' + payName + '\n' + '受け取り：お店で受け取り');
-  return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  var url = 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  /* ★2026-09-17 まるちゃん：LINEの外（ふつうのブラウザ）で開いたアンドロイドでは、このリンクを押すと
+     「LINEアプリを開いて続行してください」という中継の画面が出て、もう1回押させてしまう。
+     アンドロイドの「このアプリで開く」の指定（intent）で、LINEアプリへ直接渡す。
+     LINEアプリが無い時は、今までどおりのリンク（fallback）へ進む。
+     LINEの中のブラウザ・アイフォンは今までどおり（そのままで直接開くため触らない）。 */
+  var ua = navigator.userAgent || '';
+  if (/Android/i.test(ua) && !/Line\//i.test(ua)){
+    url = 'intent://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg)
+        + '#Intent;scheme=https;package=jp.naver.line.android;'
+        + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  }
+  return url;
 }
 
 /* お支払い方法を押したら、ご注文内容のご確認の画面へ進む（2026-09-02 まるちゃん） */
@@ -3917,6 +3929,35 @@ back.onclick = function(){
   }
   else { show('home'); }
 };
+
+/* ★スマホの「戻る」（画面の下の戻る・端からなぞる操作）で、ページごと消えないようにする（2026-09-17 まるちゃん）。
+   ホーム以外の画面にいる間だけ、ブラウザの履歴に「目印」を1つ置いておく。
+   スマホの戻るが押されると、その目印が外れるだけでページは残る → 画面の左上の「← 戻る」と同じ動きをする。
+   ホームにいる時は目印を置かない＝そこで戻るを押せば、ふつうにページを閉じる（LINEに戻る）。 */
+(function(){
+  var guarded = false, skipNext = false;
+  function arm(){
+    if (curView !== 'home' && !guarded){
+      try { history.pushState({ttBack:1}, ''); guarded = true; } catch(e){}
+    }
+  }
+  window.addEventListener('popstate', function(){
+    if (skipNext){ skipNext = false; return; }
+    if (!guarded) return;
+    guarded = false;
+    back.onclick();
+    arm();
+  });
+  var _show = show;
+  show = function(w){
+    _show(w);
+    /* 画面の「← 戻る」でホームまで戻ったら、置いてあった目印も片づける（戻るを1回むだに押させない） */
+    if (w === 'home' && guarded){ guarded = false; skipNext = true; try { history.back(); } catch(e){ skipNext = false; } }
+    arm();
+  };
+  var _setStep = setStep;
+  setStep = function(n){ _setStep(n); arm(); };
+})();
 
 show('home');
 
