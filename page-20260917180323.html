@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="T&amp;T SIGNATURE">
 <meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
 <meta property="og:site_name" content="TaiwanTomato">
 <meta name="twitter:card" content="summary">
 </head>
@@ -1533,7 +1533,7 @@ body.dark .todoline{color:#a2947f}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "zh";
+var LANG = "ja";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1660,7 +1660,6 @@ var ZH = {
   "まとめてお得なセット":"超值組合",
   "オイルとソープを、まとめてお得に。":"美容油與泡沫皂，一次購入更划算。",
   "Aセット（ソープ130ml + オイル）":"A組合（泡沫皂130ml + 美容油）",
-  "Bセット（ソープ200ml + オイル）":"B組合（泡沫皂200ml + 美容油）",
   "セット価格":"組合價",
   "本数をお選びください":"請選擇數量",
   "セット数をお選びください":"請選擇組合數量",
@@ -1718,7 +1717,6 @@ var ZH = {
   "米国アリゾナ産100%ピュアゴールデンホホバ":"美國亞利桑那州產 100% 純黃金荷荷芭",
   "USDA（米国農務省）オーガニック認証":"USDA（美國農業部）有機認證",
   "VIO保湿美容オイルとVIO専用泡ソープのセットです。":"私密處保濕美容油與私密處專用泡沫皂的組合。",
-  "ソープの大きさ（130ml／200ml）をお選びいただけます。":"泡沫皂的容量（130ml／200ml）可自由選擇。",
   "50ml":"50ml"
 };
 
@@ -1800,7 +1798,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-020a716380.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-927a071182.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -1937,11 +1935,9 @@ var DATA = {
         nm:"VIO専用泡ソープ", nm_zh:"【中文名 未定】VIO専用泡ソープ",
         sub:"AIMER LE SOI",
         one:"毎日のデリケートゾーン洗浄に。",
-        /* ★大きさが2つある商品（2026-09-03 まるちゃんの料金表）。
-           一覧では2つとも値段を出し、詳しい画面では選んでもらう
-           ★200mlの日本価格は2,000元（2026-09-06 まるちゃん。1,760元から直した） */
-        sizes:[ { nm:"130ml", now:1000, was:1200 },
-                { nm:"200ml", now:1590, was:2000 } ],
+        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。
+           量はNo.31と同じく商品名の横に（130ml）と出す（まるちゃん「①だす」） */
+        unit:"130ml",
         now:1000, was:1200,
         lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
         /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真は白っぽいので leadLight の形＝
@@ -1976,8 +1972,8 @@ var DATA = {
         nm:"VIO専用泡ソープ ＋ VIO保湿美容オイル", nm_zh:"【中文名 未定】VIO専用泡ソープ＋VIO保湿美容オイル",
         sub:"まとめてお得なセット",
         one:"オイルとソープを、まとめてお得に。",
-        sizes:[ { nm:"Aセット（ソープ130ml + オイル）", now:2400, was:2600 },
-                { nm:"Bセット（ソープ200ml + オイル）", now:3100, was:3190 } ],
+        /* ★2026-09-17 まるちゃん：ソープ200mlの販売終了に合わせ、Bセット（200ml）を削除。
+           Aセット（ソープ130ml＋オイル）だけになったので選ぶ欄は出さない。 */
         now:2400, was:2600,
         /* ★セットの消してある値段は「日本価格」ではなく、単品で買った時の合計（2026-09-06）。
            棒の中に見出しを出すようになったので、ここを間違えると嘘の表示になる。 */
@@ -3921,6 +3917,35 @@ back.onclick = function(){
   }
   else { show('home'); }
 };
+
+/* ★スマホの「戻る」（画面の下の戻る・端からなぞる操作）で、ページごと消えないようにする（2026-09-17 まるちゃん）。
+   ホーム以外の画面にいる間だけ、ブラウザの履歴に「目印」を1つ置いておく。
+   スマホの戻るが押されると、その目印が外れるだけでページは残る → 画面の左上の「← 戻る」と同じ動きをする。
+   ホームにいる時は目印を置かない＝そこで戻るを押せば、ふつうにページを閉じる（LINEに戻る）。 */
+(function(){
+  var guarded = false, skipNext = false;
+  function arm(){
+    if (curView !== 'home' && !guarded){
+      try { history.pushState({ttBack:1}, ''); guarded = true; } catch(e){}
+    }
+  }
+  window.addEventListener('popstate', function(){
+    if (skipNext){ skipNext = false; return; }
+    if (!guarded) return;
+    guarded = false;
+    back.onclick();
+    arm();
+  });
+  var _show = show;
+  show = function(w){
+    _show(w);
+    /* 画面の「← 戻る」でホームまで戻ったら、置いてあった目印も片づける（戻るを1回むだに押させない） */
+    if (w === 'home' && guarded){ guarded = false; skipNext = true; try { history.back(); } catch(e){ skipNext = false; } }
+    arm();
+  };
+  var _setStep = setStep;
+  setStep = function(n){ _setStep(n); arm(); };
+})();
 
 show('home');
 
