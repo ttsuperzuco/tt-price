@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="ja">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -8,7 +8,7 @@
 <meta property="og:type" content="website">
 <meta property="og:title" content="T&amp;T SIGNATURE">
 <meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
 <meta property="og:site_name" content="TaiwanTomato">
 <meta name="twitter:card" content="summary">
 </head>
@@ -1533,7 +1533,7 @@ body.dark .todoline{color:#a2947f}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "zh";
+var LANG = "ja";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1798,7 +1798,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-020a716380.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-927a071182.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -1935,7 +1935,9 @@ var DATA = {
         nm:"VIO専用泡ソープ", nm_zh:"【中文名 未定】VIO専用泡ソープ",
         sub:"AIMER LE SOI",
         one:"毎日のデリケートゾーン洗浄に。",
-        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。 */
+        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。
+           量はNo.31と同じく商品名の横に（130ml）と出す（まるちゃん「①だす」） */
+        unit:"130ml",
         now:1000, was:1200,
         lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
         /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真は白っぽいので leadLight の形＝
@@ -3915,6 +3917,35 @@ back.onclick = function(){
   }
   else { show('home'); }
 };
+
+/* ★スマホの「戻る」（画面の下の戻る・端からなぞる操作）で、ページごと消えないようにする（2026-09-17 まるちゃん）。
+   ホーム以外の画面にいる間だけ、ブラウザの履歴に「目印」を1つ置いておく。
+   スマホの戻るが押されると、その目印が外れるだけでページは残る → 画面の左上の「← 戻る」と同じ動きをする。
+   ホームにいる時は目印を置かない＝そこで戻るを押せば、ふつうにページを閉じる（LINEに戻る）。 */
+(function(){
+  var guarded = false, skipNext = false;
+  function arm(){
+    if (curView !== 'home' && !guarded){
+      try { history.pushState({ttBack:1}, ''); guarded = true; } catch(e){}
+    }
+  }
+  window.addEventListener('popstate', function(){
+    if (skipNext){ skipNext = false; return; }
+    if (!guarded) return;
+    guarded = false;
+    back.onclick();
+    arm();
+  });
+  var _show = show;
+  show = function(w){
+    _show(w);
+    /* 画面の「← 戻る」でホームまで戻ったら、置いてあった目印も片づける（戻るを1回むだに押させない） */
+    if (w === 'home' && guarded){ guarded = false; skipNext = true; try { history.back(); } catch(e){ skipNext = false; } }
+    arm();
+  };
+  var _setStep = setStep;
+  setStep = function(n){ _setStep(n); arm(); };
+})();
 
 show('home');
 

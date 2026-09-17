@@ -1,12 +1,18 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-TW">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="TaiwanTomato">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="TaiwanTomato">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:site_name" content="TaiwanTomato">
+<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0">
-<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
+<body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1324,22 +1330,6 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
-
-/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
-.homelower{display:none !important}
-#viewHome{justify-content:center}
-/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
-   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
-   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
-html,body{background:#000}
-.wrap{max-width:none;padding:0;min-height:100dvh;
-      display:flex;align-items:center;justify-content:center}
-#viewHome{flex:none;width:min(100vw,100dvh)}
-.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
-@media (min-width:780px){ .hero{aspect-ratio:1/1} }
-/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
-.cap .ja4{align-items:flex-end}
-.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -1543,7 +1533,7 @@ html,body{background:#000}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "ja";
+var LANG = "zh";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1808,7 +1798,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-927a071182.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-020a716380.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -1945,7 +1935,9 @@ var DATA = {
         nm:"VIO専用泡ソープ", nm_zh:"【中文名 未定】VIO専用泡ソープ",
         sub:"AIMER LE SOI",
         one:"毎日のデリケートゾーン洗浄に。",
-        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。 */
+        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。
+           量はNo.31と同じく商品名の横に（130ml）と出す（まるちゃん「①だす」） */
+        unit:"130ml",
         now:1000, was:1200,
         lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
         /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真は白っぽいので leadLight の形＝
@@ -3926,6 +3918,35 @@ back.onclick = function(){
   else { show('home'); }
 };
 
+/* ★スマホの「戻る」（画面の下の戻る・端からなぞる操作）で、ページごと消えないようにする（2026-09-17 まるちゃん）。
+   ホーム以外の画面にいる間だけ、ブラウザの履歴に「目印」を1つ置いておく。
+   スマホの戻るが押されると、その目印が外れるだけでページは残る → 画面の左上の「← 戻る」と同じ動きをする。
+   ホームにいる時は目印を置かない＝そこで戻るを押せば、ふつうにページを閉じる（LINEに戻る）。 */
+(function(){
+  var guarded = false, skipNext = false;
+  function arm(){
+    if (curView !== 'home' && !guarded){
+      try { history.pushState({ttBack:1}, ''); guarded = true; } catch(e){}
+    }
+  }
+  window.addEventListener('popstate', function(){
+    if (skipNext){ skipNext = false; return; }
+    if (!guarded) return;
+    guarded = false;
+    back.onclick();
+    arm();
+  });
+  var _show = show;
+  show = function(w){
+    _show(w);
+    /* 画面の「← 戻る」でホームまで戻ったら、置いてあった目印も片づける（戻るを1回むだに押させない） */
+    if (w === 'home' && guarded){ guarded = false; skipNext = true; try { history.back(); } catch(e){ skipNext = false; } }
+    arm();
+  };
+  var _setStep = setStep;
+  setStep = function(n){ _setStep(n); arm(); };
+})();
+
 show('home');
 
 /* ★これは「写真を入れる前の下書き」を開いた時だけ出る帯（2026-09-06）。
@@ -3944,6 +3965,5 @@ show('home');
   document.body.appendChild(bar);
 })();
 </script>
-
 
 </body></html>

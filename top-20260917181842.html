@@ -4,13 +4,6 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
 <body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
@@ -1935,7 +1928,9 @@ var DATA = {
         nm:"VIO専用泡ソープ", nm_zh:"【中文名 未定】VIO専用泡ソープ",
         sub:"AIMER LE SOI",
         one:"毎日のデリケートゾーン洗浄に。",
-        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。 */
+        /* ★2026-09-17 まるちゃん：200mlは販売終了。130mlだけになったので大きさを選ぶ欄は出さない。
+           量はNo.31と同じく商品名の横に（130ml）と出す（まるちゃん「①だす」） */
+        unit:"130ml",
         now:1000, was:1200,
         lb_was:"日本価格",          /* 消してある値段の上に出す一言（2026-09-06 まるちゃん） */
         /* 写真の中に重ねる言葉（2026-09-06 まるちゃん）。この写真は白っぽいので leadLight の形＝
@@ -3916,6 +3911,35 @@ back.onclick = function(){
   else { show('home'); }
 };
 
+/* ★スマホの「戻る」（画面の下の戻る・端からなぞる操作）で、ページごと消えないようにする（2026-09-17 まるちゃん）。
+   ホーム以外の画面にいる間だけ、ブラウザの履歴に「目印」を1つ置いておく。
+   スマホの戻るが押されると、その目印が外れるだけでページは残る → 画面の左上の「← 戻る」と同じ動きをする。
+   ホームにいる時は目印を置かない＝そこで戻るを押せば、ふつうにページを閉じる（LINEに戻る）。 */
+(function(){
+  var guarded = false, skipNext = false;
+  function arm(){
+    if (curView !== 'home' && !guarded){
+      try { history.pushState({ttBack:1}, ''); guarded = true; } catch(e){}
+    }
+  }
+  window.addEventListener('popstate', function(){
+    if (skipNext){ skipNext = false; return; }
+    if (!guarded) return;
+    guarded = false;
+    back.onclick();
+    arm();
+  });
+  var _show = show;
+  show = function(w){
+    _show(w);
+    /* 画面の「← 戻る」でホームまで戻ったら、置いてあった目印も片づける（戻るを1回むだに押させない） */
+    if (w === 'home' && guarded){ guarded = false; skipNext = true; try { history.back(); } catch(e){ skipNext = false; } }
+    arm();
+  };
+  var _setStep = setStep;
+  setStep = function(n){ _setStep(n); arm(); };
+})();
+
 show('home');
 
 /* ★これは「写真を入れる前の下書き」を開いた時だけ出る帯（2026-09-06）。
@@ -3935,4 +3959,16 @@ show('home');
 })();
 </script>
 
+<script>
+(function(){
+  function tomeru(){
+    var b = document.querySelectorAll("[data-go]");
+    for (var i = 0; i < b.length; i++){
+      b[i].onclick = function(e){ if (e && e.preventDefault) e.preventDefault(); };
+    }
+  }
+  tomeru();
+  setTimeout(tomeru, 1500);
+})();
+</script>
 </body></html>
