@@ -1,9 +1,16 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="zh-TW">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
+<meta name="description" content="T&amp;T SIGNATURE">
+<meta property="og:type" content="website">
+<meta property="og:title" content="T&amp;T SIGNATURE">
+<meta property="og:description" content="T&amp;T SIGNATURE">
+<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signaturech.html">
+<meta property="og:site_name" content="T&amp;T SIGNATURE">
+<meta name="twitter:card" content="summary">
 </head>
 <body style="margin:0"><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
@@ -1526,7 +1533,7 @@ body.dark .todoline{color:#a2947f}
      ・「朋友」は永久に使わない（まるちゃん厳命2026-09-02）
      ・VIOは女性向けなので 私密處
      ・リンクは中国語版があるものに差し替える                                    */
-var LANG = "ja";
+var LANG = "zh";
 function isZH(){ return LANG === "zh"; }
 
 var ZH = {
@@ -1791,7 +1798,7 @@ var SHOPEE = "";   /* ★2026-09-14 まるちゃん：郵送で送れるのは�
 var SHOPEE_CODE = "TAKY0105";
 var SHOPEE_OFF  = 150;
 /* 割引コードの入れ方＝蝦皮の公式の案内にある4つの手順を2×2に並べた1枚 */
-var IMG_SHOPEE_GUIDE = "img/spguide-927a071182.jpg";
+var IMG_SHOPEE_GUIDE = "img/spguide-020a716380.jpg";
 
 /* ★お支払いの「行き先」＝お店のQRコードの中身（読み取ると出てくる http… の文字）。
    押すとそのお支払いのアプリが直接ひらくので、カメラでQRを写す必要がない
@@ -3450,7 +3457,19 @@ function orderLink(payName, payKey){
   msg += zh
     ? ('付款方式：' + Z(payName) + '\n' + '取貨方式：到店取貨')
     : ('お支払い：' + payName + '\n' + '受け取り：お店で受け取り');
-  return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  var url = 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  /* ★2026-09-17 まるちゃん：LINEの外（ふつうのブラウザ）で開いたアンドロイドでは、このリンクを押すと
+     「LINEアプリを開いて続行してください」という中継の画面が出て、もう1回押させてしまう。
+     アンドロイドの「このアプリで開く」の指定（intent）で、LINEアプリへ直接渡す。
+     LINEアプリが無い時は、今までどおりのリンク（fallback）へ進む。
+     LINEの中のブラウザ・アイフォンは今までどおり（そのままで直接開くため触らない）。 */
+  var ua = navigator.userAgent || '';
+  if (/Android/i.test(ua) && !/Line\//i.test(ua)){
+    url = 'intent://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg)
+        + '#Intent;scheme=https;package=jp.naver.line.android;'
+        + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  }
+  return url;
 }
 
 /* お支払い方法を押したら、ご注文内容のご確認の画面へ進む（2026-09-02 まるちゃん） */
@@ -3959,16 +3978,4 @@ show('home');
 })();
 </script>
 
-<script>
-(function(){
-  function tomeru(){
-    var b = document.querySelectorAll("[data-go]");
-    for (var i = 0; i < b.length; i++){
-      b[i].onclick = function(e){ if (e && e.preventDefault) e.preventDefault(); };
-    }
-  }
-  tomeru();
-  setTimeout(tomeru, 1500);
-})();
-</script>
 </body></html>
