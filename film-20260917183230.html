@@ -4,15 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>T&amp;T SIGNATURE</title>
-<meta name="description" content="TaiwanTomato">
-<meta property="og:type" content="website">
-<meta property="og:title" content="T&amp;T SIGNATURE">
-<meta property="og:description" content="TaiwanTomato">
-<meta property="og:url" content="https://ttsuperzuco.github.io/tt-price/signature.html">
-<meta property="og:site_name" content="TaiwanTomato">
-<meta name="twitter:card" content="summary">
 </head>
-<body style="margin:0"><title>T&amp;T SIGNATURE</title>
+<body style="margin:0">
+<script>window.__FILM_ONLY__=true;</script><title>T&amp;T SIGNATURE</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=EB+Garamond:ital,wght@1,400;1,500;1,600&family=Shippori+Mincho:wght@400;500;600&family=Noto+Serif+JP:wght@200;300;500;600&display=swap">
 <style>
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
@@ -1330,6 +1324,22 @@ body.dark .todoline{color:#a2947f}
   margin:16px 0 0;border:1px dashed #c9b48c;border-radius:14px;
   background:#fffaf0;padding:13px 16px;font-size:12.5px;color:#8a7444;line-height:1.8;
 }
+
+/* ★見せる用：下の見出しとボタンを隠して、上の映像だけにする */
+.homelower{display:none !important}
+#viewHome{justify-content:center}
+/* ★映像だけの版は「正方形のまま、いちばん大きく」出す（2026-09-02 まるちゃん）。
+   スマホ用の写真は正方形なので、入れ物の四角ぜんぶを写真で埋める。
+   パソコンでは高さいっぱいの正方形になり、左右に黒い余白ができる。 */
+html,body{background:#000}
+.wrap{max-width:none;padding:0;min-height:100dvh;
+      display:flex;align-items:center;justify-content:center}
+#viewHome{flex:none;width:min(100vw,100dvh)}
+.hero{width:100%;margin-left:0;margin-right:0;aspect-ratio:1/1}
+@media (min-width:780px){ .hero{aspect-ratio:1/1} }
+/* ★正方形の写真を使うので、字の置き方もスマホと同じ右そろえにする（2026-09-10） */
+.cap .ja4{align-items:flex-end}
+.cap .side{align-self:flex-end;align-items:flex-end}
 </style>
 <div class="wrap">
   <!-- 日本語のお客様向けのページなので、中国語は付けない（2026-09-02 まるちゃん） -->
@@ -3457,7 +3467,19 @@ function orderLink(payName, payKey){
   msg += zh
     ? ('付款方式：' + Z(payName) + '\n' + '取貨方式：到店取貨')
     : ('お支払い：' + payName + '\n' + '受け取り：お店で受け取り');
-  return 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  var url = 'https://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg);
+  /* ★2026-09-17 まるちゃん：LINEの外（ふつうのブラウザ）で開いたアンドロイドでは、このリンクを押すと
+     「LINEアプリを開いて続行してください」という中継の画面が出て、もう1回押させてしまう。
+     アンドロイドの「このアプリで開く」の指定（intent）で、LINEアプリへ直接渡す。
+     LINEアプリが無い時は、今までどおりのリンク（fallback）へ進む。
+     LINEの中のブラウザ・アイフォンは今までどおり（そのままで直接開くため触らない）。 */
+  var ua = navigator.userAgent || '';
+  if (/Android/i.test(ua) && !/Line\//i.test(ua)){
+    url = 'intent://line.me/R/oaMessage/' + encodeURIComponent(LINE_ID) + '/?' + encodeURIComponent(msg)
+        + '#Intent;scheme=https;package=jp.naver.line.android;'
+        + 'S.browser_fallback_url=' + encodeURIComponent(url) + ';end';
+  }
+  return url;
 }
 
 /* お支払い方法を押したら、ご注文内容のご確認の画面へ進む（2026-09-02 まるちゃん） */
@@ -3965,5 +3987,6 @@ show('home');
   document.body.appendChild(bar);
 })();
 </script>
+
 
 </body></html>
