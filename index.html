@@ -310,6 +310,29 @@ var box = document.getElementById('box');
 var ROWS = [];
 var curPath = [];
 
+// ★2026-11-25 まるちゃん決定：男女・言語別の4つの開き方。リンクの最後に ?v=FJ／MJ／FC／MC を付ける
+//   （F=女性 M=男性／J=日本語 C=中文）。付けなければ今までどおり言語を選ぶ画面から始まる。
+//   女性用＝男性の脱毛を出さない。男性用＝下の言葉が名前に入っている物だけ出す（男性脱毛・ハイドラ・プロセル顔・頭皮）。
+//   料金表のタブで施術の名前を変える時は、この言葉が残るようにする（消えると男性用に出なくなる）。
+var VIEW = (function(){ try { return (new URLSearchParams(location.search).get('v') || '').toUpperCase(); } catch (e) { return ''; } })();
+var VIEW_LANG = { J: '日本語 料金表', C: '中文 價目表' };
+var BASE = /^[FM][JC]$/.test(VIEW) ? [VIEW_LANG[VIEW.charAt(1)]] : [];
+var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell'];
+function viewFilter(rows){
+  if (!BASE.length) return rows;
+  var out = rows.filter(function(r){
+    if (r.path[0] !== BASE[0]) return false;
+    var name = r.path[1] || '';
+    if (VIEW.charAt(0) === 'F') return name.indexOf('男性') < 0;
+    for (var i = 0; i < MEN_KEYS.length; i++) if (name.indexOf(MEN_KEYS[i]) >= 0) return true;
+    return false;
+  });
+  if (out.length) return out;
+  BASE = []; curPath = [];          // 名前が変わって1つも残らない時は、白い画面にせず全部を出す
+  return rows;
+}
+curPath = BASE.slice();
+
 function escapeHtml(s){
   return String(s)
     .replace(/&/g,"&amp;")
@@ -483,7 +506,7 @@ function leafRow(){
 function render(){
   buttons.innerHTML = '';
 
-  var isTop = curPath.length === 0;
+  var isTop = curPath.length <= BASE.length;
 
   backBtn.style.display = isTop ? 'none' : 'block';
 
@@ -530,10 +553,10 @@ function render(){
 }
 
 function goBack(){
-  if (curPath.length > 0) curPath.pop();
+  if (curPath.length > BASE.length) curPath.pop();
 
   // Googleの新しい中身が届いていたら、最初の画面に戻った時に入れ替える（見ている途中で飛ばさない）
-  if (curPath.length === 0 && waitingPayload) {
+  if (curPath.length === BASE.length && waitingPayload) {
     var p = waitingPayload;
     waitingPayload = null;
     applyPayload(p, false);
@@ -572,10 +595,10 @@ function applyPayload(payload, fromLocal){
   try { sig = JSON.stringify(rows); } catch (e) { sig = String(rows.length); }
 
   if (sig === shownSig) return;            // 中身が同じ＝画面はいじらない
-  if (!fromLocal && shownSig && curPath.length > 0) { waitingPayload = payload; return; }
+  if (!fromLocal && shownSig && curPath.length > BASE.length) { waitingPayload = payload; return; }
 
   shownSig = sig;
-  ROWS = rows;
+  ROWS = viewFilter(rows);
   titleEl.textContent = data.appName || 'TaiwanTomato料金表';
   loadingEl.style.display = 'none';
 
