@@ -217,6 +217,9 @@
     padding:40px 12px;
   }
 
+  /* ★2026-11-25 まるちゃん：男女・言語別の開き方では見出しを1行に（言語に合わせた見出しだけを出す） */
+  h2.one-line{ white-space:nowrap; font-size:min(54px, 7.4vw) !important; letter-spacing:0; }
+
   @media (max-width: 480px){
     body{
       padding:8px;
@@ -599,7 +602,14 @@ function applyPayload(payload, fromLocal){
 
   shownSig = sig;
   ROWS = viewFilter(rows);
-  titleEl.textContent = data.appName || 'TaiwanTomato料金表';
+  // ★2026-11-25 まるちゃん：日本語の開き方は「TaiwanTomato料金表」、中文は「TaiwanTomato價目表」だけを1行で出す
+  if (BASE.length) {
+    titleEl.textContent = VIEW.charAt(1) === 'C' ? 'TaiwanTomato價目表' : 'TaiwanTomato料金表';
+    titleEl.classList.add('one-line');
+    document.title = titleEl.textContent;
+  } else {
+    titleEl.textContent = data.appName || 'TaiwanTomato料金表';
+  }
   loadingEl.style.display = 'none';
 
   render();
