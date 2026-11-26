@@ -211,6 +211,31 @@
     font-size:inherit;
   }
 
+  /* ★2026-11-26 まるちゃん「キャンペーンの背景だけ目立つ色に」＝名前が🔥で始まるボタンは金色の背景・赤茶の文字 */
+  button.campaign{
+    background:linear-gradient(to bottom, #fff7c2, #ffd23f);
+    border:2px solid #e0a100;
+    color:#8a2a00;
+    box-shadow:
+      0 4px 0 rgba(160,100,0,0.45),
+      0 7px 12px rgba(0,0,0,0.25);
+  }
+  button.campaign .buttonTitle{ font-size:clamp(17px, 4.6vw, 30px) !important; }
+  button.campaign .buttonSub{ font-size:clamp(16px, 4.3vw, 28px) !important; opacity:1; color:#7a2600; }
+  .buttonSub .em{
+    display:block;
+    margin:4px auto 2px;
+    font-size:clamp(25px, 6.8vw, 44px);
+    font-weight:900;
+    color:#c8102e;
+    line-height:1.2;
+    text-shadow:0 1px 0 #fff, 0 0 6px rgba(255,255,255,0.9);
+  }
+  button.campaign:hover{ background:linear-gradient(to bottom, #fffbe0, #ffdc66); }
+
+  /* ★2026-11-26 キャンペーンの画像を料金表の中にそのまま出す（本文の1行が当店の置き場の画像の住所だけの時） */
+  #box img.boxImg{ display:block; width:100%; height:auto; border-radius:10px; margin:4px 0; }
+
   #loading{
     color:#fff;
     font-size:22px;
@@ -325,11 +350,17 @@ var curPath = [];
 var VIEW = (function(){ try { return (new URLSearchParams(location.search).get('v') || '').toUpperCase(); } catch (e) { return ''; } })();
 var VIEW_LANG = { J: '日本語 料金表', C: '中文 價目表' };
 var BASE = /^[FM][JC]$/.test(VIEW) ? [VIEW_LANG[VIEW.charAt(1)]] : [];
-var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell'];
+var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell', '眉'];   // ★2026-11-26 眉（眉デザイン＆マツエク）も男性用に出す＝プロセルの下に並ぶ
+// ★2026-11-26 まるちゃん：期間限定キャンペーンのボタンは表の一番下に足す＝料金表でも一番下に並ぶ（まるちゃん「キャンペーンは一番下」）。
+//   男女どちらか向けのボタンは、本文の1行目に「#男性」「#女性」と書く（お客様には出さない印）。
+function rowGender(r){ var m = String(r.body || '').match(/^\s*#(男性|女性)/); return m ? m[1] : ''; }
+function stripTag(body){ return String(body || '').replace(/^\s*#(男性|女性)[^\n]*\n?/, ''); }
 function viewFilter(rows){
   if (!BASE.length) return rows;
   var out = rows.filter(function(r){
     if (r.path[0] !== BASE[0]) return false;
+    var g = rowGender(r);
+    if (g) return VIEW.charAt(0) === (g === '男性' ? 'M' : 'F');
     var name = r.path[1] || '';
     if (VIEW.charAt(0) === 'F') return name.indexOf('男性') < 0;
     for (var i = 0; i < MEN_KEYS.length; i++) if (name.indexOf(MEN_KEYS[i]) >= 0) return true;
@@ -392,7 +423,9 @@ function setButtonContent(button, label){
 
     var subSpan = document.createElement('span');
     subSpan.className = 'buttonSub';
-    subSpan.textContent = parsed.sub;
+    // ★2026-11-26 まるちゃん「VIO脱毛・ヒゲ脱毛と眉デザインの文字を目立つように（一番大事）」
+    //   表の説明に【 】で囲んだ言葉は、大きな赤い字で1行に出す（【 】の印はお客様には出さない）。
+    subSpan.innerHTML = escapeHtml(parsed.sub).replace(/【([^】]+)】/g, '<span class="em">$1</span>');
 
     button.appendChild(subSpan);
   } else {
@@ -408,8 +441,10 @@ function getPreviousNonEmptyLine(lines, currentIndex){
   return '';
 }
 
+var IMG_LINE = /^https:\/\/ttsuperzuco\.github\.io\/\S+\.(jpg|jpeg|png|webp)(\?\S*)?$/i;
 function linkifyLine(originalLine, urlLabel){
   var line = String(originalLine || '');
+  if (IMG_LINE.test(line.trim())) return '<img class="boxImg" src="' + escapeHtml(line.trim()) + '" alt="">';
   var urlRegex = /(https?:\/\/[^\s<]+)/g;
 
   var html = '';
@@ -528,7 +563,7 @@ function render(){
 
   if (leaf){
     showBox();
-    setBox(leaf.body);
+    setBox(stripTag(leaf.body));
     return;
   }
 
@@ -547,8 +582,19 @@ function render(){
       var b = document.createElement('button');
 
       setButtonContent(b, val);
+      if (String(val).indexOf('🔥') === 0) b.classList.add('campaign');
 
       b.onclick = function(){
+        // ★2026-11-26 本文がリンク1つだけのボタンは、押したらそのページ（ブログ等）へ直接移る
+        var next = curPath.concat([val]);
+        for (var k = 0; k < ROWS.length; k++){
+          var rr = ROWS[k];
+          if (rr.path.length === next.length && startsWithPath(rr.path, next)) {
+            var only = stripTag(rr.body).trim();
+            if (/^https?:\/\/\S+$/.test(only) && !IMG_LINE.test(only)) { location.href = only; return; }
+            break;
+          }
+        }
         curPath.push(val);
         render();
 
