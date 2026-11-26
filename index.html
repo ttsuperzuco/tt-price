@@ -350,7 +350,7 @@ var curPath = [];
 var VIEW = (function(){ try { return (new URLSearchParams(location.search).get('v') || '').toUpperCase(); } catch (e) { return ''; } })();
 var VIEW_LANG = { J: '日本語 料金表', C: '中文 價目表' };
 var BASE = /^[FM][JC]$/.test(VIEW) ? [VIEW_LANG[VIEW.charAt(1)]] : [];
-var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell', '眉'];   // ★2026-11-26 眉（眉デザイン＆マツエク）も男性用に出す＝プロセルの下に並ぶ
+var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell'];   // ★2026-11-26 男性の眉は「#男性」の印の付いた眉デザインだけの行で出す（マツエクは女性だけ）
 // ★2026-11-26 まるちゃん：期間限定キャンペーンのボタンは表の一番下に足す＝料金表でも一番下に並ぶ（まるちゃん「キャンペーンは一番下」）。
 //   男女どちらか向けのボタンは、本文の1行目に「#男性」「#女性」と書く（お客様には出さない印）。
 function rowGender(r){ var m = String(r.body || '').match(/^\s*#(男性|女性)/); return m ? m[1] : ''; }
