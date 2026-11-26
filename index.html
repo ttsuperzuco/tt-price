@@ -380,9 +380,42 @@ var MEN_KEYS = ['男性', 'ハイドラ', '水飛梭', 'プロセル', 'Procell'
 // ★2026-11-26 まるちゃん：期間限定キャンペーンのボタンは表の一番下に足す＝料金表でも一番下に並ぶ（まるちゃん「キャンペーンは一番下」）。
 //   男女どちらか向けのボタンは、本文の1行目に「#男性」「#女性」と書く（お客様には出さない印）。
 function rowGender(r){ var m = String(r.body || '').match(/^\s*#(男性|女性)/); return m ? m[1] : ''; }
-function stripTag(body){ return String(body || '').replace(/^\s*#(男性|女性)[^\n]*\n?/, ''); }
+function stripTag(body){ return String(body || '').replace(/^\s*(#[^\n]*\n?)+/, ''); }
+// ★2026-11-26 本文の頭の印（お客様には出さない）：「#位置:2」＝その料金表で2番目に並べる／「#まで:2026-11-30」＝その日を過ぎたら出さない
+function rowMark(r, name){
+  var lines = String(r.body || '').split('\n');
+  for (var i = 0; i < lines.length; i++){
+    var s = lines[i].trim();
+    if (s.charAt(0) !== '#') break;
+    if (s.indexOf('#' + name + ':') === 0) return s.slice(name.length + 2).trim();
+  }
+  return '';
+}
+function todayTW(){ return new Date(Date.now() + 8 * 3600000).toISOString().slice(0, 10); }
+// ★2026-11-26 まるちゃん「男も女もキャンペーン期間が終わったら自動で消えるように」
+//   本文の頭に「#キャンペーン:女性VIO」のように種類を書く→ campaigns.json（キャンペーン入力から毎回作る）の期間の外では出さない。
+window.__ttCamp = window.__ttCamp || null;
+function campOk(r, t){
+  var k = rowMark(r, 'キャンペーン');
+  if (!k) return true;
+  var c = window.__ttCamp;
+  if (!c) return false;                    // 期間がまだ読めていない間は出さない（終わった物を一瞬でも出さない）
+  var p = c[k];
+  if (!p) return false;                    // キャンペーン入力に無い＝出さない
+  if (p.start && t < p.start) return false;
+  if (p.end && t > p.end) return false;
+  return true;
+}
+function arrange(rows){
+  var t = todayTW();
+  rows = rows.filter(function(r){ var u = rowMark(r, 'まで'); return (!u || t <= u) && campOk(r, t); });
+  var moved = rows.filter(function(r){ return rowMark(r, '位置'); });
+  var rest = rows.filter(function(r){ return !rowMark(r, '位置'); });
+  moved.forEach(function(r){ var n = parseInt(rowMark(r, '位置'), 10) || 1; rest.splice(Math.min(Math.max(n - 1, 0), rest.length), 0, r); });
+  return rest;
+}
 function viewFilter(rows){
-  if (!BASE.length) return rows;
+  if (!BASE.length) return arrange(rows);
   var out = rows.filter(function(r){
     if (r.path[0] !== BASE[0]) return false;
     var g = rowGender(r);
@@ -392,7 +425,7 @@ function viewFilter(rows){
     for (var i = 0; i < MEN_KEYS.length; i++) if (name.indexOf(MEN_KEYS[i]) >= 0) return true;
     return false;
   });
-  if (out.length) return out;
+  if (out.length) return arrange(out);
   BASE = []; curPath = [];          // 名前が変わって1つも残らない時は、白い画面にせず全部を出す
   return rows;
 }
@@ -698,6 +731,7 @@ function applyPayload(payload, fromLocal){
   if (!fromLocal && shownSig && curPath.length > BASE.length) { waitingPayload = payload; return; }
 
   shownSig = sig;
+  window.__lastRows = rows;
   ROWS = viewFilter(rows);
   // ★2026-11-25 まるちゃん：日本語の開き方は「TaiwanTomato料金表」、中文は「TaiwanTomato價目表」だけを1行で出す
   if (BASE.length) {
@@ -714,6 +748,12 @@ function applyPayload(payload, fromLocal){
 
 window.__ttPriceLocal = function(payload){ applyPayload(payload, true); };
 window.__ttPriceData  = function(payload){ applyPayload(payload, false); };
+
+// キャンペーンの期間を読んだら、今の画面をもう一度並べ直す（最初の画面にいる時だけ）
+fetch('campaigns.json?cb=' + Date.now()).then(function(r){ return r.json(); }).then(function(c){
+  window.__ttCamp = c || {};
+  if (window.__lastRows && curPath.length <= BASE.length) { ROWS = viewFilter(window.__lastRows); render(); }
+}).catch(function(){ window.__ttCamp = {}; });
 
 (function(){
   // ①同じ場所に置いてある写しを先に読む（つなぎ直しが要らないのですぐ出る）
