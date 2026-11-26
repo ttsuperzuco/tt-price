@@ -39,6 +39,8 @@
     --back-text:#ffffff;
   }
 
+  html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+
   body{
     font-family:sans-serif;
     background:linear-gradient(to bottom, var(--page-bg), var(--page-bg-dark));
@@ -221,54 +223,57 @@
   h2.one-line{ white-space:nowrap; font-size:min(54px, 7.4vw) !important; letter-spacing:0; }
 
   @media (max-width: 480px){
+    /* ★2026-11-26 まるちゃん「スマホで開くとすごく大きくて見にくい」＝スマホの文字を小さくした（前は本文30px・ボタン30〜31px） */
     body{
       padding:8px;
     }
 
     h2{
-      font-size:34px;
-      margin:2px auto 12px;
-      line-height:1.1;
+      font-size:24px;
+      margin:2px auto 10px;
+      line-height:1.15;
     }
 
+    h2.one-line{ font-size:min(24px, 6.4vw) !important; }
+
     #topActions{
-      margin:6px auto 8px;
+      margin:4px auto 6px;
     }
 
     button{
-      min-height:70px;
-      padding:18px 12px;
-      margin:8px 0;
+      min-height:54px;
+      padding:12px 10px;
+      margin:7px 0;
       border-radius:10px;
     }
 
     .buttonTitle{
-      font-size:30px;
+      font-size:20px;
     }
 
     .buttonSub{
-      font-size:20px;
+      font-size:14px;
       line-height:1.35;
-      margin-top:6px;
+      margin-top:4px;
     }
 
     button.hasSub .buttonTitle{
-      font-size:29px;
+      font-size:19px;
     }
 
     #backBtn,
     #bottomBackBtn{
-      min-height:86px;
-      font-size:31px;
-      padding:20px 14px;
-      border-radius:14px;
-      margin:10px 0 16px;
-      border-width:3px;
+      min-height:52px;
+      font-size:19px;
+      padding:12px 10px;
+      border-radius:12px;
+      margin:6px 0 10px;
+      border-width:2px;
     }
 
     #box{
-      padding:22px;
-      font-size:30px;
+      padding:16px;
+      font-size:17px;
       line-height:1.7;
       border-radius:12px;
     }
