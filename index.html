@@ -231,6 +231,15 @@
     line-height:1.2;
     text-shadow:0 1px 0 #fff, 0 0 6px rgba(255,255,255,0.9);
   }
+  button.campaign{ display:flex; align-items:center; gap:8px; text-align:left; padding-top:8px !important; padding-bottom:8px !important; }
+  button.campaign .campLeft{
+    flex:0 0 40%;
+    font-size:clamp(20px, 5.6vw, 38px); font-weight:900; color:#c8102e; line-height:1.15; text-align:center;
+    text-shadow:0 1px 0 #fff, 0 0 6px rgba(255,255,255,0.9);
+  }
+  button.campaign .campRight{ flex:1 1 auto; text-align:left; }
+  button.campaign .campRight .buttonTitle{ font-size:clamp(12px, 3.3vw, 24px) !important; line-height:1.3; white-space:nowrap; }
+  button.campaign .campRight .buttonSub{ font-size:clamp(12px, 3.3vw, 22px) !important; margin-top:2px; line-height:1.3; }
   button.campaign:hover{ background:linear-gradient(to bottom, #fffbe0, #ffdc66); }
 
   /* ★2026-11-26 キャンペーンの画像を料金表の中にそのまま出す（本文の1行が当店の置き場の画像の住所だけの時） */
@@ -265,25 +274,31 @@
       margin:4px auto 6px;
     }
 
+    /* ★2026-11-26 まるちゃん「1画面で全部収めたい」＝ボタンの余白と説明の字を小さく */
     button{
-      min-height:54px;
-      padding:12px 10px;
-      margin:7px 0;
+      min-height:46px;
+      padding:8px 8px;
+      margin:5px 0;
       border-radius:10px;
     }
 
     .buttonTitle{
-      font-size:20px;
+      font-size:19px;
     }
 
     .buttonSub{
-      font-size:14px;
-      line-height:1.35;
-      margin-top:4px;
+      font-size:12.5px;
+      line-height:1.3;
+      margin-top:2px;
     }
 
     button.hasSub .buttonTitle{
-      font-size:19px;
+      font-size:18px;
+    }
+
+    button.hasSub{
+      padding-top:8px;
+      padding-bottom:8px;
     }
 
     #backBtn,
@@ -582,7 +597,19 @@ function render(){
       var b = document.createElement('button');
 
       setButtonContent(b, val);
-      if (String(val).indexOf('🔥') === 0) b.classList.add('campaign');
+      if (String(val).indexOf('🔥') === 0) {
+        b.classList.add('campaign');
+        // ★2026-11-26 まるちゃん「VIO脱毛・ヒゲ脱毛などは期間限定の左に置く。3行だと1画面に収まらない」
+        //   ＝【 】の言葉を左に大きく、右に見出しと説明を小さく2行で並べる。
+        var em = b.querySelector('.buttonSub .em');
+        if (em) {
+          var left = document.createElement('span'); left.className = 'campLeft'; left.textContent = em.textContent;
+          em.parentNode.removeChild(em);
+          var right = document.createElement('span'); right.className = 'campRight';
+          while (b.firstChild) right.appendChild(b.firstChild);
+          b.appendChild(left); b.appendChild(right);
+        }
+      }
 
       b.onclick = function(){
         // ★2026-11-26 本文がリンク1つだけのボタンは、押したらそのページ（ブログ等）へ直接移る
